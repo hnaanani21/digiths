@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" dir="ltr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,19 +12,10 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            400: '#2dd4bf',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            900: '#134e4a',
-                            cyan: '#06b6d4',
-                            emerald: '#10b981'
+                            50: '#f0fdfa', 100: '#ccfbf1', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a', cyan: '#06b6d4', emerald: '#10b981'
                         }
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
@@ -32,22 +23,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0b0f17;
-            color: #f3f4f6;
-            overflow-x: hidden;
-        }
-        .glass-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f17; color: #f3f4f6; overflow-x: hidden; }
+        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gradient-text { background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     </style>
 </head>
 <body class="bg-[#0b0f17] text-gray-100 antialiased">
@@ -59,16 +37,24 @@
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-cyan-500 flex items-center justify-center text-slate-900 font-extrabold text-xl">d</div>
                 <div class="flex flex-col">
                     <span class="text-xl font-bold text-white">digiths<span class="text-brand-400">.ma</span></span>
-                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Académie & Formations</span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest" data-i18n="subtitle_courses">Académie & Formations</span>
                 </div>
             </a>
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
-                <a href="index.html" class="hover:text-brand-400 transition-colors">Accueil</a>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-300">
+                <a href="index.html" class="hover:text-brand-400 transition-colors" data-i18n="nav_home">Accueil</a>
                 <a href="cours.html" class="text-brand-400 font-semibold flex items-center gap-1.5">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
-                    Cours & Académie
+                    <span data-i18n="nav_courses">Cours & Académie</span>
                 </a>
             </nav>
+            <!-- LANGUAGE SELECTOR -->
+            <div class="flex items-center gap-2">
+                <select id="langSwitch" onchange="changeLanguage(this.value)" class="bg-slate-900 text-brand-400 border border-brand-500/30 text-xs rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none cursor-pointer">
+                    <option value="fr">🇫🇷 FR</option>
+                    <option value="en">🇬🇧 EN</option>
+                    <option value="ar">🇲🇦 AR</option>
+                </select>
+            </div>
         </div>
     </header>
 
@@ -77,12 +63,12 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold uppercase mb-4">
                 <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-                Cursus Officiel • Beginner to Expert
+                <span data-i18n="badge_text">Cursus Officiel • Beginner to Expert</span>
             </div>
-            <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight">
+            <h1 class="text-4xl sm:text-5xl font-extrabold text-white tracking-tight" data-i18n="hero_courses_title">
                 L'Académie <span class="gradient-text">AI & Digital Twins</span>
             </h1>
-            <p class="mt-4 text-gray-400 text-base sm:text-lg max-w-2xl mx-auto">
+            <p class="mt-4 text-gray-400 text-base sm:text-lg max-w-2xl mx-auto" data-i18n="hero_courses_desc">
                 Formations rigoureuses pour maîtriser l'intelligence artificielle physique (PINNs), la science des données industrielles et la conception de jumeaux numériques.
             </p>
         </div>
@@ -95,37 +81,37 @@
             <div class="glass-card p-8 rounded-3xl border border-gray-800">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-brand-500/10 text-brand-400 font-mono text-sm font-bold">Niveau 01</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold">Débutant</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl1_tag">Débutant</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Python pour l'Ingénierie & Analyse de Données</h3>
-                <p class="text-gray-400 text-sm">Bases indispensables : programmation Python, NumPy, Pandas et visualisation pour capteurs IoT.</p>
+                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl1_title">Python pour l'Ingénierie & Analyse de Données</h3>
+                <p class="text-gray-400 text-sm" data-i18n="lvl1_desc">Bases indispensables : programmation Python, NumPy, Pandas et visualisation pour capteurs IoT.</p>
             </div>
 
             <div class="glass-card p-8 rounded-3xl border border-gray-800">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-mono text-sm font-bold">Niveau 02</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold">Intermédiaire</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl2_tag">Intermédiaire</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Machine Learning & Deep Learning</h3>
-                <p class="text-gray-400 text-sm">Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.</p>
+                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl2_title">Machine Learning & Deep Learning</h3>
+                <p class="text-gray-400 text-sm" data-i18n="lvl2_desc">Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.</p>
             </div>
 
             <div class="glass-card p-8 rounded-3xl border border-gray-800">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-400 font-mono text-sm font-bold">Niveau 03</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold">Avancé</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl3_tag">Avancé</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Physics-Informed Neural Networks (PINNs)</h3>
-                <p class="text-gray-400 text-sm">Intégration des lois de la physique et des équations aux dérivées partielles au cœur du Deep Learning.</p>
+                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl3_title">Physics-Informed Neural Networks (PINNs)</h3>
+                <p class="text-gray-400 text-sm" data-i18n="lvl3_desc">Intégration des lois de la physique et des équations aux dérivées partielles au cœur du Deep Learning.</p>
             </div>
 
             <div class="glass-card p-8 rounded-3xl border border-gray-800">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-mono text-sm font-bold">Niveau 04</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold">Expert</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl4_tag">Expert</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Jumeaux Numériques 3D & IoT</h3>
-                <p class="text-gray-400 text-sm">Architecture IoT temps réel, rendu WebGL / Three.js et déploiement cloud.</p>
+                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl4_title">Jumeaux Numériques 3D & IoT</h3>
+                <p class="text-gray-400 text-sm" data-i18n="lvl4_desc">Architecture IoT temps réel, rendu WebGL / Three.js et déploiement cloud.</p>
             </div>
 
         </div>
@@ -133,10 +119,100 @@
 
     <!-- FOOTER -->
     <footer class="py-8 bg-slate-950 border-t border-gray-800 text-center text-xs text-gray-500 mt-20">
-        <p>© 2026 digiths.ma • Académie AI & Digital Twins</p>
+        <p data-i18n="footer_courses">© 2026 digiths.ma • Académie AI & Digital Twins</p>
     </footer>
 
+    <!-- TRANSLATION SCRIPT -->
     <script>
+        const translations = {
+            fr: {
+                subtitle_courses: "Académie & Formations",
+                nav_home: "Accueil",
+                nav_courses: "Cours & Académie",
+                badge_text: "Cursus Officiel • Beginner to Expert",
+                hero_courses_title: "L'Académie AI & Digital Twins",
+                hero_courses_desc: "Formations rigoureuses pour maîtriser l'intelligence artificielle physique (PINNs), la science des données industrielles et la conception de jumeaux numériques.",
+                lvl1_tag: "Débutant",
+                lvl1_title: "Python pour l'Ingénierie & Analyse de Données",
+                lvl1_desc: "Bases indispensables : programmation Python, NumPy, Pandas et visualisation pour capteurs IoT.",
+                lvl2_tag: "Intermédiaire",
+                lvl2_title: "Machine Learning & Deep Learning",
+                lvl2_desc: "Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.",
+                lvl3_tag: "Avancé",
+                lvl3_title: "Physics-Informed Neural Networks (PINNs)",
+                lvl3_desc: "Intégration des lois de la physique et des équations aux dérivées partielles au cœur du Deep Learning.",
+                lvl4_tag: "Expert",
+                lvl4_title: "Jumeaux Numériques 3D & IoT",
+                lvl4_desc: "Architecture IoT temps réel, rendu WebGL / Three.js et déploiement cloud.",
+                footer_courses: "© 2026 digiths.ma • Académie AI & Digital Twins"
+            },
+            en: {
+                subtitle_courses: "Academy & Training",
+                nav_home: "Home",
+                nav_courses: "Courses & Academy",
+                badge_text: "Official Curriculum • Beginner to Expert",
+                hero_courses_title: "AI & Digital Twins Academy",
+                hero_courses_desc: "Rigorous training to master physics-informed artificial intelligence (PINNs), industrial data science, and digital twin design.",
+                lvl1_tag: "Beginner",
+                lvl1_title: "Python for Engineering & Data Analysis",
+                lvl1_desc: "Essential basics: Python programming, NumPy, Pandas, and visualization for IoT sensors.",
+                lvl2_tag: "Intermediate",
+                lvl2_title: "Machine Learning & Deep Learning",
+                lvl2_desc: "Scikit-Learn, PyTorch, neural networks, and time series for predictive maintenance.",
+                lvl3_tag: "Advanced",
+                lvl3_title: "Physics-Informed Neural Networks (PINNs)",
+                lvl3_desc: "Integrating physical laws and partial differential equations into the heart of Deep Learning.",
+                lvl4_tag: "Expert",
+                lvl4_title: "3D Digital Twins & IoT",
+                lvl4_desc: "Real-time IoT architecture, WebGL / Three.js rendering, and cloud deployment.",
+                footer_courses: "© 2026 digiths.ma • AI & Digital Twins Academy"
+            },
+            ar: {
+                subtitle_courses: "الأكاديمية والتدريب",
+                nav_home: "الرئيسية",
+                nav_courses: "الدورات والأكاديمية",
+                badge_text: "المنهج الرسمي • من المبتدئ إلى الخبير",
+                hero_courses_title: "أكاديمية الذكاء الاصطناعي والتوأم الرقمي",
+                hero_courses_desc: "تدريب صارم لإتقان الذكاء الاصطناعي القائم على الفيزياء (PINNs)، علوم البيانات الصناعية، وتصميم التوأم الرقمي.",
+                lvl1_tag: "مبتدئ",
+                lvl1_title: "بايثون للهندسة وتحليل البيانات",
+                lvl1_desc: "الأساسيات الضرورية: برمجة بايثون، NumPy، Pandas، والتحويل المرئي لمستشعرات إنترنت الأشياء.",
+                lvl2_tag: "متوسط",
+                lvl2_title: "تعلم الآلة والتعلم العميق",
+                lvl2_desc: "Scikit-Learn، PyTorch، الشبكات العصبية، والسلاسل الزمنية للصيانة التنبؤية.",
+                lvl3_tag: "متقدم",
+                lvl3_title: "الشبكات العصبية المستنيرة بالفيزياء (PINNs)",
+                lvl3_desc: "دمج القوانين الفيزيائية والمعادلات التفاضلية الجزئية في صلب التعلم العميق.",
+                lvl4_tag: "خبير",
+                lvl4_title: "التوأم الرقمي ثلاثي الأبعاد وإنترنت الأشياء",
+                lvl4_desc: "بنية إنترنت الأشياء في الوقت الفعلي، العرض المرئي WebGL / Three.js، والنشر السحابي.",
+                footer_courses: "© 2026 digiths.ma • أكاديمية الذكاء الاصطناعي والتوأم الرقمي"
+            }
+        };
+
+        function changeLanguage(lang) {
+            localStorage.setItem('digiths_lang', lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if(key === 'hero_courses_title') {
+                        el.innerHTML = translations[lang][key].replace("AI & Digital Twins", '<span class="gradient-text">AI & Digital Twins</span>');
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('digiths_lang') || 'fr';
+            document.getElementById('langSwitch').value = savedLang;
+            changeLanguage(savedLang);
+        });
+
         lucide.createIcons();
     </script>
 </body>
