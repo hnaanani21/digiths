@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>digiths.ma | Académie AI & Formations</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -76,42 +77,123 @@
 
     <!-- LISTE DES COURS -->
     <section class="py-12 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
             
-            <div class="glass-card p-8 rounded-3xl border border-gray-800">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="px-3 py-1 rounded-lg bg-brand-500/10 text-brand-400 font-mono text-sm font-bold">Niveau 01</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl1_tag">Débutant</span>
+            <!-- NIVEAU 01 : DÉTAILLÉ -->
+            <div class="glass-card p-8 sm:p-10 rounded-3xl border border-brand-500/30 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-brand-500/10 blur-[60px] pointer-events-none"></div>
+                
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-800">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-lg bg-brand-500/10 text-brand-400 font-mono text-sm font-bold">Niveau 01</span>
+                            <span class="text-xs uppercase text-brand-400 font-semibold tracking-wider">Beginner</span>
+                        </div>
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-white">Python for Engineering & Data Analysis</h3>
+                        <p class="text-gray-400 text-sm mt-1">Essential basics: Python programming, NumPy, Pandas, and visualization for IoT sensors.</p>
+                    </div>
+                    <span class="self-start md:self-center px-4 py-2 rounded-xl bg-brand-500/20 text-brand-300 border border-brand-500/30 text-xs font-mono font-semibold">
+                        4 Modules Pratiques
+                    </span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl1_title">Python pour l'Ingénierie & Analyse de Données</h3>
-                <p class="text-gray-400 text-sm" data-i18n="lvl1_desc">Bases indispensables : programmation Python, NumPy, Pandas et visualisation pour capteurs IoT.</p>
+
+                <!-- Programme détaillé du Niveau 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div class="p-5 rounded-2xl bg-slate-950/60 border border-gray-800">
+                        <h4 class="text-sm font-bold text-brand-400 mb-2 flex items-center gap-2">
+                            <i data-lucide="code" class="w-4 h-4"></i> 1. Programmation Python pour l'Ingénieur
+                        </h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Syntaxe de base, boucles, fonctions et introduction à la programmation orientée objet pour modéliser des composants physiques et industriels.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-950/60 border border-gray-800">
+                        <h4 class="text-sm font-bold text-cyan-400 mb-2 flex items-center gap-2">
+                            <i data-lucide="cpu" class="w-4 h-4"></i> 2. Calcul Numérique avec NumPy
+                        </h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Manipulation de tableaux multidimensionnels (`ndarray`), opérations vectorisées et calculs statistiques instantanés sur les flux de mesures.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-950/60 border border-gray-800">
+                        <h4 class="text-sm font-bold text-emerald-400 mb-2 flex items-center gap-2">
+                            <i data-lucide="database" class="w-4 h-4"></i> 3. Manipulation de Données avec Pandas
+                        </h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Gestion des `DataFrame`, nettoyage des valeurs aberrantes, filtrage conditionnel et traitement de séries temporelles IoT.
+                        </p>
+                    </div>
+
+                    <div class="p-5 rounded-2xl bg-slate-950/60 border border-gray-800">
+                        <h4 class="text-sm font-bold text-purple-400 mb-2 flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-4 h-4"></i> 4. Visualisation Scientifique
+                        </h4>
+                        <p class="text-xs text-gray-400 leading-relaxed">
+                            Génération de graphiques professionnels avec Matplotlib et Seaborn pour analyser l'évolution des capteurs et détecter les anomalies.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- WIDGET INTERACTIF : EXPLIQUER SI BESOIN (AI TUTOR) -->
+                <div class="glass-card p-6 rounded-2xl border border-brand-500/30 bg-slate-900/40">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-400 flex items-center justify-center">
+                            <i data-lucide="bot" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-white">Assistant Pédagogique IA — digiths.ma</h4>
+                            <p class="text-[11px] text-gray-400">Bloqué sur une notion ? Cliquez sur une question ou demandez une explication.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <button onclick="askAITutor('numpy')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-500/20 text-xs text-gray-300 hover:text-brand-300 border border-gray-700 transition">
+                            💡 C'est quoi la différence entre une liste Python et un tableau NumPy ?
+                        </button>
+                        <button onclick="askAITutor('pandas')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-500/20 text-xs text-gray-300 hover:text-brand-300 border border-gray-700 transition">
+                            📊 À quoi sert Pandas pour les capteurs IoT ?
+                        </button>
+                        <button onclick="askAITutor('vectorization')" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-brand-500/20 text-xs text-gray-300 hover:text-brand-300 border border-gray-700 transition">
+                            ⚡ C'est quoi la vectorisation ?
+                        </button>
+                    </div>
+
+                    <div id="aiResponseBox" class="hidden p-4 rounded-xl bg-slate-950 border border-brand-500/20 text-xs text-gray-300 leading-relaxed font-mono">
+                        <!-- Réponse dynamique -->
+                    </div>
+                </div>
             </div>
 
-            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+            <!-- NIVEAU 02 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800 opacity-75">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-mono text-sm font-bold">Niveau 02</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl2_tag">Intermédiaire</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold">Intermédiaire</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl2_title">Machine Learning & Deep Learning</h3>
-                <p class="text-gray-400 text-sm" data-i18n="lvl2_desc">Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.</p>
+                <h3 class="text-2xl font-bold text-white mb-2">Machine Learning & Deep Learning</h3>
+                <p class="text-gray-400 text-sm">Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.</p>
             </div>
 
-            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+            <!-- NIVEAU 03 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800 opacity-75">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-purple-500/10 text-purple-400 font-mono text-sm font-bold">Niveau 03</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl3_tag">Avancé</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold">Avancé</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl3_title">Physics-Informed Neural Networks (PINNs)</h3>
-                <p class="text-gray-400 text-sm" data-i18n="lvl3_desc">Intégration des lois de la physique et des équations aux dérivées partielles au cœur du Deep Learning.</p>
+                <h3 class="text-2xl font-bold text-white mb-2">Physics-Informed Neural Networks (PINNs)</h3>
+                <p class="text-gray-400 text-sm">Intégration des lois de la physique et des équations aux dérivées partielles au cœur du Deep Learning.</p>
             </div>
 
-            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+            <!-- NIVEAU 04 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800 opacity-75">
                 <div class="flex items-center gap-3 mb-2">
                     <span class="px-3 py-1 rounded-lg bg-emerald-500/10 text-emerald-400 font-mono text-sm font-bold">Niveau 04</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold" data-i18n="lvl4_tag">Expert</span>
+                    <span class="text-xs uppercase text-gray-400 font-semibold">Expert</span>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2" data-i18n="lvl4_title">Jumeaux Numériques 3D & IoT</h3>
-                <p class="text-gray-400 text-sm" data-i18n="lvl4_desc">Architecture IoT temps réel, rendu WebGL / Three.js et déploiement cloud.</p>
+                <h3 class="text-2xl font-bold text-white mb-2">Jumeaux Numériques 3D & IoT</h3>
+                <p class="text-gray-400 text-sm">Architecture IoT temps réel, rendu WebGL / Three.js et déploiement cloud.</p>
             </div>
 
         </div>
@@ -119,92 +201,31 @@
 
     <!-- FOOTER -->
     <footer class="py-8 bg-slate-950 border-t border-gray-800 text-center text-xs text-gray-500 mt-20">
-        <p data-i18n="footer_courses">© 2026 digiths.ma • Académie AI & Digital Twins</p>
+        <p>© 2026 digiths.ma • Académie AI & Digital Twins</p>
     </footer>
 
-    <!-- TRANSLATION SCRIPT -->
+    <!-- SCRIPTS -->
     <script>
-        const translations = {
-            fr: {
-                subtitle_courses: "Académie & Formations",
-                nav_home: "Accueil",
-                nav_courses: "Cours & Académie",
-                badge_text: "Cursus Officiel • Beginner to Expert",
-                hero_courses_title: "L'Académie AI & Digital Twins",
-                hero_courses_desc: "Formations rigoureuses pour maîtriser l'intelligence artificielle physique (PINNs), la science des données industrielles et la conception de jumeaux numériques.",
-                lvl1_tag: "Débutant",
-                lvl1_title: "Python pour l'Ingénierie & Analyse de Données",
-                lvl1_desc: "Bases indispensables : programmation Python, NumPy, Pandas et visualisation pour capteurs IoT.",
-                lvl2_tag: "Intermédiaire",
-                lvl2_title: "Machine Learning & Deep Learning",
-                lvl2_desc: "Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.",
-                lvl3_tag: "Avancé",
-                lvl3_title: "Physics-Informed Neural Networks (PINNs)",
-                lvl3_desc: "Intégration des lois de la physique et des équations aux dérivées partielles au cœur du Deep Learning.",
-                lvl4_tag: "Expert",
-                lvl4_title: "Jumeaux Numériques 3D & IoT",
-                lvl4_desc: "Architecture IoT temps réel, rendu WebGL / Three.js et déploiement cloud.",
-                footer_courses: "© 2026 digiths.ma • Académie AI & Digital Twins"
-            },
-            en: {
-                subtitle_courses: "Academy & Training",
-                nav_home: "Home",
-                nav_courses: "Courses & Academy",
-                badge_text: "Official Curriculum • Beginner to Expert",
-                hero_courses_title: "AI & Digital Twins Academy",
-                hero_courses_desc: "Rigorous training to master physics-informed artificial intelligence (PINNs), industrial data science, and digital twin design.",
-                lvl1_tag: "Beginner",
-                lvl1_title: "Python for Engineering & Data Analysis",
-                lvl1_desc: "Essential basics: Python programming, NumPy, Pandas, and visualization for IoT sensors.",
-                lvl2_tag: "Intermediate",
-                lvl2_title: "Machine Learning & Deep Learning",
-                lvl2_desc: "Scikit-Learn, PyTorch, neural networks, and time series for predictive maintenance.",
-                lvl3_tag: "Advanced",
-                lvl3_title: "Physics-Informed Neural Networks (PINNs)",
-                lvl3_desc: "Integrating physical laws and partial differential equations into the heart of Deep Learning.",
-                lvl4_tag: "Expert",
-                lvl4_title: "3D Digital Twins & IoT",
-                lvl4_desc: "Real-time IoT architecture, WebGL / Three.js rendering, and cloud deployment.",
-                footer_courses: "© 2026 digiths.ma • AI & Digital Twins Academy"
-            },
-            ar: {
-                subtitle_courses: "الأكاديمية والتدريب",
-                nav_home: "الرئيسية",
-                nav_courses: "الدورات والأكاديمية",
-                badge_text: "المنهج الرسمي • من المبتدئ إلى الخبير",
-                hero_courses_title: "أكاديمية الذكاء الاصطناعي والتوأم الرقمي",
-                hero_courses_desc: "تدريب صارم لإتقان الذكاء الاصطناعي القائم على الفيزياء (PINNs)، علوم البيانات الصناعية، وتصميم التوأم الرقمي.",
-                lvl1_tag: "مبتدئ",
-                lvl1_title: "بايثون للهندسة وتحليل البيانات",
-                lvl1_desc: "الأساسيات الضرورية: برمجة بايثون، NumPy، Pandas، والتحويل المرئي لمستشعرات إنترنت الأشياء.",
-                lvl2_tag: "متوسط",
-                lvl2_title: "تعلم الآلة والتعلم العميق",
-                lvl2_desc: "Scikit-Learn، PyTorch، الشبكات العصبية، والسلاسل الزمنية للصيانة التنبؤية.",
-                lvl3_tag: "متقدم",
-                lvl3_title: "الشبكات العصبية المستنيرة بالفيزياء (PINNs)",
-                lvl3_desc: "دمج القوانين الفيزيائية والمعادلات التفاضلية الجزئية في صلب التعلم العميق.",
-                lvl4_tag: "خبير",
-                lvl4_title: "التوأم الرقمي ثلاثي الأبعاد وإنترنت الأشياء",
-                lvl4_desc: "بنية إنترنت الأشياء في الوقت الفعلي، العرض المرئي WebGL / Three.js، والنشر السحابي.",
-                footer_courses: "© 2026 digiths.ma • أكاديمية الذكاء الاصطناعي والتوأم الرقمي"
-            }
+        const explanations = {
+            numpy: "🔍 **Différence Liste vs NumPy :**\n- Une **liste Python** peut contenir des types de données mélangés et stocke des pointeurs, ce qui la ralentit pour les calculs lourds.\n- Un **tableau NumPy (`ndarray`)** stocke des données du même type de manière contiguë en mémoire, permettant des calculs vectorisés ultra-rapides pour traiter des milliers de lignes de capteurs IoT.",
+            pandas: "📊 **Rôle de Pandas pour l'IoT :**\nLes capteurs industriels envoient des flux continus de données horodatées. **Pandas** introduit les `DataFrame` et les index temporels (`DatetimeIndex`), facilitant le nettoyage, le rééchantillonnage et le calcul de moyennes glissantes.",
+            vectorization: "⚡ **La Vectorisation :**\nAu lieu d'utiliser des boucles `for` lentes pour traiter chaque valeur de capteur une par une, la **vectorisation** applique l'opération mathématique sur l'ensemble du tableau en une seule instruction processeur."
         };
+
+        function askAITutor(topic) {
+            const box = document.getElementById('aiResponseBox');
+            box.classList.remove('hidden');
+            box.innerHTML = "<span class='text-brand-400 animate-pulse'>Génération de l'explication...</span>";
+            
+            setTimeout(() => {
+                box.innerHTML = explanations[topic].replace(/\n/g, '<br>');
+            }, 300);
+        }
 
         function changeLanguage(lang) {
             localStorage.setItem('digiths_lang', lang);
             document.documentElement.lang = lang;
             document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
-            
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    if(key === 'hero_courses_title') {
-                        el.innerHTML = translations[lang][key].replace("AI & Digital Twins", '<span class="gradient-text">AI & Digital Twins</span>');
-                    } else {
-                        el.textContent = translations[lang][key];
-                    }
-                }
-            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
