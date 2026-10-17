@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr" class="scroll-smooth">
+<html lang="fr" dir="ltr" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,19 +12,10 @@
                 extend: {
                     colors: {
                         brand: {
-                            50: '#f0fdfa',
-                            100: '#ccfbf1',
-                            400: '#2dd4bf',
-                            500: '#14b8a6',
-                            600: '#0d9488',
-                            900: '#134e4a',
-                            cyan: '#06b6d4',
-                            emerald: '#10b981'
+                            50: '#f0fdfa', 100: '#ccfbf1', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a', cyan: '#06b6d4', emerald: '#10b981'
                         }
                     },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
                 }
             }
         }
@@ -33,22 +24,9 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0b0f17;
-            color: #f3f4f6;
-            overflow-x: hidden;
-        }
-        .glass-card {
-            background: rgba(17, 24, 39, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-        .gradient-text {
-            background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f17; color: #f3f4f6; overflow-x: hidden; }
+        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gradient-text { background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         canvas { touch-action: none; }
     </style>
 </head>
@@ -61,17 +39,25 @@
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-cyan-500 flex items-center justify-center text-slate-900 font-extrabold text-xl">d</div>
                 <div class="flex flex-col">
                     <span class="text-xl font-bold text-white">digiths<span class="text-brand-400">.ma</span></span>
-                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">AI & Digital Twins</span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest" data-i18n="subtitle">AI & Digital Twins</span>
                 </div>
             </a>
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
-                <a href="#competencies" class="hover:text-brand-400 transition-colors">Compétences</a>
-                <a href="#digital-twin-demo" class="hover:text-brand-400 transition-colors">Démo 3D</a>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-300">
+                <a href="#competencies" class="hover:text-brand-400 transition-colors" data-i18n="nav_competencies">Compétences</a>
+                <a href="#digital-twin-demo" class="hover:text-brand-400 transition-colors" data-i18n="nav_demo">Démo 3D</a>
                 <a href="cours.html" class="flex items-center gap-1.5 text-brand-400 hover:text-brand-300 font-semibold">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
-                    Cours & Académie
+                    <span data-i18n="nav_courses">Cours & Académie</span>
                 </a>
             </nav>
+            <!-- LANGUAGE SELECTOR -->
+            <div class="flex items-center gap-2">
+                <select id="langSwitch" onchange="changeLanguage(this.value)" class="bg-slate-900 text-brand-400 border border-brand-500/30 text-xs rounded-lg px-2.5 py-1.5 font-semibold focus:outline-none cursor-pointer">
+                    <option value="fr">🇫🇷 FR</option>
+                    <option value="en">🇬🇧 EN</option>
+                    <option value="ar">🇲🇦 AR</option>
+                </select>
+            </div>
         </div>
     </header>
 
@@ -80,16 +66,16 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                 <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight" data-i18n="hero_title">
                         L'Intelligence Artificielle & les <span class="gradient-text">Jumeaux Numériques</span> au service de l'Industrie.
                     </h1>
-                    <p class="text-lg text-gray-400 max-w-2xl mx-auto lg:mx-0">
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto lg:mx-0" data-i18n="hero_desc">
                         <strong class="text-gray-200">digiths.ma</strong> transforme vos données complexes en décisions stratégiques grâce aux modèles PINNs et à la maintenance prédictive.
                     </p>
                     <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-                        <a href="cours.html" class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-slate-950 font-bold flex items-center gap-2">
+                        <a href="cours.html" class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-slate-950 font-bold flex items-center gap-2 shadow-lg shadow-brand-500/20">
                             <i data-lucide="graduation-cap" class="w-5 h-5"></i>
-                            Accéder aux Cours (0 to Expert)
+                            <span data-i18n="hero_btn">Accéder aux Cours (0 to Expert)</span>
                         </a>
                     </div>
                 </div>
@@ -106,10 +92,67 @@
 
     <!-- FOOTER -->
     <footer class="py-8 bg-slate-950 border-t border-gray-800 text-center text-xs text-gray-500">
-        <p>© 2026 digiths.ma • Tous droits réservés.</p>
+        <p data-i18n="footer_text">© 2026 digiths.ma • Tous droits réservés.</p>
     </footer>
 
+    <!-- TRANSLATION SCRIPT -->
     <script>
+        const translations = {
+            fr: {
+                subtitle: "AI & Digital Twins",
+                nav_competencies: "Compétences",
+                nav_demo: "Démo 3D",
+                nav_courses: "Cours & Académie",
+                hero_title: "L'Intelligence Artificielle & les Jumeaux Numériques au service de l'Industrie.",
+                hero_desc: "digiths.ma transforme vos données complexes en décisions stratégiques grâce aux modèles PINNs et à la maintenance prédictive.",
+                hero_btn: "Accéder aux Cours (0 to Expert)",
+                footer_text: "© 2026 digiths.ma • Tous droits réservés."
+            },
+            en: {
+                subtitle: "AI & Digital Twins",
+                nav_competencies: "Competencies",
+                nav_demo: "3D Demo",
+                nav_courses: "Courses & Academy",
+                hero_title: "Artificial Intelligence & Digital Twins for Industry.",
+                hero_desc: "digiths.ma turns your complex data into strategic decisions using PINN models and predictive maintenance.",
+                hero_btn: "Access Courses (0 to Expert)",
+                footer_text: "© 2026 digiths.ma • All rights reserved."
+            },
+            ar: {
+                subtitle: "الذكاء الاصطناعي والتوأم الرقمي",
+                nav_competencies: "الكفاءات",
+                nav_demo: "عرض ثلاثي الأبعاد",
+                nav_courses: "الدورات والأكاديمية",
+                hero_title: "الذكاء الاصطناعي والتوأم الرقمي في خدمة الصناعة.",
+                hero_desc: "digiths.ma تحول بياناتك المعقدة إلى قرارات استراتيجية باستخدام نماذج PINNs والصيانة التنبؤية.",
+                hero_btn: "الوصول إلى الدورات (من المبتدئ إلى الخبير)",
+                footer_text: "© 2026 digiths.ma • جميع الحقوق محفوظة."
+            }
+        };
+
+        function changeLanguage(lang) {
+            localStorage.setItem('digiths_lang', lang);
+            document.documentElement.lang = lang;
+            document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+            
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if(key === 'hero_title') {
+                        el.innerHTML = translations[lang][key].replace("Jumeaux Numériques", '<span class="gradient-text">Jumeaux Numériques</span>');
+                    } else {
+                        el.textContent = translations[lang][key];
+                    }
+                }
+            });
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('digiths_lang') || 'fr';
+            document.getElementById('langSwitch').value = savedLang;
+            changeLanguage(savedLang);
+        });
+
         lucide.createIcons();
         let scene, camera, renderer, coreMesh;
         function init3D() {
