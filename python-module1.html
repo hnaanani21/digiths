@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 — Python pour l'Ingénieur | digiths.ma</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50:'#f0fdfa',100:'#ccfbf1',400:'#2dd4bf',500:'#14b8a6',600:'#0d9488',900:'#134e4a',cyan:'#06b6d4',emerald:'#10b981' }
+                    },
+                    fontFamily: { sans: ['Inter','sans-serif'], mono: ['JetBrains Mono','Fira Code','monospace'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&family=Fraunces:ital,wght@0,700;1,400&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family:'Inter',sans-serif; background-color:#0b0f17; color:#f3f4f6; overflow-x:hidden }
+        .glass-card { background:rgba(17,24,39,0.7); backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,0.08) }
+        .gradient-text { background:linear-gradient(135deg,#2dd4bf 0%,#06b6d4 50%,#3b82f6 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent }
+
+        /* ── MODULE LAYOUT ── */
+        .mod-layout { display:grid; grid-template-columns:240px 1fr; grid-template-rows:auto 1fr; grid-template-areas:"hd hd" "sb main"; min-height:100vh }
+        .mod-sidebar { grid-area:sb; background:rgba(10,13,20,0.9); border-right:1px solid rgba(255,255,255,0.07); padding:24px 0; position:sticky; top:80px; height:calc(100vh - 80px); overflow-y:auto }
+        .mod-main { grid-area:main; padding:40px 32px 80px; max-width:800px }
+        .mod-hd { grid-area:hd }
+
+        .nav-item { display:flex; align-items:center; gap:10px; padding:9px 20px; cursor:pointer; font-size:13.5px; color:#8892a4; transition:background .15s,color .15s; border-left:2px solid transparent }
+        .nav-item:hover { background:rgba(45,212,191,0.06); color:#e4e8f0 }
+        .nav-item.active { color:#2dd4bf; border-left-color:#2dd4bf; background:rgba(45,212,191,0.08) }
+        .nav-item.done { color:#6c7086 }
+        .nav-num { min-width:22px; height:22px; border-radius:5px; background:#1e2330; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; color:#4a5468; flex-shrink:0 }
+        .nav-item.active .nav-num { background:#2dd4bf; color:#0a0d13 }
+        .nav-item.done .nav-num { background:#4ade80; color:#0a0d13 }
+
+        .sec-page { display:none; animation:fadein .25s ease }
+        .sec-page.visible { display:block }
+        @keyframes fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+
+        /* CODE */
+        .code-wrap { background:#080b11; border:1px solid #1e2330; border-radius:10px; margin:16px 0; overflow:hidden }
+        .code-hdr { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:rgba(255,255,255,.025); border-bottom:1px solid #1e2330 }
+        .code-lang { font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:#4a5468 }
+        .copy-btn { font-size:11px; background:none; border:1px solid #1e2330; border-radius:5px; padding:3px 8px; cursor:pointer; color:#8892a4; transition:border-color .2s,color .2s }
+        .copy-btn:hover { border-color:#2dd4bf; color:#2dd4bf }
+        .copy-btn.copied { border-color:#4ade80; color:#4ade80 }
+        pre { margin:0; padding:18px; overflow-x:auto; font-family:'JetBrains Mono','Fira Code',monospace; font-size:13px; line-height:1.7; color:#cdd6f4 }
+        .kw{color:#89dceb}.fn{color:#89b4fa}.st{color:#a6e3a1}.cm{color:#6c7086;font-style:italic}.nm{color:#f9e2af}.op{color:#f38ba8}.vr{color:#cba6f7}
+
+        /* QUIZ */
+        .quiz-opt { display:flex; align-items:flex-start; gap:10px; background:rgba(17,24,39,0.8); border:1.5px solid #1e2330; border-radius:8px; padding:12px 14px; cursor:pointer; transition:border-color .2s,background .2s; font-size:13.5px; color:#8892a4; line-height:1.5 }
+        .quiz-opt:hover { border-color:#2dd4bf; color:#e4e8f0 }
+        .quiz-opt.correct { border-color:#4ade80; background:rgba(74,222,128,.08); color:#e4e8f0 }
+        .quiz-opt.wrong { border-color:#f87171; background:rgba(248,113,113,.06) }
+        .opt-key { min-width:22px; height:22px; border-radius:4px; background:#1e2330; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:#4a5468; font-family:'JetBrains Mono',monospace; flex-shrink:0 }
+        .quiz-opt.correct .opt-key { background:#4ade80; color:#0a0d13 }
+        .quiz-opt.wrong .opt-key { background:#f87171; color:white }
+
+        /* AI */
+        .ai-suggest { font-size:12.5px; padding:7px 12px; background:rgba(17,24,39,0.8); border:1px solid #1e2330; border-radius:20px; cursor:pointer; color:#8892a4; transition:border-color .2s,color .2s,background .2s }
+        .ai-suggest:hover { border-color:#2dd4bf; color:#2dd4bf; background:rgba(45,212,191,0.08) }
+
+        code { font-family:'JetBrains Mono',monospace; font-size:12.5px; background:#080b11; border:1px solid #1e2330; border-radius:4px; padding:1px 6px; color:#2dd4bf }
+
+        @media(max-width:700px){
+            .mod-layout { grid-template-columns:1fr; grid-template-areas:"hd" "main" }
+            .mod-sidebar { display:none }
+            .mod-main { padding:24px 16px 60px }
+        }
+    </style>
+</head>
+<body class="bg-[#0b0f17] text-gray-100 antialiased">
+
+    <!-- HEADER digiths.ma -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-card border-b border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-teal-500 to-cyan-500 flex items-center justify-center text-slate-900 font-extrabold text-xl">d</div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-white">digiths<span class="text-teal-400">.ma</span></span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Académie & Formations</span>
+                </div>
+            </a>
+            <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-300">
+                <a href="index.html" class="hover:text-teal-400 transition-colors">Accueil</a>
+                <a href="cours.html" class="hover:text-teal-400 transition-colors">Cours</a>
+                <span class="text-teal-400 font-semibold flex items-center gap-1.5">
+                    <i data-lucide="code" class="w-4 h-4"></i> Module 1 — Python Ingénieur
+                </span>
+            </nav>
+            <!-- Progress -->
+            <div class="flex items-center gap-3">
+                <div class="text-xs text-gray-400 hidden sm:block">Progression</div>
+                <div class="w-24 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                    <div id="hdrProgress" class="h-full bg-teal-400 rounded-full transition-all duration-500" style="width:0%"></div>
+                </div>
+                <span id="hdrProgressTxt" class="text-xs text-teal-400 font-mono">0/6</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MODULE LAYOUT -->
+    <div class="mod-layout" style="padding-top:80px">
+
+        <!-- SIDEBAR -->
+        <nav class="mod-sidebar">
+            <div class="px-5 mb-6 mt-2">
+                <div class="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-1">Niveau 01 · Beginner</div>
+                <div class="text-sm font-bold text-white">Python pour l'Ingénieur</div>
+            </div>
+            <div class="space-y-0.5">
+                <div class="nav-item active" data-sec="0"><span class="nav-num">▸</span> Introduction</div>
+                <div class="nav-item" data-sec="1"><span class="nav-num">1</span> Variables & Types</div>
+                <div class="nav-item" data-sec="2"><span class="nav-num">2</span> Contrôle de flux</div>
+                <div class="nav-item" data-sec="3"><span class="nav-num">3</span> Fonctions</div>
+                <div class="nav-item" data-sec="4"><span class="nav-num">4</span> POO — Capteurs</div>
+                <div class="nav-item" data-sec="5"><span class="nav-num">✓</span> Quiz & Exercices</div>
+            </div>
+            <div class="px-5 mt-8 pt-6 border-t border-gray-800/50">
+                <a href="cours.html" class="flex items-center gap-2 text-xs text-gray-500 hover:text-teal-400 transition-colors">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Retour aux cours
+                </a>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="mod-main">
+
+            <!-- SECTION 0 — INTRO -->
+            <div class="sec-page visible" id="sec-0">
+                <div class="glass-card p-8 rounded-2xl border border-gray-800 mb-6 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-48 h-48 bg-teal-500/5 rounded-full -translate-y-1/2 translate-x-1/2 pointer-events-none"></div>
+                    <div class="text-xs font-bold uppercase tracking-widest text-teal-400 mb-2">Module 1 · Niveau Beginner</div>
+                    <h1 class="text-3xl sm:text-4xl font-black text-white mb-3" style="font-family:'Fraunces',Georgia,serif">Programmation Python<br><em class="text-teal-400" style="font-style:italic">pour l'Ingénieur</em></h1>
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-lg">Maîtrisez les fondamentaux de Python dans un contexte industriel réel : variables de process, traitement de séries capteurs, modélisation orientée objet.</p>
+                    <div class="flex flex-wrap gap-4 mt-5 text-xs text-gray-400">
+                        <span class="flex items-center gap-1.5"><i data-lucide="clock" class="w-4 h-4 text-teal-400"></i> 6h</span>
+                        <span class="flex items-center gap-1.5"><i data-lucide="layers" class="w-4 h-4 text-teal-400"></i> 5 sections · 3 labs</span>
+                        <span class="flex items-center gap-1.5"><i data-lucide="check-circle" class="w-4 h-4 text-teal-400"></i> Prérequis : aucun</span>
+                    </div>
+                    <div class="flex flex-wrap gap-2 mt-4">
+                        <span class="px-3 py-1 rounded-full bg-blue-500/15 text-blue-300 text-xs font-semibold">Python 3.10+</span>
+                        <span class="px-3 py-1 rounded-full bg-purple-500/15 text-purple-300 text-xs font-semibold">POO</span>
+                        <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-300 text-xs font-semibold">Lab IoT</span>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-2xl border border-gray-800 mb-6">
+                    <div class="text-xs font-bold uppercase tracking-widest text-teal-400 mb-4">Objectifs pédagogiques</div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="p-4 rounded-xl bg-slate-950/60 border border-gray-800">
+                            <div class="text-xl mb-2">🔢</div>
+                            <div class="text-sm font-semibold text-white mb-1">Variables & Types</div>
+                            <div class="text-xs text-gray-400 leading-relaxed">Entiers, flottants, chaînes, booléens — appliqués aux mesures physiques industrielles</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950/60 border border-gray-800">
+                            <div class="text-xl mb-2">🔄</div>
+                            <div class="text-sm font-semibold text-white mb-1">Contrôle de flux</div>
+                            <div class="text-xs text-gray-400 leading-relaxed">Conditions et boucles pour traiter des séries de mesures et détecter des alarmes</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950/60 border border-gray-800">
+                            <div class="text-xl mb-2">⚙️</div>
+                            <div class="text-sm font-semibold text-white mb-1">Fonctions</div>
+                            <div class="text-xs text-gray-400 leading-relaxed">Encapsuler la logique de traitement du signal et des conversions d'unités</div>
+                        </div>
+                        <div class="p-4 rounded-xl bg-slate-950/60 border border-gray-800">
+                            <div class="text-xl mb-2">🏗️</div>
+                            <div class="text-sm font-semibold text-white mb-1">Classes & Objets</div>
+                            <div class="text-xs text-gray-400 leading-relaxed">Modéliser des capteurs, des boucles de régulation et des unités de process</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-xl bg-teal-500/8 border border-teal-500/20 flex gap-3 mb-6">
+                    <span class="text-lg">🏭</span>
+                    <p class="text-sm text-gray-300 leading-relaxed"><span class="text-teal-400 font-semibold">Contexte industriel :</span> tous les exemples utilisent des données réalistes de capteurs — températures (°C), pressions (bar), débits (L/h) — typiques d'un process chimique ou énergétique.</p>
+                </div>
+
+                <div class="flex justify-end">
+                    <button onclick="goSec(1)" class="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold rounded-xl text-sm transition-all">
+                        Variables & Types <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECTION 1 — VARIABLES -->
+            <div class="sec-page" id="sec-1">
+                <h2 class="text-2xl font-black text-white mb-2" style="font-family:'Fraunces',Georgia,serif">1. Variables & Types de données</h2>
+                <p class="text-gray-400 text-sm leading-relaxed mb-5">En Python, une variable est créée par simple affectation. Les types les plus utiles en ingénierie sont les numériques, les chaînes de caractères, les listes et les dictionnaires.</p>
+
+                <h3 class="text-base font-semibold text-white mb-3">1.1 Types numériques — mesures physiques</h3>
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="cm"># Mesures d'une boucle de régulation</span>
+<span class="vr">temperature</span> = <span class="nm">85.4</span>      <span class="cm"># °C  — float</span>
+<span class="vr">pression</span>    = <span class="nm">2.3</span>       <span class="cm"># bar — float</span>
+<span class="vr">debit</span>       = <span class="nm">150</span>       <span class="cm"># L/h — int</span>
+<span class="vr">alarme</span>      = <span class="kw">True</span>      <span class="cm"># état logique — bool</span>
+
+<span class="cm"># Opérations physiques</span>
+<span class="vr">puissance</span>   = <span class="nm">24.0</span> * <span class="nm">3.75</span>   <span class="cm"># W = V × A</span>
+<span class="vr">bar_to_psi</span>  = <span class="kw">lambda</span> b: b * <span class="nm">14.5038</span>
+
+<span class="fn">print</span>(<span class="st">f"Température : {<span class="vr">temperature</span>} °C"</span>)
+<span class="fn">print</span>(<span class="st">f"Pression    : {<span class="vr">bar_to_psi</span>(<span class="vr">pression</span>):<span class="nm">.2f</span>} psi"</span>)</pre>
+                </div>
+
+                <h3 class="text-base font-semibold text-white mb-3 mt-6">1.2 Dictionnaire — fiche technique d'un capteur</h3>
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="cm"># Modèle de données d'un capteur industriel</span>
+<span class="vr">capteur</span> = {
+    <span class="st">"id"</span>          : <span class="st">"TIC-101"</span>,
+    <span class="st">"type"</span>        : <span class="st">"temperature"</span>,
+    <span class="st">"valeur"</span>      : <span class="nm">85.4</span>,
+    <span class="st">"unite"</span>       : <span class="st">"°C"</span>,
+    <span class="st">"seuil_haut"</span>  : <span class="nm">90.0</span>,
+    <span class="st">"seuil_bas"</span>   : <span class="nm">20.0</span>,
+    <span class="st">"status"</span>      : <span class="st">"OK"</span>
+}
+
+<span class="kw">if</span> <span class="vr">capteur</span>[<span class="st">"valeur"</span>] > <span class="vr">capteur</span>[<span class="st">"seuil_haut"</span>]:
+    <span class="vr">capteur</span>[<span class="st">"status"</span>] = <span class="st">"ALARME HAUTE"</span>
+
+<span class="fn">print</span>(<span class="st">f"Capteur {<span class="vr">capteur</span>[<span class="st">'id'</span>]} : {<span class="vr">capteur</span>[<span class="st">'status'</span>]}"</span>)</pre>
+                </div>
+
+                <div class="glass-card p-5 rounded-xl border border-gray-800 mt-6 mb-4 overflow-x-auto">
+                    <div class="text-xs font-bold uppercase tracking-widest text-teal-400 mb-3">Types essentiels</div>
+                    <table class="w-full text-xs text-gray-400 border-collapse">
+                        <thead><tr class="border-b border-gray-800 text-gray-500"><th class="text-left py-2 pr-4">Type</th><th class="text-left py-2 pr-4">Exemple</th><th class="text-left py-2">Usage ingénierie</th></tr></thead>
+                        <tbody>
+                            <tr class="border-b border-gray-800/50"><td class="py-2 pr-4 font-semibold text-white"><code>int</code></td><td class="pr-4"><code>debit = 150</code></td><td>Compteurs, index, codes d'alarme</td></tr>
+                            <tr class="border-b border-gray-800/50"><td class="py-2 pr-4 font-semibold text-white"><code>float</code></td><td class="pr-4"><code>temp = 85.4</code></td><td>Mesures physiques, résultats de calcul</td></tr>
+                            <tr class="border-b border-gray-800/50"><td class="py-2 pr-4 font-semibold text-white"><code>bool</code></td><td class="pr-4"><code>alarme = True</code></td><td>États logiques, signaux tout-ou-rien</td></tr>
+                            <tr class="border-b border-gray-800/50"><td class="py-2 pr-4 font-semibold text-white"><code>str</code></td><td class="pr-4"><code>tag = "TIC-101"</code></td><td>Identifiants, unités, messages</td></tr>
+                            <tr class="border-b border-gray-800/50"><td class="py-2 pr-4 font-semibold text-white"><code>list</code></td><td class="pr-4"><code>[72.1, 75.3]</code></td><td>Séries temporelles de mesures</td></tr>
+                            <tr><td class="py-2 pr-4 font-semibold text-white"><code>dict</code></td><td class="pr-4"><code>{"id": "TIC"}</code></td><td>Fiche technique d'un capteur</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- AI -->
+                <div class="glass-card rounded-xl border border-teal-500/20 overflow-hidden mt-6">
+                    <div class="flex items-center gap-3 p-4 bg-teal-500/5 border-b border-gray-800">
+                        <div class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
+                        <div><div class="text-sm font-bold text-white">Assistant Pédagogique IA — digiths.ma</div><div class="text-xs text-gray-400">Questions sur les variables</div></div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 p-4 border-b border-gray-800">
+                        <button class="ai-suggest" onclick="aiAns(this,'diff_list_dict','ai1')">💡 Différence liste vs dict ?</button>
+                        <button class="ai-suggest" onclick="aiAns(this,'int_vs_float','ai1')">🔢 int ou float pour une mesure ?</button>
+                        <button class="ai-suggest" onclick="aiAns(this,'fstring','ai1')">📝 Comment marche le f-string ?</button>
+                    </div>
+                    <div class="p-4 min-h-16">
+                        <div id="ai1-empty" class="text-xs text-gray-600 italic">Sélectionnez une question…</div>
+                        <div id="ai1-bubble" class="hidden text-sm text-gray-300 leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-800">
+                    <button onclick="goSec(0)" class="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:border-teal-500 border border-gray-700 text-gray-400 hover:text-teal-400 rounded-xl text-sm transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> Intro</button>
+                    <button onclick="goSec(2)" class="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold rounded-xl text-sm transition-all">Contrôle de flux <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+
+            <!-- SECTION 2 — CONTRÔLE -->
+            <div class="sec-page" id="sec-2">
+                <h2 class="text-2xl font-black text-white mb-2" style="font-family:'Fraunces',Georgia,serif">2. Structures de contrôle</h2>
+                <p class="text-gray-400 text-sm leading-relaxed mb-5">Les boucles et conditions permettent d'analyser des séries de mesures, de détecter des anomalies et de générer des rapports d'alarmes automatiquement.</p>
+
+                <h3 class="text-base font-semibold text-white mb-3">2.1 Conditions — classification de mesures</h3>
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="kw">def</span> <span class="fn">classifier_temperature</span>(<span class="vr">temp</span>):
+    <span class="kw">if</span>   <span class="vr">temp</span> < <span class="nm">0</span>:    <span class="kw">return</span> <span class="st">"HORS PLAGE"</span>
+    <span class="kw">elif</span> <span class="vr">temp</span> < <span class="nm">40</span>:   <span class="kw">return</span> <span class="st">"BASSE"</span>
+    <span class="kw">elif</span> <span class="vr">temp</span> < <span class="nm">80</span>:   <span class="kw">return</span> <span class="st">"NORMALE"</span>
+    <span class="kw">elif</span> <span class="vr">temp</span> < <span class="nm">120</span>:  <span class="kw">return</span> <span class="st">"ATTENTION"</span>
+    <span class="kw">else</span>:             <span class="kw">return</span> <span class="st">"⚠ CRITIQUE"</span>
+
+<span class="kw">for</span> <span class="vr">t</span> <span class="kw">in</span> [<span class="op">-</span><span class="nm">5</span>, <span class="nm">25</span>, <span class="nm">65</span>, <span class="nm">95</span>, <span class="nm">135</span>]:
+    <span class="fn">print</span>(<span class="st">f"{<span class="vr">t</span>:6.1f} °C → {<span class="fn">classifier_temperature</span>(<span class="vr">t</span>)}"</span>)</pre>
+                </div>
+
+                <h3 class="text-base font-semibold text-white mb-3 mt-6">2.2 Boucle for — détection d'alarmes sur 24h</h3>
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="vr">pressions</span> = [<span class="nm">2.1</span>, <span class="nm">2.3</span>, <span class="nm">2.8</span>, <span class="nm">3.1</span>, <span class="nm">3.4</span>, <span class="nm">3.2</span>,
+              <span class="nm">3.0</span>, <span class="nm">2.7</span>, <span class="nm">2.5</span>, <span class="nm">2.4</span>, <span class="nm">2.8</span>, <span class="nm">3.1</span>]
+<span class="vr">SEUIL</span> = <span class="nm">3.0</span>
+<span class="vr">alarmes</span> = []
+
+<span class="kw">for</span> <span class="vr">heure</span>, <span class="vr">p</span> <span class="kw">in</span> <span class="fn">enumerate</span>(<span class="vr">pressions</span>):
+    <span class="kw">if</span> <span class="vr">p</span> > <span class="vr">SEUIL</span>:
+        <span class="vr">alarmes</span>.<span class="fn">append</span>((<span class="vr">heure</span>, <span class="vr">p</span>))
+
+<span class="fn">print</span>(<span class="st">f"{<span class="fn">len</span>(<span class="vr">alarmes</span>)} alarme(s) détectée(s)"</span>)
+<span class="kw">for</span> <span class="vr">h</span>, <span class="vr">p</span> <span class="kw">in</span> <span class="vr">alarmes</span>:
+    <span class="fn">print</span>(<span class="st">f"  H+{<span class="vr">h</span>:02d}h : {<span class="vr">p</span>} bar"</span>)</pre>
+                </div>
+
+                <div class="p-4 rounded-xl bg-amber-500/8 border border-amber-500/20 flex gap-3 mt-5">
+                    <span class="text-lg">⚡</span>
+                    <p class="text-sm text-gray-300 leading-relaxed"><span class="text-amber-400 font-semibold">Bonne pratique :</span> nommez les seuils en MAJUSCULES (<code>SEUIL_HAUT = 90.0</code>). Évitez les "nombres magiques" directement dans le code.</p>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-800">
+                    <button onclick="goSec(1)" class="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gray-700 text-gray-400 hover:text-teal-400 rounded-xl text-sm transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> Variables</button>
+                    <button onclick="goSec(3)" class="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold rounded-xl text-sm transition-all">Fonctions <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+
+            <!-- SECTION 3 — FONCTIONS -->
+            <div class="sec-page" id="sec-3">
+                <h2 class="text-2xl font-black text-white mb-2" style="font-family:'Fraunces',Georgia,serif">3. Fonctions</h2>
+                <p class="text-gray-400 text-sm leading-relaxed mb-5">Une fonction encapsule une logique réutilisable. En ingénierie, on s'en sert pour les conversions d'unités, le traitement du signal, les vérifications de seuils.</p>
+
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="kw">def</span> <span class="fn">calculer_statistiques</span>(<span class="vr">mesures</span>, <span class="vr">unite</span>=<span class="st">"°C"</span>, <span class="vr">dec</span>=<span class="nm">2</span>):
+    <span class="st">"""
+    Statistiques d'une série de mesures capteur.
+    Args:
+        mesures (list): Valeurs numériques
+        unite   (str) : Unité physique
+        dec     (int) : Décimales à afficher
+    Returns:
+        dict: min, max, moyenne, plage
+    """</span>
+    <span class="vr">n</span>   = <span class="fn">len</span>(<span class="vr">mesures</span>)
+    <span class="vr">moy</span> = <span class="fn">sum</span>(<span class="vr">mesures</span>) / <span class="vr">n</span>
+    <span class="kw">return</span> {
+        <span class="st">"min"</span>    : <span class="fn">round</span>(<span class="fn">min</span>(<span class="vr">mesures</span>), <span class="vr">dec</span>),
+        <span class="st">"max"</span>    : <span class="fn">round</span>(<span class="fn">max</span>(<span class="vr">mesures</span>), <span class="vr">dec</span>),
+        <span class="st">"moyenne"</span>: <span class="fn">round</span>(<span class="vr">moy</span>, <span class="vr">dec</span>),
+        <span class="st">"plage"</span>  : <span class="fn">round</span>(<span class="fn">max</span>(<span class="vr">mesures</span>)<span class="op">-</span><span class="fn">min</span>(<span class="vr">mesures</span>), <span class="vr">dec</span>)
+    }
+
+<span class="vr">temps</span> = [<span class="nm">72.1</span>, <span class="nm">75.3</span>, <span class="nm">80.6</span>, <span class="nm">85.4</span>, <span class="nm">83.2</span>]
+<span class="vr">stats</span> = <span class="fn">calculer_statistiques</span>(<span class="vr">temps</span>)
+<span class="fn">print</span>(<span class="vr">stats</span>)  <span class="cm"># {'min': 72.1, 'max': 85.4, ...}</span></pre>
+                </div>
+
+                <h3 class="text-base font-semibold text-white mt-6 mb-3">Lambdas — conversions d'unités</h3>
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="vr">bar_to_psi</span>   = <span class="kw">lambda</span> b: b * <span class="nm">14.5038</span>
+<span class="vr">celsius_to_k</span> = <span class="kw">lambda</span> c: c + <span class="nm">273.15</span>
+<span class="vr">lpm_to_m3h</span>  = <span class="kw">lambda</span> l: l * <span class="nm">0.06</span>
+
+<span class="vr">p_bar</span> = [<span class="nm">1.5</span>, <span class="nm">2.0</span>, <span class="nm">2.5</span>, <span class="nm">3.0</span>]
+<span class="vr">p_psi</span> = <span class="fn">list</span>(<span class="fn">map</span>(<span class="vr">bar_to_psi</span>, <span class="vr">p_bar</span>))
+<span class="cm"># → [21.76, 29.01, 36.26, 43.51]</span></pre>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-800">
+                    <button onclick="goSec(2)" class="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gray-700 text-gray-400 hover:text-teal-400 rounded-xl text-sm transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> Contrôle</button>
+                    <button onclick="goSec(4)" class="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold rounded-xl text-sm transition-all">POO <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+
+            <!-- SECTION 4 — POO -->
+            <div class="sec-page" id="sec-4">
+                <h2 class="text-2xl font-black text-white mb-2" style="font-family:'Fraunces',Georgia,serif">4. Programmation Orientée Objet</h2>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">La POO permet de modéliser des objets du monde réel — capteurs, vannes, contrôleurs — en regroupant leurs données et comportements dans une seule entité.</p>
+
+                <div class="p-4 rounded-xl bg-teal-500/8 border border-teal-500/20 flex gap-3 mb-5">
+                    <span class="text-lg">🏭</span>
+                    <p class="text-sm text-gray-300"><span class="text-teal-400 font-semibold">Analogie industrielle :</span> une classe Python est le schéma (P&amp;ID) d'un capteur. Chaque instance est un capteur physique installé sur le terrain.</p>
+                </div>
+
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="kw">class</span> <span class="fn">Capteur</span>:
+    <span class="vr">nb_capteurs</span> = <span class="nm">0</span>  <span class="cm"># attribut de classe</span>
+
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, <span class="vr">id</span>, <span class="vr">unite</span>, <span class="vr">seuil_haut</span>):
+        <span class="kw">self</span>.<span class="vr">id</span>         = <span class="vr">id</span>
+        <span class="kw">self</span>.<span class="vr">unite</span>       = <span class="vr">unite</span>
+        <span class="kw">self</span>.<span class="vr">seuil_haut</span>  = <span class="vr">seuil_haut</span>
+        <span class="kw">self</span>.<span class="vr">historique</span>  = []
+        <span class="fn">Capteur</span>.<span class="vr">nb_capteurs</span> += <span class="nm">1</span>
+
+    <span class="kw">def</span> <span class="fn">lire</span>(<span class="kw">self</span>, <span class="vr">valeur</span>):
+        <span class="kw">self</span>.<span class="vr">historique</span>.<span class="fn">append</span>(<span class="vr">valeur</span>)
+        <span class="kw">if</span> <span class="vr">valeur</span> > <span class="kw">self</span>.<span class="vr">seuil_haut</span>:
+            <span class="fn">print</span>(<span class="st">f"⚠ ALARME {<span class="kw">self</span>.<span class="vr">id</span>}: {<span class="vr">valeur</span>} {<span class="kw">self</span>.<span class="vr">unite</span>}"</span>)
+
+    <span class="kw">def</span> <span class="fn">moyenne</span>(<span class="kw">self</span>):
+        <span class="kw">return</span> <span class="fn">sum</span>(<span class="kw">self</span>.<span class="vr">historique</span>) / <span class="fn">len</span>(<span class="kw">self</span>.<span class="vr">historique</span>)
+
+<span class="vr">t101</span> = <span class="fn">Capteur</span>(<span class="st">"TIC-101"</span>, <span class="st">"°C"</span>, <span class="nm">90.0</span>)
+<span class="vr">t101</span>.<span class="fn">lire</span>(<span class="nm">85.4</span>)
+<span class="vr">t101</span>.<span class="fn">lire</span>(<span class="nm">92.1</span>)  <span class="cm"># → ⚠ ALARME</span>
+<span class="fn">print</span>(<span class="st">f"Moy: {<span class="vr">t101</span>.<span class="fn">moyenne</span>():.2f} °C"</span>)</pre>
+                </div>
+
+                <h3 class="text-base font-semibold text-white mt-6 mb-3">Héritage — CapteurTemperature</h3>
+                <div class="code-wrap">
+                    <div class="code-hdr"><span class="code-lang">python</span><button class="copy-btn" onclick="copyCode(this)">Copier</button></div>
+                    <pre><span class="kw">class</span> <span class="fn">CapteurTemperature</span>(<span class="fn">Capteur</span>):
+    <span class="kw">def</span> <span class="fn">__init__</span>(<span class="kw">self</span>, <span class="vr">id</span>, <span class="vr">seuil_haut</span>=<span class="nm">150.0</span>):
+        <span class="fn">super</span>().<span class="fn">__init__</span>(<span class="vr">id</span>, <span class="st">"°C"</span>, <span class="vr">seuil_haut</span>)
+
+    <span class="kw">def</span> <span class="fn">en_fahrenheit</span>(<span class="kw">self</span>, <span class="vr">v</span>): <span class="kw">return</span> <span class="vr">v</span> * <span class="nm">9</span>/<span class="nm">5</span> + <span class="nm">32</span>
+    <span class="kw">def</span> <span class="fn">en_kelvin</span>(<span class="kw">self</span>, <span class="vr">v</span>):    <span class="kw">return</span> <span class="vr">v</span> + <span class="nm">273.15</span>
+
+<span class="vr">tc</span> = <span class="fn">CapteurTemperature</span>(<span class="st">"TT-105"</span>)
+<span class="fn">print</span>(<span class="vr">tc</span>.<span class="fn">en_fahrenheit</span>(<span class="nm">85.4</span>))  <span class="cm"># 185.72 °F</span></pre>
+                </div>
+
+                <!-- AI -->
+                <div class="glass-card rounded-xl border border-teal-500/20 overflow-hidden mt-6">
+                    <div class="flex items-center gap-3 p-4 bg-teal-500/5 border-b border-gray-800">
+                        <div class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></div>
+                        <div><div class="text-sm font-bold text-white">Assistant Pédagogique IA — digiths.ma</div><div class="text-xs text-gray-400">Questions sur la POO</div></div>
+                    </div>
+                    <div class="flex flex-wrap gap-2 p-4 border-b border-gray-800">
+                        <button class="ai-suggest" onclick="aiAns(this,'self_meaning','ai4')">🤔 Pourquoi écrire <code>self</code> ?</button>
+                        <button class="ai-suggest" onclick="aiAns(this,'heritage_why','ai4')">🏗 Quand utiliser l'héritage ?</button>
+                        <button class="ai-suggest" onclick="aiAns(this,'class_vs_dict','ai4')">📦 Classe vs dictionnaire ?</button>
+                    </div>
+                    <div class="p-4 min-h-16">
+                        <div id="ai4-empty" class="text-xs text-gray-600 italic">Sélectionnez une question…</div>
+                        <div id="ai4-bubble" class="hidden text-sm text-gray-300 leading-relaxed"></div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-800">
+                    <button onclick="goSec(3)" class="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gray-700 text-gray-400 hover:text-teal-400 rounded-xl text-sm transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> Fonctions</button>
+                    <button onclick="goSec(5)" class="flex items-center gap-2 px-5 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-900 font-bold rounded-xl text-sm transition-all">Quiz <i data-lucide="arrow-right" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+
+            <!-- SECTION 5 — QUIZ -->
+            <div class="sec-page" id="sec-5">
+                <h2 class="text-2xl font-black text-white mb-2" style="font-family:'Fraunces',Georgia,serif">Quiz & Exercices</h2>
+                <p class="text-gray-400 text-sm mb-6">5 questions sur les fondamentaux Python pour l'ingénieur.</p>
+
+                <!-- Q1 -->
+                <div class="glass-card p-6 rounded-xl border border-gray-800 mb-4">
+                    <div class="text-sm font-bold text-white mb-4"><span class="inline-block bg-teal-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded mr-2">Q1</span>Quelle est la bonne façon de stocker les mesures horaires d'un capteur PT100 ?</div>
+                    <div class="space-y-2">
+                        <div class="quiz-opt" onclick="qa(this,1,'A')"><span class="opt-key">A</span>Une variable <code>temp = 72.1</code> mise à jour à chaque lecture</div>
+                        <div class="quiz-opt" onclick="qa(this,1,'B')"><span class="opt-key">B</span>Une liste <code>temperatures = [72.1, 75.3, …]</code></div>
+                        <div class="quiz-opt" onclick="qa(this,1,'C')"><span class="opt-key">C</span>Un entier <code>temp = 72</code> (sans décimale)</div>
+                        <div class="quiz-opt" onclick="qa(this,1,'D')"><span class="opt-key">D</span>Une chaîne <code>temp = "72.1"</code></div>
+                    </div>
+                    <div class="hidden mt-3 p-3 rounded-lg text-xs leading-relaxed" id="qfb-1"></div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="glass-card p-6 rounded-xl border border-gray-800 mb-4">
+                    <div class="text-sm font-bold text-white mb-4"><span class="inline-block bg-teal-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded mr-2">Q2</span>Quelle structure est la mieux adaptée pour stocker la fiche technique d'un capteur ?</div>
+                    <div class="space-y-2">
+                        <div class="quiz-opt" onclick="qa(this,2,'A')"><span class="opt-key">A</span>Une liste Python</div>
+                        <div class="quiz-opt" onclick="qa(this,2,'B')"><span class="opt-key">B</span>Un tuple immuable</div>
+                        <div class="quiz-opt" onclick="qa(this,2,'C')"><span class="opt-key">C</span>Un dictionnaire Python</div>
+                        <div class="quiz-opt" onclick="qa(this,2,'D')"><span class="opt-key">D</span>Une chaîne formatée</div>
+                    </div>
+                    <div class="hidden mt-3 p-3 rounded-lg text-xs leading-relaxed" id="qfb-2"></div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="glass-card p-6 rounded-xl border border-gray-800 mb-4">
+                    <div class="text-sm font-bold text-white mb-4"><span class="inline-block bg-teal-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded mr-2">Q3</span>Que retourne <code>enumerate([85.4, 72.1, 91.0])</code> lors d'une itération ?</div>
+                    <div class="space-y-2">
+                        <div class="quiz-opt" onclick="qa(this,3,'A')"><span class="opt-key">A</span>Les valeurs uniquement : 85.4, 72.1, 91.0</div>
+                        <div class="quiz-opt" onclick="qa(this,3,'B')"><span class="opt-key">B</span>Les indices uniquement : 0, 1, 2</div>
+                        <div class="quiz-opt" onclick="qa(this,3,'C')"><span class="opt-key">C</span>Des paires (indice, valeur) : (0, 85.4), (1, 72.1) …</div>
+                        <div class="quiz-opt" onclick="qa(this,3,'D')"><span class="opt-key">D</span>Un dictionnaire {0: 85.4, …}</div>
+                    </div>
+                    <div class="hidden mt-3 p-3 rounded-lg text-xs leading-relaxed" id="qfb-3"></div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="glass-card p-6 rounded-xl border border-gray-800 mb-4">
+                    <div class="text-sm font-bold text-white mb-4"><span class="inline-block bg-teal-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded mr-2">Q4</span>Dans une classe Python, à quoi sert le paramètre <code>self</code> ?</div>
+                    <div class="space-y-2">
+                        <div class="quiz-opt" onclick="qa(this,4,'A')"><span class="opt-key">A</span>C'est un mot-clé Python obligatoire sans signification</div>
+                        <div class="quiz-opt" onclick="qa(this,4,'B')"><span class="opt-key">B</span>Il fait référence à l'instance courante de la classe</div>
+                        <div class="quiz-opt" onclick="qa(this,4,'C')"><span class="opt-key">C</span>Il représente la classe elle-même, pas l'instance</div>
+                        <div class="quiz-opt" onclick="qa(this,4,'D')"><span class="opt-key">D</span>Il est facultatif et peut être omis</div>
+                    </div>
+                    <div class="hidden mt-3 p-3 rounded-lg text-xs leading-relaxed" id="qfb-4"></div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="glass-card p-6 rounded-xl border border-gray-800 mb-4">
+                    <div class="text-sm font-bold text-white mb-4"><span class="inline-block bg-teal-500 text-slate-900 text-xs font-bold px-2 py-0.5 rounded mr-2">Q5</span>Quelle est la valeur de <code>bar_to_psi = lambda b: b * 14.5038</code> pour <code>bar_to_psi(3.0)</code> ?</div>
+                    <div class="space-y-2">
+                        <div class="quiz-opt" onclick="qa(this,5,'A')"><span class="opt-key">A</span>3.0 bar</div>
+                        <div class="quiz-opt" onclick="qa(this,5,'B')"><span class="opt-key">B</span>43.51 psi</div>
+                        <div class="quiz-opt" onclick="qa(this,5,'C')"><span class="opt-key">C</span>14.50 psi</div>
+                        <div class="quiz-opt" onclick="qa(this,5,'D')"><span class="opt-key">D</span>0.207 bar</div>
+                    </div>
+                    <div class="hidden mt-3 p-3 rounded-lg text-xs leading-relaxed" id="qfb-5"></div>
+                </div>
+
+                <div id="quiz-result" class="hidden glass-card p-6 rounded-xl border border-teal-500/30 text-center mb-8">
+                    <div class="text-3xl font-black text-teal-400" id="quiz-score"></div>
+                    <p id="quiz-msg" class="text-sm text-gray-400 mt-2"></p>
+                </div>
+
+                <!-- EXERCISES -->
+                <h2 class="text-xl font-black text-white mt-8 mb-4" style="font-family:'Fraunces',Georgia,serif">Exercices pratiques</h2>
+                <div class="space-y-4">
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-green-500 border border-gray-800">
+                        <div class="flex gap-2 items-center mb-2"><span class="text-xs font-bold px-2 py-0.5 rounded bg-green-500/15 text-green-400">⭐ Débutant</span><span class="text-sm font-semibold text-white">Analyse de pressions</span></div>
+                        <p class="text-xs text-gray-400 leading-relaxed">Créez une liste <code>pressions</code> de 12 valeurs simulées (1.5–4.5 bar). Calculez manuellement : minimum, maximum, moyenne et nombre de dépassements du seuil de 3.0 bar.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-amber-500 border border-gray-800">
+                        <div class="flex gap-2 items-center mb-2"><span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/15 text-amber-400">⭐⭐ Intermédiaire</span><span class="text-sm font-semibold text-white">Filtre outliers k-sigma</span></div>
+                        <p class="text-xs text-gray-400 leading-relaxed">Écrivez une fonction <code>filtrer_outliers(mesures, k=2)</code> qui supprime les valeurs à plus de k écarts-types de la moyenne. Testez-la sur une série avec 3 anomalies injectées.</p>
+                    </div>
+                    <div class="glass-card p-5 rounded-xl border-l-4 border-red-500 border border-gray-800">
+                        <div class="flex gap-2 items-center mb-2"><span class="text-xs font-bold px-2 py-0.5 rounded bg-red-500/15 text-red-400">⭐⭐⭐ Avancé</span><span class="text-sm font-semibold text-white">Régulateur PID</span></div>
+                        <p class="text-xs text-gray-400 leading-relaxed">Implémentez une classe <code>RegulateurPID</code> avec <code>Kp</code>, <code>Ki</code>, <code>Kd</code> et une méthode <code>calculer(setpoint, mesure, dt)</code>. Simulez une régulation de température sur 100 pas de temps.</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-8 pt-6 border-t border-gray-800">
+                    <button onclick="goSec(4)" class="flex items-center gap-2 px-4 py-2 bg-slate-800 border border-gray-700 text-gray-400 hover:text-teal-400 rounded-xl text-sm transition-all"><i data-lucide="arrow-left" class="w-4 h-4"></i> POO</button>
+                    <button onclick="goSec(0)" class="flex items-center gap-2 px-5 py-2.5 bg-slate-700 hover:bg-teal-500 hover:text-slate-900 text-gray-300 font-bold rounded-xl text-sm transition-all"><i data-lucide="rotate-ccw" class="w-4 h-4"></i> Recommencer</button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gray-800 py-8 mt-4">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+            <div>© 2026 <span class="text-teal-400 font-semibold">digiths.ma</span> — Académie AI & Digital Twins</div>
+            <a href="cours.html" class="flex items-center gap-1.5 hover:text-teal-400 transition-colors"><i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Retour aux cours</a>
+        </div>
+    </footer>
+
+    <script>
+    lucide.createIcons();
+
+    // ── STATE
+    let cur = 0;
+    const N = 6;
+    const visited = new Set([0]);
+    const qAnswers = {1:'B',2:'C',3:'C',4:'B',5:'B'};
+    const qOk  = {1:"✓ Une <strong>liste</strong> conserve l'ordre et l'historique complet des mesures.",2:"✓ Le <strong>dictionnaire</strong> associe des clés nommées — idéal pour une fiche technique.",3:"✓ <code>enumerate()</code> retourne des <strong>paires (indice, valeur)</strong> — essentiel pour les séries temporelles.",4:"✓ <code>self</code> désigne l'<strong>instance courante</strong> : Python l'utilise pour passer la référence de l'objet à chaque méthode.",5:"✓ 3.0 × 14.5038 = <strong>43.51 psi</strong>."};
+    const qBad = {1:"✗ Une variable simple perd la valeur précédente. Il faut une liste pour conserver l'historique.",2:"✗ Une liste n'a pas de clés nommées. Le dictionnaire est plus adapté pour une fiche technique.",3:"✗ <code>enumerate()</code> retourne toujours les DEUX : l'indice ET la valeur.",4:"✗ <code>self</code> n'est pas une convention sans signification : Python l'utilise pour passer automatiquement la référence de l'objet.",5:"✗ Relisez la formule : 3.0 × 14.5038 = 43.51 psi, pas 14.50."};
+    const qDone = new Set();
+
+    const aiR = {
+        diff_list_dict:`Une <strong>liste</strong> stocke des éléments dans un <strong>ordre précis</strong> : parfaite pour une série temporelle de mesures.<br><br>Un <strong>dictionnaire</strong> associe chaque valeur à une <strong>clé nommée</strong> : idéal pour une fiche technique avec des champs hétérogènes comme <code>"id"</code>, <code>"unite"</code>, <code>"seuil_haut"</code>.`,
+        int_vs_float:`Pour une mesure physique (température, pression, débit), utilisez toujours <strong>float</strong> : les capteurs retournent des décimales significatives.<br><br>Réservez <strong>int</strong> aux compteurs, index et codes discrets.`,
+        fstring:`Un <strong>f-string</strong> permet d'insérer des variables directement :<br><br><code>f"Température : {temp:.2f} °C"</code><br>→ <em>"Température : 85.40 °C"</em><br><br>La syntaxe <code>{var:.2f}</code> formate en 2 décimales.`,
+        self_meaning:`<code>self</code> désigne l'<strong>instance courante</strong>. Quand vous écrivez <code>t101.lire(85.4)</code>, Python traduit en <code>Capteur.lire(t101, 85.4)</code>.<br><br>Sans <code>self</code>, la méthode ne saurait pas de quel capteur modifier les données.`,
+        heritage_why:`L'héritage sert à créer une <strong>version spécialisée</strong> d'une classe. <code>CapteurTemperature</code> hérite de <code>Capteur</code> et ajoute les conversions °C→°F/K sans dupliquer le code commun.`,
+        class_vs_dict:`Un <strong>dictionnaire</strong> stocke des données mais n'a pas de comportement.<br>Une <strong>classe</strong> regroupe données ET méthodes : la logique d'alarme, d'historique et de stats est <em>encapsulée</em> dans l'objet.`
+    };
+
+    function goSec(n){
+        document.getElementById('sec-'+cur)?.classList.remove('visible');
+        document.querySelectorAll('.nav-item').forEach(el=>{
+            const s=parseInt(el.dataset.sec);
+            el.classList.toggle('active',s===n);
+            if(visited.has(s)&&s!==n) el.classList.add('done'); else if(s!==n) el.classList.remove('done');
+        });
+        cur=n; visited.add(n);
+        document.getElementById('sec-'+n)?.classList.add('visible');
+        window.scrollTo(0,0);
+        updateProg();
+    }
+    function updateProg(){
+        const pct=Math.round(visited.size/N*100);
+        const el=document.getElementById('hdrProgress');
+        const tx=document.getElementById('hdrProgressTxt');
+        if(el) el.style.width=pct+'%';
+        if(tx) tx.textContent=visited.size+'/'+N;
+    }
+    updateProg();
+
+    function copyCode(btn){
+        const pre=btn.closest('.code-wrap').querySelector('pre');
+        const txt=pre.innerText||pre.textContent;
+        try{ navigator.clipboard.writeText(txt).then(()=>{btn.textContent='✓ Copié';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copier';btn.classList.remove('copied')},1800)}).catch(()=>sel(pre,btn)) }
+        catch(e){ sel(pre,btn) }
+    }
+    function sel(pre,btn){ const r=document.createRange();r.selectNodeContents(pre);const s=window.getSelection();s.removeAllRanges();s.addRange(r);btn.textContent='✓ Sélectionné';btn.classList.add('copied');setTimeout(()=>{btn.textContent='Copier';btn.classList.remove('copied')},1800) }
+
+    function qa(el,q,c){
+        if(qDone.has(q)) return; qDone.add(q);
+        const ok=qAnswers[q];
+        el.parentElement.querySelectorAll('.quiz-opt').forEach(o=>{
+            const k=o.querySelector('.opt-key').textContent.trim();
+            if(k===ok) o.classList.add('correct');
+            if(k===c&&c!==ok) o.classList.add('wrong');
+        });
+        const fb=document.getElementById('qfb-'+q);
+        if(c===ok){ fb.className='mt-3 p-3 rounded-lg text-xs leading-relaxed bg-green-500/10 border border-green-500/20 text-green-300'; fb.innerHTML=qOk[q] }
+        else { fb.className='mt-3 p-3 rounded-lg text-xs leading-relaxed bg-red-500/8 border border-red-500/20 text-red-300'; fb.innerHTML=qBad[q] }
+        fb.classList.remove('hidden');
+        if(qDone.size===5) setTimeout(()=>{
+            let sc=0; qDone.forEach(n=>{const f=document.getElementById('qfb-'+n);if(f&&f.classList.contains('text-green-300'))sc++});
+            const r=document.getElementById('quiz-result');
+            document.getElementById('quiz-score').textContent=sc+' / 5';
+            document.getElementById('quiz-msg').textContent=sc===5?'🎉 Excellent ! Vous maîtrisez les bases Python pour l\'ingénieur.':sc>=3?'👍 Bien ! Relisez les sections sur les structures de données et la POO.':'📚 Recommencez le module depuis les variables.';
+            r.classList.remove('hidden'); r.scrollIntoView({behavior:'smooth',block:'center'});
+        },400);
+    }
+
+    function aiAns(btn,key,id){
+        document.getElementById(id+'-empty')?.classList.add('hidden');
+        const b=document.getElementById(id+'-bubble');
+        if(b){ b.classList.remove('hidden'); b.innerHTML=aiR[key]||'Réponse à venir…' }
+        btn.style.borderColor='#2dd4bf'; btn.style.color='#2dd4bf'; btn.style.background='rgba(45,212,191,0.08)';
+    }
+    </script>
+</body>
+</html>
