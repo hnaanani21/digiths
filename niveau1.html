@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>digiths.ma | Niveau 01 — Python for Engineering & Data Analysis</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa', 100: '#ccfbf1', 400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488', 900: '#134e4a', cyan: '#06b6d4', emerald: '#10b981'
+                        }
+                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f17; color: #f3f4f6; overflow-x: hidden; }
+        .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .gradient-text { background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="bg-[#0b0f17] text-gray-100 antialiased">
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-card border-b border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-cyan-500 flex items-center justify-center text-slate-900 font-extrabold text-xl">d</div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-white">digiths<span class="text-brand-400">.ma</span></span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Académie & Formations</span>
+                </div>
+            </a>
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-300">
+                <a href="index.html" class="hover:text-brand-400 transition-colors">Accueil</a>
+                <a href="cours.html" class="text-brand-400 font-semibold flex items-center gap-1.5">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    Cours & Académie
+                </a>
+            </nav>
+            <div class="flex items-center gap-2">
+                <a href="cours.html" class="px-3 py-1.5 rounded-lg bg-slate-800 text-gray-300 hover:text-white text-xs font-semibold border border-gray-700 flex items-center gap-1">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Retour aux niveaux
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="pt-36 pb-12 relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="px-3 py-1 rounded-lg bg-brand-500/10 text-brand-400 font-mono text-sm font-bold">Niveau 01</span>
+                <span class="px-3 py-1 rounded-full bg-slate-800 text-brand-300 border border-brand-500/20 text-xs font-semibold uppercase tracking-wider">Beginner</span>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight mb-4">
+                Python for <span class="gradient-text">Engineering & Data Analysis</span>
+            </h1>
+            <p class="text-gray-300 text-base sm:text-lg leading-relaxed">
+                Essential basics: Python programming, NumPy, Pandas, and visualization for IoT sensors. Ce module pose les fondations indispensables pour automatiser l'analyse de vos données industrielles.
+            </p>
+        </div>
+    </section>
+
+    <!-- SYLLABUS DÉTAILLÉ -->
+    <section class="py-8 relative">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            
+            <!-- Chapitre 1 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+                <div class="flex items-center gap-3 text-brand-400 font-mono text-sm font-bold mb-3">
+                    <i data-lucide="code" class="w-5 h-5"></i> Module 1.1
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Programmation Python Fondamentale pour l'Ingénieur</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                    Apprentissage de la syntaxe, des structures de données natives et des concepts fondamentaux de la programmation orientée objet appliqués à la simulation.
+                </p>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1.5 font-mono bg-slate-950/60 p-4 rounded-xl border border-gray-800">
+                    <li>Variables, types scalaires et structures conditionnelles (if/elif/else).</li>
+                    <li>Boucles (for, while) et compréhension de listes (list comprehensions).</li>
+                    <li>Fonctions, portée des variables et gestion des exceptions (try/except).</li>
+                    <li>Introduction à la POO : classes, attributs et méthodes pour modéliser des capteurs.</li>
+                </ul>
+            </div>
+
+            <!-- Chapitre 2 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+                <div class="flex items-center gap-3 text-cyan-400 font-mono text-sm font-bold mb-3">
+                    <i data-lucide="cpu" class="w-5 h-5"></i> Module 1.2
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Calcul Numérique Haute Performance avec NumPy</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                    Manipulation de tableaux multidimensionnels et accélération des calculs mathématiques et statistiques sur de larges volumes de mesures.
+                </p>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1.5 font-mono bg-slate-950/60 p-4 rounded-xl border border-gray-800">
+                    <li>Création et manipulation de tableaux `ndarray` (1D, 2D, 3D).</li>
+                    <li>Indexation, découpage (slicing) et masquage booléen pour le filtrage de signaux.</li>
+                    <li>Opérations vectorisées et fonctions universelles (ufuncs) pour éviter les boucles lentes.</li>
+                    <li>Statistiques descriptives de base (moyenne, écart-type, percentiles sur flux capteurs).</li>
+                </ul>
+            </div>
+
+            <!-- Chapitre 3 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+                <div class="flex items-center gap-3 text-emerald-400 font-mono text-sm font-bold mb-3">
+                    <i data-lucide="database" class="w-5 h-5"></i> Module 1.3
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Manipulation de Données Industrielles avec Pandas</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                    Structurez, nettoyez et fusionnez des jeux de données complexes issus de multiples capteurs IoT et de fichiers de logs.
+                </p>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1.5 font-mono bg-slate-950/60 p-4 rounded-xl border border-gray-800">
+                    <li>Structures de données : `Series` et `DataFrame`.</li>
+                    <li>Importation et exportation de données (CSV, Excel, bases SQL, fichiers de logs).</li>
+                    <li>Nettoyage de données : gestion des valeurs manquantes (`NaN`) et des anomalies de capteurs.</li>
+                    <li>Séries temporelles (`DatetimeIndex`) et rééchantillonnage (resampling) des données IoT.</li>
+                </ul>
+            </div>
+
+            <!-- Chapitre 4 -->
+            <div class="glass-card p-8 rounded-3xl border border-gray-800">
+                <div class="flex items-center gap-3 text-purple-400 font-mono text-sm font-bold mb-3">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Module 1.4
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">Visualisation Scientifique pour l'Ingénierie</h3>
+                <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                    Traduisez vos analyses numériques en graphiques clairs et professionnels pour les rapports techniques et la supervision.
+                </p>
+                <ul class="list-disc list-inside text-xs text-gray-300 space-y-1.5 font-mono bg-slate-950/60 p-4 rounded-xl border border-gray-800">
+                    <li>Fondamentaux de Matplotlib : courbes temporelles, nuages de points et sous-graphiques (`subplots`).</li>
+                    <li>Personnalisation avancée : échelles logarithmiques, grilles, annotations et seuils d'alerte.</li>
+                    <li>Exploration statistique avec Seaborn : matrices de corrélation et distributions de variables.</li>
+                    <li>Génération de rapports graphiques automatisés pour la maintenance.</li>
+                </ul>
+            </div>
+
+            <!-- WIDGET INTERACTIF : ASSISTANT IA -->
+            <div class="glass-card p-8 rounded-3xl border border-brand-500/30 bg-slate-900/40">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/20 text-brand-400 flex items-center justify-center">
+                        <i data-lucide="bot" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-base font-bold text-white">Assistant Pédagogique IA — digiths.ma</h4>
+                        <p class="text-xs text-gray-400">Besoin d'éclaircissements sur le syllabus du Niveau 01 ? Cliquez ci-dessous :</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2 mb-4">
+                    <button onclick="askAITutor('numpy')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-brand-500/20 text-xs text-gray-300 hover:text-brand-300 border border-gray-700 transition">
+                        💡 Pourquoi utiliser NumPy plutôt que les listes Python ?
+                    </button>
+                    <button onclick="askAITutor('pandas')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-brand-500/20 text-xs text-gray-300 hover:text-brand-300 border border-gray-700 transition">
+                        📊 Comment Pandas gère-t-il les séries temporelles IoT ?
+                    </button>
+                    <button onclick="askAITutor('project')" class="px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-brand-500/20 text-xs text-gray-300 hover:text-brand-300 border border-gray-700 transition">
+                        🛠️ Quel est le projet pratique de ce niveau ?
+                    </button>
+                </div>
+
+                <div id="aiResponseBox" class="hidden p-5 rounded-2xl bg-slate-950 border border-brand-500/20 text-xs text-gray-300 leading-relaxed font-mono">
+                    <!-- Réponse dynamique -->
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 bg-slate-950 border-t border-gray-800 text-center text-xs text-gray-500 mt-20">
+        <p>© 2026 digiths.ma • Académie AI & Digital Twins</p>
+    </footer>
+
+    <!-- SCRIPT DU TUTEUR IA -->
+    <script>
+        const explanations = {
+            numpy: "🔍 **NumPy vs Listes Python :**\nLes listes Python stockent des pointeurs vers des objets dispersés en mémoire, ce qui ralentit les calculs. **NumPy** utilise des blocs de mémoire contigus et des types homogènes, permettant l'exécution de code en C optimisé (vectorisation) pour traiter des millions de données de capteurs instantanément.",
+            pandas: "📊 **Séries Temporelles avec Pandas :**\nGrâce au `DatetimeIndex`, Pandas permet d'indexer, de filtrer par plage de dates (ex: extraire les données entre 8h et 12h) et d'effectuer un rééchantillonnage (`resample`) pour transformer un flux de mesures seconde par seconde en moyennes horaires.",
+            project: "🛠️ **Projet Pratique du Niveau 01 :**\nDéveloppement d'un script d'ingénierie complet qui ingère des fichiers de logs bruts de température/pression, élimine les valeurs aberrantes de capteurs défectueux, calcule les moyennes mobiles et trace automatiquement un dashboard d'analyse."
+        };
+
+        function askAITutor(topic) {
+            const box = document.getElementById('aiResponseBox');
+            box.classList.remove('hidden');
+            box.innerHTML = "<span class='text-brand-400 animate-pulse'>Génération de l'explication...</span>";
+            
+            setTimeout(() => {
+                box.innerHTML = explanations[topic].replace(/\n/g, '<br>');
+            }, 300);
+        }
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>

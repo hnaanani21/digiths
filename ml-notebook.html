@@ -1,0 +1,1455 @@
+<title>ML Notebook — DigitHS</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+<style>
+:root {
+  --bg: #f8fafc;
+  --bg2: #ffffff;
+  --sidebar-bg: #0b0f17;
+  --fg: #1e293b;
+  --fg2: #64748b;
+  --accent: #2dd4bf;
+  --accent-dim: #0d9488;
+  --border: #e2e8f0;
+  --code-bg: #0f172a;
+  --code-fg: #e2e8f0;
+  --tab-active: #2dd4bf;
+  --sidebar-w: 240px;
+  --header-h: 56px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0f17;
+    --bg2: #111827;
+    --fg: #f1f5f9;
+    --fg2: #94a3b8;
+    --border: #1e293b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0f17;
+  --bg2: #111827;
+  --fg: #f1f5f9;
+  --fg2: #94a3b8;
+  --border: #1e293b;
+  color-scheme: dark;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:'Inter',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--fg);
+  display:flex;
+  flex-direction:column;
+  height:100%;
+  overflow:hidden;
+}
+a{color:inherit;text-decoration:none}
+
+/* HEADER */
+header{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--header-h);
+  background:var(--sidebar-bg);
+  display:flex;align-items:center;
+  padding:0 1rem 0 calc(var(--sidebar-w) + 1rem);
+  z-index:100;
+  border-bottom:1px solid #1e293b;
+}
+.logo{
+  font-weight:700;font-size:1.1rem;
+  color:var(--accent);letter-spacing:.02em;
+}
+.logo span{color:#fff}
+header nav{margin-left:auto;display:flex;gap:.5rem}
+header nav a{
+  padding:.4rem .75rem;border-radius:6px;
+  font-size:.85rem;color:#94a3b8;
+  transition:background .15s,color .15s;
+}
+header nav a:hover{background:#1e293b;color:#fff}
+.theme-btn{
+  background:none;border:1px solid #334155;
+  color:#94a3b8;border-radius:6px;
+  padding:.35rem .6rem;cursor:pointer;font-size:.8rem;
+  transition:border-color .15s,color .15s;
+}
+.theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+  margin-top:var(--header-h);
+  height:calc(100% - var(--header-h));
+}
+
+/* SIDEBAR */
+aside{
+  width:var(--sidebar-w);
+  min-width:var(--sidebar-w);
+  background:var(--sidebar-bg);
+  overflow-y:auto;
+  border-right:1px solid #1e293b;
+  padding:.75rem 0;
+  flex-shrink:0;
+}
+.sidebar-section{margin-bottom:.25rem}
+.sidebar-section-title{
+  font-size:.7rem;font-weight:600;letter-spacing:.08em;
+  text-transform:uppercase;color:#475569;
+  padding:.5rem 1rem .25rem;
+}
+.sidebar-item{
+  display:block;padding:.45rem 1rem .45rem 1.25rem;
+  font-size:.85rem;color:#94a3b8;cursor:pointer;
+  border-left:2px solid transparent;
+  transition:color .15s,background .15s,border-color .15s;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.sidebar-item:hover{background:#111827;color:#e2e8f0}
+.sidebar-item.active{
+  color:var(--accent);border-left-color:var(--accent);
+  background:#0d1a24;
+}
+
+/* MAIN */
+main{
+  flex:1;overflow-y:auto;
+  padding:2rem;
+  padding-left:max(2rem,env(safe-area-inset-left,0px));
+  padding-right:max(2rem,env(safe-area-inset-right,0px));
+}
+.page{display:none}
+.page.active{display:block}
+
+/* HOME */
+.home-hero{
+  max-width:720px;margin:2rem auto 3rem;text-align:center;
+}
+.home-hero h1{
+  font-size:2.5rem;font-weight:700;
+  background:linear-gradient(135deg,#2dd4bf,#60a5fa);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;margin-bottom:1rem;
+}
+.home-hero p{font-size:1.1rem;color:var(--fg2);line-height:1.7;margin-bottom:2rem}
+.topic-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;
+  max-width:800px;margin:0 auto;
+}
+.topic-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:1.25rem;cursor:pointer;
+  transition:border-color .2s,transform .15s;
+}
+.topic-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.topic-card .icon{font-size:2rem;margin-bottom:.5rem}
+.topic-card h3{font-size:.95rem;font-weight:600;margin-bottom:.25rem}
+.topic-card p{font-size:.8rem;color:var(--fg2)}
+
+/* ALGO PAGE */
+.algo-header{margin-bottom:1.5rem}
+.algo-header h1{font-size:1.75rem;font-weight:700;margin-bottom:.5rem}
+.algo-header .subtitle{color:var(--fg2);font-size:.95rem;line-height:1.6}
+.breadcrumb{
+  font-size:.8rem;color:var(--fg2);margin-bottom:.75rem;
+  display:flex;gap:.5rem;align-items:center;
+}
+.breadcrumb span{color:var(--fg2)}
+.breadcrumb .curr{color:var(--accent)}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:1.5rem}
+.tab-btn{
+  padding:.6rem 1.25rem;font-size:.9rem;font-weight:500;
+  background:none;border:none;cursor:pointer;color:var(--fg2);
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:color .15s,border-color .15s;
+}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* CONTENT */
+.content h2{font-size:1.25rem;font-weight:600;margin:1.5rem 0 .75rem}
+.content h3{font-size:1rem;font-weight:600;margin:1.25rem 0 .5rem;color:var(--accent)}
+.content p{line-height:1.7;margin-bottom:.75rem;font-size:.95rem}
+.content ul{padding-left:1.5rem;margin-bottom:.75rem}
+.content ul li{line-height:1.7;font-size:.95rem;margin-bottom:.25rem}
+
+/* MATH */
+.formula{
+  background:var(--code-bg);color:var(--code-fg);
+  border-radius:8px;padding:1rem 1.25rem;
+  font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  margin:1rem 0;overflow-x:auto;border-left:3px solid var(--accent);
+}
+.formula .label{color:#94a3b8;font-size:.75rem;margin-bottom:.25rem}
+
+/* CODE */
+pre{
+  background:var(--code-bg);border-radius:8px;
+  margin:1rem 0;overflow-x:auto;
+  border:1px solid #1e293b;
+}
+pre code{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.82rem;padding:1.25rem;display:block;
+  line-height:1.6;
+}
+.hljs{background:transparent}
+
+/* CANVAS VIZ */
+.viz-container{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:1rem;margin:1rem 0;
+}
+.viz-container canvas{
+  display:block;width:100%;height:300px;
+  border-radius:6px;background:#0f172a;cursor:crosshair;
+}
+.viz-controls{
+  display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;
+  align-items:center;
+}
+.viz-btn{
+  padding:.4rem .9rem;border-radius:6px;font-size:.82rem;
+  border:1px solid var(--border);background:var(--bg);
+  color:var(--fg);cursor:pointer;transition:background .15s,border-color .15s;
+}
+.viz-btn:hover{border-color:var(--accent);color:var(--accent)}
+.viz-btn.primary{background:var(--accent);color:#0b0f17;border-color:var(--accent);font-weight:600}
+.viz-info{font-size:.8rem;color:var(--fg2);margin-left:auto}
+
+/* CARDS */
+.info-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:8px;padding:1rem 1.25rem;margin:.75rem 0;
+}
+.info-card.accent{border-left:3px solid var(--accent)}
+.tag{
+  display:inline-block;padding:.2rem .5rem;
+  border-radius:4px;font-size:.75rem;font-weight:500;
+  background:rgba(45,212,191,.15);color:var(--accent);
+  margin:.15rem;
+}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.85rem}
+th{background:var(--code-bg);color:var(--accent);padding:.6rem .75rem;text-align:left;font-weight:600}
+td{padding:.55rem .75rem;border-bottom:1px solid var(--border)}
+tr:hover td{background:rgba(45,212,191,.05)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  aside{
+    position:fixed;left:-240px;top:var(--header-h);
+    height:calc(100% - var(--header-h));z-index:90;
+    transition:left .25s;
+  }
+  aside.open{left:0}
+  header{padding-left:3.5rem}
+  .menu-btn{display:flex}
+  main{padding:1rem}
+  .home-hero h1{font-size:1.75rem}
+}
+@media(min-width:641px){.menu-btn{display:none}}
+.menu-btn{
+  position:fixed;top:.75rem;left:.75rem;
+  background:var(--sidebar-bg);border:1px solid #1e293b;
+  color:#94a3b8;border-radius:6px;padding:.4rem .6rem;
+  cursor:pointer;font-size:1rem;z-index:110;
+  align-items:center;justify-content:center;
+}
+</style>
+
+<button class="menu-btn" id="menuBtn" onclick="toggleSidebar()">☰</button>
+
+<header>
+  <span class="logo">Digit<span>HS</span> · ML Notebook</span>
+  <nav>
+    <a href="/">Accueil</a>
+    <a href="/cours.html">Cours</a>
+    <button class="theme-btn" onclick="toggleTheme()">◐ Thème</button>
+  </nav>
+</header>
+
+<div class="layout">
+<aside id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Navigation</div>
+    <a class="sidebar-item active" data-page="home" onclick="nav('home',this)">🏠 Accueil</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Régression</div>
+    <a class="sidebar-item" data-page="linear-regression" onclick="nav('linear-regression',this)">Régression Linéaire</a>
+    <a class="sidebar-item" data-page="polynomial-regression" onclick="nav('polynomial-regression',this)">Régression Polynomiale</a>
+    <a class="sidebar-item" data-page="ridge-lasso" onclick="nav('ridge-lasso',this)">Ridge &amp; Lasso</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Classification</div>
+    <a class="sidebar-item" data-page="logistic" onclick="nav('logistic',this)">Régression Logistique</a>
+    <a class="sidebar-item" data-page="svm" onclick="nav('svm',this)">SVM</a>
+    <a class="sidebar-item" data-page="knn" onclick="nav('knn',this)">K-Nearest Neighbors</a>
+    <a class="sidebar-item" data-page="decision-tree" onclick="nav('decision-tree',this)">Arbre de Décision</a>
+    <a class="sidebar-item" data-page="random-forest" onclick="nav('random-forest',this)">Random Forest</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Clustering</div>
+    <a class="sidebar-item" data-page="kmeans" onclick="nav('kmeans',this)">K-Means</a>
+    <a class="sidebar-item" data-page="dbscan" onclick="nav('dbscan',this)">DBSCAN</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Réduction de dimension</div>
+    <a class="sidebar-item" data-page="pca" onclick="nav('pca',this)">PCA</a>
+    <a class="sidebar-item" data-page="tsne" onclick="nav('tsne',this)">t-SNE</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Réseaux de neurones</div>
+    <a class="sidebar-item" data-page="mlp" onclick="nav('mlp',this)">Perceptron Multicouche</a>
+    <a class="sidebar-item" data-page="cnn" onclick="nav('cnn',this)">CNN</a>
+    <a class="sidebar-item" data-page="lstm" onclick="nav('lstm',this)">LSTM</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-title">Comparaison</div>
+    <a class="sidebar-item" data-page="comparison" onclick="nav('comparison',this)">Vue comparative</a>
+  </div>
+</aside>
+
+<main>
+
+<!-- ===== HOME ===== -->
+<div id="page-home" class="page active">
+  <div class="home-hero">
+    <h1>ML Notebook — Ingénierie</h1>
+    <p>Une référence interactive pour les ingénieurs et chercheurs. Théorie, visualisations et exemples concrets issus du génie énergétique, mécanique et industriel.</p>
+  </div>
+  <div class="topic-grid">
+    <div class="topic-card" onclick="nav('linear-regression')">
+      <div class="icon">📈</div>
+      <h3>Régression</h3>
+      <p>Courbe I-V électrolyseur, puissance éolienne, dégradation PEM</p>
+    </div>
+    <div class="topic-card" onclick="nav('logistic')">
+      <div class="icon">🔵</div>
+      <h3>Classification</h3>
+      <p>Détection de pannes, qualité produit, diagnostic CND</p>
+    </div>
+    <div class="topic-card" onclick="nav('kmeans')">
+      <div class="icon">🔷</div>
+      <h3>Clustering</h3>
+      <p>Segmentation de signaux vibratoires, profils de charge</p>
+    </div>
+    <div class="topic-card" onclick="nav('pca')">
+      <div class="icon">🔻</div>
+      <h3>Réduction de dimension</h3>
+      <p>Capteurs redondants, spectres, multivariables procédé</p>
+    </div>
+    <div class="topic-card" onclick="nav('mlp')">
+      <div class="icon">🧠</div>
+      <h3>Réseaux de neurones</h3>
+      <p>RUL prédiction, contrôle procédé, séries temporelles</p>
+    </div>
+    <div class="topic-card" onclick="nav('comparison')">
+      <div class="icon">📊</div>
+      <h3>Comparaison</h3>
+      <p>Choisir le bon algorithme selon le contexte industriel</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LINEAR REGRESSION ===== -->
+<div id="page-linear-regression" class="page">
+  <div class="breadcrumb">Régression <span>›</span> <span class="curr">Régression Linéaire</span></div>
+  <div class="algo-header">
+    <h1>Régression Linéaire</h1>
+    <div class="subtitle">Modéliser des relations quantitatives entre variables continues — de la courbe I-V d'un électrolyseur PEM à la prédiction de rendement d'une éolienne.</div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="tab(this,'lr-explain')">📖 Explication</button>
+    <button class="tab-btn" onclick="tab(this,'lr-viz')">📊 Visualisation</button>
+    <button class="tab-btn" onclick="tab(this,'lr-code')">💻 Code Python</button>
+  </div>
+
+  <div id="lr-explain" class="tab-panel active content">
+    <h2>Principe</h2>
+    <p>La régression linéaire cherche la droite (ou hyperplan) qui minimise la somme des carrés des résidus entre les prédictions et les valeurs réelles. C'est l'un des algorithmes les plus interprétables en ingénierie.</p>
+    <div class="formula">
+      <div class="label">Modèle</div>
+      ŷ = β₀ + β₁x₁ + β₂x₂ + ... + βₙxₙ
+    </div>
+    <div class="formula">
+      <div class="label">Moindres carrés ordinaires</div>
+      β = (XᵀX)⁻¹ Xᵀy
+    </div>
+    <div class="formula">
+      <div class="label">Fonction de coût MSE</div>
+      J(β) = (1/m) Σᵢ (ŷᵢ − yᵢ)²
+    </div>
+
+    <h2>Applications en génie</h2>
+    <h3>Électrolyseur PEM — Courbe I-V</h3>
+    <p>La tension de cellule d'un électrolyseur PEM suit une relation quasi-linéaire avec le courant dans la plage de fonctionnement nominale :</p>
+    <div class="formula">V_cell = V_oc + R_int · I + η_act(I)</div>
+    <p>On utilise la régression linéaire pour identifier <strong>R_int</strong> (résistance ohmique) à partir de mesures expérimentales V(I), ce qui permet d'évaluer la dégradation de la membrane.</p>
+
+    <h3>Prédiction de puissance éolienne</h3>
+    <p>La puissance d'une éolienne suit une loi cubique P ∝ v³, mais par <strong>linéarisation des features</strong> (ex. log(v), v², v³ comme variables), la régression linéaire multiple reconstruit avec précision la courbe de puissance.</p>
+
+    <h3>Dégradation de batterie Li-ion</h3>
+    <p>La capacité résiduelle Q(n) décroît quasi-linéairement avec le nombre de cycles n dans un premier régime. La pente identifiée prédit la durée de vie résiduelle (State of Health).</p>
+
+    <h2>Hypothèses et limites</h2>
+    <div class="info-card accent">
+      <ul>
+        <li>Linéarité : la relation entre X et y doit être (ou être rendue) linéaire</li>
+        <li>Homoscédasticité : variance des résidus constante</li>
+        <li>Indépendance des erreurs (importante pour séries temporelles)</li>
+        <li>Absence de multicolinéarité forte entre prédicteurs</li>
+      </ul>
+    </div>
+
+    <h2>Métriques d'évaluation</h2>
+    <table>
+      <tr><th>Métrique</th><th>Formule</th><th>Interprétation</th></tr>
+      <tr><td>MSE</td><td>mean((y-ŷ)²)</td><td>Erreur quadratique moyenne</td></tr>
+      <tr><td>RMSE</td><td>√MSE</td><td>Même unité que y</td></tr>
+      <tr><td>MAE</td><td>mean(|y-ŷ|)</td><td>Robuste aux outliers</td></tr>
+      <tr><td>R²</td><td>1 − SS_res/SS_tot</td><td>Part de variance expliquée</td></tr>
+      <tr><td>MAPE</td><td>mean(|y-ŷ|/|y|)×100</td><td>Erreur relative (%)</td></tr>
+    </table>
+  </div>
+
+  <div id="lr-viz" class="tab-panel">
+    <div class="viz-container">
+      <canvas id="lrCanvas"></canvas>
+      <div class="viz-controls">
+        <button class="viz-btn primary" onclick="lrReset()">Réinitialiser</button>
+        <button class="viz-btn" onclick="lrAddNoise()">Ajouter bruit</button>
+        <span class="viz-info" id="lrInfo">Cliquez pour ajouter des points de mesure</span>
+      </div>
+    </div>
+    <div class="info-card" id="lrStats" style="display:none">
+      <strong>Résultats :</strong> <span id="lrStatsText"></span>
+    </div>
+    <p style="font-size:.85rem;color:var(--fg2);margin-top:.5rem">Simulation : mesures de puissance éolienne (kW) vs vitesse du vent (m/s). Cliquez pour ajouter des points.</p>
+  </div>
+
+  <div id="lr-code" class="tab-panel content">
+    <h2>Régression linéaire — Courbe de puissance éolienne</h2>
+    <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import matplotlib.pyplot as plt
+
+# ── Données SCADA turbine éolienne (simulées) ──
+np.random.seed(42)
+v = np.linspace(3, 15, 200)          # vitesse vent m/s (cut-in à rated)
+P_rated = 2000                         # kW
+v_rated = 12.5                         # m/s
+# Courbe de puissance théorique + bruit de mesure
+P = np.where(v < v_rated,
+             P_rated * (v/v_rated)**3,
+             P_rated) + np.random.normal(0, 50, 200)
+
+df = pd.DataFrame({'vitesse_vent': v, 'puissance_kW': P})
+
+# ── Features : linéarisation par v³ ──
+X = df[['vitesse_vent']].copy()
+X['v2'] = X['vitesse_vent']**2
+X['v3'] = X['vitesse_vent']**3
+y = df['puissance_kW']
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42)
+
+# ── Entraînement ──
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+
+# ── Métriques ──
+rmse = np.sqrt(mean_squared_error(y_test, y_pred))
+r2   = r2_score(y_test, y_pred)
+print(f"RMSE : {rmse:.1f} kW  |  R² : {r2:.4f}")
+print(f"Coefficients : v={model.coef_[0]:.2f}, v²={model.coef_[1]:.4f}, v³={model.coef_[2]:.6f}")
+
+# ── Visualisation ──
+plt.figure(figsize=(10, 5))
+plt.scatter(X_test['vitesse_vent'], y_test, alpha=.5, label='Mesures SCADA')
+v_plot = np.linspace(3, 15, 100)
+X_plot = pd.DataFrame({
+    'vitesse_vent': v_plot, 'v2': v_plot**2, 'v3': v_plot**3})
+plt.plot(v_plot, model.predict(X_plot), 'r-', lw=2, label='Modèle linéaire (v³)')
+plt.xlabel('Vitesse du vent (m/s)')
+plt.ylabel('Puissance (kW)')
+plt.title('Courbe de puissance — Turbine 2 MW')
+plt.legend(); plt.grid(alpha=.3); plt.tight_layout(); plt.show()
+
+# ── Prédiction opérationnelle ──
+def predict_power(wind_speed):
+    X_new = pd.DataFrame({
+        'vitesse_vent': [wind_speed],
+        'v2': [wind_speed**2],
+        'v3': [wind_speed**3]
+    })
+    return model.predict(X_new)[0]
+
+print(f"\nPuissance estimée à 10 m/s : {predict_power(10):.0f} kW")
+</code></pre>
+  </div>
+</div>
+
+<!-- ===== K-MEANS ===== -->
+<div id="page-kmeans" class="page">
+  <div class="breadcrumb">Clustering <span>›</span> <span class="curr">K-Means</span></div>
+  <div class="algo-header">
+    <h1>K-Means Clustering</h1>
+    <div class="subtitle">Segmenter automatiquement des données non étiquetées — profils de charge électrique, signatures vibratoires, régimes de fonctionnement de procédé.</div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="tab(this,'km-explain')">📖 Explication</button>
+    <button class="tab-btn" onclick="tab(this,'km-viz')">📊 Visualisation</button>
+    <button class="tab-btn" onclick="tab(this,'km-code')">💻 Code Python</button>
+  </div>
+
+  <div id="km-explain" class="tab-panel active content">
+    <h2>Algorithme</h2>
+    <p>K-Means partitionne n observations en K clusters en minimisant la somme des distances intra-cluster :</p>
+    <div class="formula">
+      <div class="label">Objectif (inertie)</div>
+      J = Σₖ Σᵢ∈Cₖ ‖xᵢ − μₖ‖²
+    </div>
+    <p>L'algorithme itère entre deux étapes jusqu'à convergence :</p>
+    <ol style="padding-left:1.5rem;line-height:1.8;font-size:.95rem">
+      <li><strong>Assignation</strong> : chaque point rejoint le centroïde le plus proche</li>
+      <li><strong>Mise à jour</strong> : chaque centroïde est recalculé comme la moyenne de son cluster</li>
+    </ol>
+
+    <h2>Applications industrielles</h2>
+    <h3>Profils de charge — Réseau électrique</h3>
+    <p>Les courbes de charge journalière de 50 000 consommateurs industriels peuvent être regroupées en K=6 profils-types. Cela permet de dimensionner les ressources de flexibilité (batteries, effacement) et de proposer des tarifs adaptés.</p>
+
+    <h3>Signatures vibratoires — Maintenance prédictive</h3>
+    <p>Les spectres FFT de vibrations d'un roulement de pompe, collectés sur 6 mois, forment naturellement 3 clusters : fonctionnement sain, usure initiale, défaut avancé. K-Means identifie ces régimes <em>sans étiquettes</em>.</p>
+
+    <h3>Segmentation de régimes de procédé</h3>
+    <p>En raffinage pétrolier, la température de colonne, le débit et la pression forment des clusters correspondant à différentes charges de traitement. Les opérateurs reçoivent une alerte dès qu'un état appartient à un cluster anormal.</p>
+
+    <h2>Choisir K : méthode du coude</h2>
+    <div class="info-card accent">
+      <p>Tracer l'inertie en fonction de K. Le "coude" indique le nombre optimal de clusters où l'ajout d'un cluster supplémentaire apporte peu de réduction de variance.</p>
+    </div>
+    <table>
+      <tr><th>Critère</th><th>Formule</th><th>Usage</th></tr>
+      <tr><td>Inertie (SSW)</td><td>Σ‖xᵢ − μₖ‖²</td><td>Méthode du coude</td></tr>
+      <tr><td>Score silhouette</td><td>(b−a)/max(a,b)</td><td>Qualité séparation</td></tr>
+      <tr><td>Gap statistic</td><td>Gap(k) = E[log W_k] − log W_k</td><td>Comparaison au hasard</td></tr>
+      <tr><td>BIC/AIC</td><td>−2L + kp·log(n)</td><td>GMM uniquement</td></tr>
+    </table>
+  </div>
+
+  <div id="km-viz" class="tab-panel">
+    <div class="viz-container">
+      <canvas id="kmCanvas"></canvas>
+      <div class="viz-controls">
+        <label style="font-size:.82rem;color:var(--fg2)">K =</label>
+        <select id="kmK" onchange="kmInit()" style="padding:.3rem .5rem;border-radius:5px;border:1px solid var(--border);background:var(--bg);color:var(--fg);font-size:.82rem">
+          <option value="2">2</option>
+          <option value="3" selected>3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+        <button class="viz-btn primary" onclick="kmStep()">▶ Itération</button>
+        <button class="viz-btn" onclick="kmRun()">⏩ Converger</button>
+        <button class="viz-btn" onclick="kmInit()">🔄 Reset</button>
+        <span class="viz-info" id="kmInfo">Initialisation aléatoire</span>
+      </div>
+    </div>
+    <p style="font-size:.85rem;color:var(--fg2);margin-top:.5rem">Simulation de profils de charge (consommation kWh) agrégés sur 2 dimensions PCA. Chaque couleur = un régime de fonctionnement.</p>
+  </div>
+
+  <div id="km-code" class="tab-panel content">
+    <h2>Segmentation de profils de charge</h2>
+    <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.metrics import silhouette_score
+import matplotlib.pyplot as plt
+
+# ── Données : courbes de charge 24h de 1000 sites industriels ──
+np.random.seed(42)
+n_sites = 1000
+
+# 3 profils types : industrie continue, bureaux, process intermittent
+def profile(mu, sigma, n):
+    base = np.random.normal(mu, sigma, (n, 24))
+    return np.clip(base, 0, None)
+
+P1 = profile(80, 10, 350)   # industrie continue (charge stable)
+P2 = profile(50, 20, 400)   # bureaux (pic 9h-18h)
+P3 = profile(60, 35, 250)   # intermittent (pics aléatoires)
+# Simuler la variation horaire
+hours = np.arange(24)
+P2 *= (0.4 + 0.6 * np.exp(-((hours - 13)**2)/18))
+P3[:, ::3] *= 2.5  # pics réguliers
+
+X = np.vstack([P1, P2, P3])
+
+# ── Prétraitement ──
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
+
+# ── Méthode du coude ──
+inertias, silhouettes = [], []
+for k in range(2, 9):
+    km = KMeans(n_clusters=k, random_state=42, n_init=10)
+    labels = km.fit_predict(X_scaled)
+    inertias.append(km.inertia_)
+    silhouettes.append(silhouette_score(X_scaled, labels, sample_size=500))
+
+# ── Modèle final K=3 ──
+km = KMeans(n_clusters=3, random_state=42, n_init=20)
+labels = km.fit_predict(X_scaled)
+print(f"Score silhouette : {silhouette_score(X_scaled, labels):.3f}")
+print(f"Tailles clusters : {np.bincount(labels)}")
+
+# ── Visualisation des centroïdes ──
+centroids_orig = scaler.inverse_transform(km.cluster_centers_)
+fig, ax = plt.subplots(figsize=(12, 5))
+colors = ['#2dd4bf', '#60a5fa', '#f97316']
+labels_text = ['Industrie continue', 'Bureaux/Tertiaire', 'Process intermittent']
+for i, (c, name) in enumerate(zip(centroids_orig, labels_text)):
+    ax.plot(range(24), c, color=colors[i], lw=2.5, label=f"Cluster {i+1}: {name}")
+ax.set_xlabel('Heure'); ax.set_ylabel('Consommation (kWh)')
+ax.set_title('Profils de charge types — Segmentation K-Means')
+ax.legend(); ax.grid(alpha=.3); plt.tight_layout(); plt.show()
+
+# ── Attribution en temps réel ──
+def classify_site(load_curve_24h):
+    x_scaled = scaler.transform([load_curve_24h])
+    cluster = km.predict(x_scaled)[0]
+    return labels_text[cluster]
+</code></pre>
+  </div>
+</div>
+
+<!-- ===== SVM ===== -->
+<div id="page-svm" class="page">
+  <div class="breadcrumb">Classification <span>›</span> <span class="curr">SVM</span></div>
+  <div class="algo-header">
+    <h1>Support Vector Machine</h1>
+    <div class="subtitle">Classification à marge maximale, idéale pour les problèmes à haute dimension avec peu de données — détection de défauts par CND, classification de matériaux.</div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="tab(this,'svm-explain')">📖 Explication</button>
+    <button class="tab-btn" onclick="tab(this,'svm-code')">💻 Code Python</button>
+  </div>
+  <div id="svm-explain" class="tab-panel active content">
+    <h2>Principe — Marge maximale</h2>
+    <p>SVM cherche l'hyperplan séparateur qui maximise la marge entre les deux classes. Seuls les points les plus proches de la frontière (vecteurs de support) influencent la solution.</p>
+    <div class="formula">
+      <div class="label">Problème primal (marge dure)</div>
+      min ½‖w‖²  sujet à  yᵢ(w·xᵢ + b) ≥ 1
+    </div>
+    <div class="formula">
+      <div class="label">Marge douce (SVM-C)</div>
+      min ½‖w‖² + C·Σ ξᵢ  sujet à  yᵢ(w·xᵢ + b) ≥ 1 − ξᵢ
+    </div>
+    <div class="formula">
+      <div class="label">Kernel trick — RBF</div>
+      K(xᵢ, xⱼ) = exp(−γ‖xᵢ − xⱼ‖²)
+    </div>
+
+    <h2>Applications industrielles</h2>
+    <h3>Contrôle Non Destructif (CND) — Ultrasons</h3>
+    <p>Les signaux ultrasonores réfléchis par une pièce présentent des features (amplitude, fréquence dominante, atténuation) qui permettent de classifier : sain / fissure / délaminage / porosité. SVM avec kernel RBF atteint >97% de précision sur des datasets de taille modérée (&lt;5000 exemples).</p>
+    <h3>Diagnostic de machines tournantes</h3>
+    <p>À partir des 12 features spectrales d'un signal vibratoire (RMS, kurtosis, crête, etc.), SVM classifie le type de défaut : roulement externe, interne, bille, balourd.</p>
+    <table>
+      <tr><th>Kernel</th><th>Usage recommandé</th><th>Hyperparamètres</th></tr>
+      <tr><td>Linéaire</td><td>Texte, haute dimension</td><td>C</td></tr>
+      <tr><td>RBF</td><td>Usage général, non-linéaire</td><td>C, γ</td></tr>
+      <tr><td>Polynomial</td><td>Vision, features produit</td><td>C, d, r</td></tr>
+      <tr><td>Sigmoid</td><td>Similaire MLP</td><td>C, γ, r</td></tr>
+    </table>
+  </div>
+  <div id="svm-code" class="tab-panel content">
+    <pre><code class="language-python">from sklearn.svm import SVC
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+from sklearn.model_selection import GridSearchCV, StratifiedKFold
+from sklearn.metrics import classification_report
+import numpy as np
+
+# ── Features vibratoires (CND roulement) ──
+# 4 classes : sain, défaut bague ext., défaut bague int., balourd
+np.random.seed(0)
+def make_features(n, rms_mu, kurt_mu, noise=0.3):
+    return np.column_stack([
+        np.random.normal(rms_mu, noise, n),        # RMS
+        np.random.normal(kurt_mu, noise, n),       # Kurtosis
+        np.random.normal(rms_mu*0.7, noise, n),    # Crête
+        np.random.normal(kurt_mu*1.2, noise, n),   # RMS bande haute
+        np.random.uniform(0, 1, n),                # Fréquence dominante norm.
+        np.random.normal(rms_mu*0.5, noise, n),    # Énergie sidebands
+    ])
+
+X_sain = make_features(200, 0.5, 3.0)
+X_ext  = make_features(200, 1.2, 5.5)
+X_int  = make_features(200, 1.8, 7.0)
+X_bal  = make_features(200, 2.5, 3.2)
+X = np.vstack([X_sain, X_ext, X_int, X_bal])
+y = np.array(['sain']*200 + ['defaut_ext']*200 +
+             ['defaut_int']*200 + ['balourd']*200)
+
+# ── Pipeline SVM + optimisation ──
+pipe = Pipeline([
+    ('scaler', StandardScaler()),
+    ('svm', SVC(probability=True, random_state=42))
+])
+param_grid = {
+    'svm__C': [0.1, 1, 10, 100],
+    'svm__gamma': ['scale', 0.01, 0.1],
+    'svm__kernel': ['rbf', 'linear']
+}
+cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+grid = GridSearchCV(pipe, param_grid, cv=cv, scoring='f1_macro', n_jobs=-1)
+grid.fit(X, y)
+
+print(f"Meilleurs params : {grid.best_params_}")
+print(f"Score CV : {grid.best_score_:.3f}")
+print("\n", classification_report(y, grid.predict(X)))
+
+# ── Prédiction en ligne (nouveau signal) ──
+new_signal_features = np.array([[1.5, 6.2, 0.9, 7.0, 0.45, 0.7]])
+proba = grid.predict_proba(new_signal_features)[0]
+classes = grid.classes_
+for c, p in sorted(zip(classes, proba), key=lambda x: -x[1]):
+    print(f"  {c:15s} : {p:.1%}")
+</code></pre>
+  </div>
+</div>
+
+<!-- ===== PCA ===== -->
+<div id="page-pca" class="page">
+  <div class="breadcrumb">Réduction de dimension <span>›</span> <span class="curr">PCA</span></div>
+  <div class="algo-header">
+    <h1>Analyse en Composantes Principales (PCA)</h1>
+    <div class="subtitle">Réduire la redondance entre capteurs, visualiser des données multivariables de procédé, détecter des anomalies par reconstruction.</div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="tab(this,'pca-explain')">📖 Explication</button>
+    <button class="tab-btn" onclick="tab(this,'pca-code')">💻 Code Python</button>
+  </div>
+  <div id="pca-explain" class="tab-panel active content">
+    <h2>Décomposition en valeurs propres</h2>
+    <p>PCA recherche les directions de variance maximale dans les données. Elle décompose la matrice de covariance :</p>
+    <div class="formula">Σ = (1/n) XᵀX = V Λ Vᵀ</div>
+    <div class="formula">
+      <div class="label">Projection (scores)</div>
+      T = X · V_k  (k premières composantes)
+    </div>
+    <div class="formula">
+      <div class="label">Variance expliquée</div>
+      VE_k = λₖ / Σᵢ λᵢ
+    </div>
+
+    <h2>Applications en génie des procédés</h2>
+    <h3>Monitoring multi-capteurs — Réacteur chimique</h3>
+    <p>Un réacteur instrumenté de 40 capteurs (T, P, débits, compositions) présente une forte colinéarité. PCA réduit à 4 composantes expliquant 92% de la variance. Le <strong>T² de Hotelling</strong> et le <strong>SPE (Q-statistique)</strong> détectent les anomalies de procédé en temps réel.</p>
+    <div class="formula">
+      <div class="label">T² de Hotelling (détection anomalie)</div>
+      T² = xᵀ V_k Λₖ⁻¹ Vₖᵀ x  &lt; T²_limite (χ²)
+    </div>
+    <h3>Traitement de spectres NIR</h3>
+    <p>Les spectres d'absorption NIR (1000+ longueurs d'onde) sont réduits à 5-10 composantes principales pour la régression sur la teneur en composant cible (PLS / PCR).</p>
+    <h3>Réduction bruit de capteurs</h3>
+    <p>En ne reconstruisant que les k premières composantes (filtrage basse dimension), PCA fait office de filtre optimal pour les séries temporelles bruitées.</p>
+  </div>
+  <div id="pca-code" class="tab-panel content">
+    <pre><code class="language-python">import numpy as np
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
+
+# ── Données : 40 capteurs, réacteur chimique, 5000 échantillons ──
+np.random.seed(42)
+n = 5000
+# 3 sources latentes + bruit (simule un procédé réel)
+s1 = np.sin(np.linspace(0, 8*np.pi, n))        # température
+s2 = np.random.normal(0, 1, n).cumsum()/100     # pression (bruit brownien)
+s3 = np.cos(np.linspace(0, 4*np.pi, n))         # débit
+latent = np.column_stack([s1, s2, s3])
+A = np.random.randn(40, 3)                       # matrice de mélange (40 capteurs)
+X_raw = latent @ A.T + np.random.normal(0, 0.3, (n, 40))
+
+# ── PCA ──
+scaler = StandardScaler()
+X = scaler.fit_transform(X_raw)
+pca = PCA()
+pca.fit(X)
+
+# Variance expliquée cumulée
+cum_var = np.cumsum(pca.explained_variance_ratio_)
+k_95 = np.argmax(cum_var >= 0.95) + 1
+print(f"Composantes pour 95% variance : {k_95}")
+
+# ── Monitoring en temps réel ──
+pca_k = PCA(n_components=3)
+T = pca_k.fit_transform(X)                      # scores
+X_hat = pca_k.inverse_transform(T)              # reconstruction
+
+# SPE (erreur de reconstruction)
+SPE = np.sum((X - X_hat)**2, axis=1)
+SPE_limit = np.percentile(SPE, 99)              # seuil 99%
+
+# T² de Hotelling
+Lambda_inv = np.diag(1.0 / pca_k.explained_variance_)
+T2 = np.einsum('ij,jk,ik->i', T, Lambda_inv, T)
+T2_limit = np.percentile(T2, 99)
+
+# ── Simuler une anomalie ──
+X_fault = X.copy()
+X_fault[4000:4050, [2, 7, 15]] += 5            # défaut sur 3 capteurs
+
+T_fault = pca_k.transform(X_fault)
+X_hat_fault = pca_k.inverse_transform(T_fault)
+SPE_fault = np.sum((X_fault - X_hat_fault)**2, axis=1)
+
+plt.figure(figsize=(12, 4))
+plt.subplot(1,2,1)
+plt.plot(SPE, lw=.5, alpha=.7, label='Normal')
+plt.plot(SPE_fault, lw=.5, alpha=.7, label='Avec défaut', color='#f97316')
+plt.axhline(SPE_limit, color='red', ls='--', label=f'Limite 99% = {SPE_limit:.2f}')
+plt.xlabel('Temps'); plt.ylabel('SPE'); plt.title('Monitoring SPE')
+plt.legend(); plt.grid(alpha=.3)
+plt.subplot(1,2,2)
+# Contributions (diagnostic)
+contrib = (X[4020] - X_hat[4020])**2
+plt.bar(range(40), contrib, color='#2dd4bf', alpha=.8)
+plt.xlabel('Capteur n°'); plt.ylabel('Contribution SPE')
+plt.title('Diagnostic : capteurs responsables')
+plt.tight_layout(); plt.show()
+</code></pre>
+  </div>
+</div>
+
+<!-- ===== MLPP ===== -->
+<div id="page-mlp" class="page">
+  <div class="breadcrumb">Réseaux de neurones <span>›</span> <span class="curr">MLP</span></div>
+  <div class="algo-header">
+    <h1>Perceptron Multicouche (MLP)</h1>
+    <div class="subtitle">Modéliser des relations hautement non-linéaires — prédiction de RUL (Remaining Useful Life), contrôle de procédé, émulation de modèle physique.</div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="tab(this,'mlp-explain')">📖 Explication</button>
+    <button class="tab-btn" onclick="tab(this,'mlp-code')">💻 Code Python</button>
+  </div>
+  <div id="mlp-explain" class="tab-panel active content">
+    <h2>Architecture et propagation</h2>
+    <div class="formula">
+      <div class="label">Propagation avant (couche l)</div>
+      z⁽ˡ⁾ = W⁽ˡ⁾ a⁽ˡ⁻¹⁾ + b⁽ˡ⁾ ;  a⁽ˡ⁾ = σ(z⁽ˡ⁾)
+    </div>
+    <div class="formula">
+      <div class="label">Rétropropagation</div>
+      ∂L/∂W⁽ˡ⁾ = δ⁽ˡ⁾ (a⁽ˡ⁻¹⁾)ᵀ  où  δ⁽ˡ⁾ = (W⁽ˡ⁺¹⁾)ᵀ δ⁽ˡ⁺¹⁾ ⊙ σ'(z⁽ˡ⁾)
+    </div>
+
+    <h2>Fonctions d'activation</h2>
+    <table>
+      <tr><th>Activation</th><th>Formule</th><th>Usage</th></tr>
+      <tr><td>ReLU</td><td>max(0, x)</td><td>Couches cachées (défaut)</td></tr>
+      <tr><td>Sigmoid</td><td>1/(1+e⁻ˣ)</td><td>Sortie binaire</td></tr>
+      <tr><td>Tanh</td><td>(eˣ−e⁻ˣ)/(eˣ+e⁻ˣ)</td><td>RNN, données centrées</td></tr>
+      <tr><td>Softmax</td><td>eˣⁱ/Σeˣʲ</td><td>Classification multi-classe</td></tr>
+      <tr><td>Linear</td><td>x</td><td>Sortie régression</td></tr>
+    </table>
+
+    <h2>RUL — Prédiction de durée de vie résiduelle</h2>
+    <p>Le dataset CMAPSS (NASA) contient des données de dégradation de turbines à réaction. À partir des 21 capteurs (T, P, débits à différents étages), un MLP prédit le nombre de cycles restants avant la panne :</p>
+    <div class="info-card accent">
+      <p><strong>Approche :</strong> Fenêtrage temporel (window=30 cycles) → extraction features → MLP → RUL en cycles.</p>
+      <p><strong>Résultat typique :</strong> RMSE ≈ 15-20 cycles sur 500 cycles de durée de vie totale (3-4% d'erreur).</p>
+    </div>
+
+    <h2>Régularisation</h2>
+    <ul>
+      <li><strong>Dropout</strong> : désactiver aléatoirement p% des neurones à chaque batch</li>
+      <li><strong>L2 (weight decay)</strong> : pénaliser les grands poids — λΣw²</li>
+      <li><strong>Batch Normalization</strong> : normaliser les activations inter-couches</li>
+      <li><strong>Early stopping</strong> : arrêter à la perte de validation minimale</li>
+    </ul>
+  </div>
+  <div id="mlp-code" class="tab-panel content">
+    <pre><code class="language-python">import numpy as np
+import pandas as pd
+import torch
+import torch.nn as nn
+from torch.utils.data import DataLoader, TensorDataset
+from sklearn.preprocessing import MinMaxScaler
+
+# ── Prédiction RUL — Turbine (style CMAPSS) ──
+np.random.seed(42)
+
+def generate_cmapss_like(n_engines=100, max_cycles=300):
+    """Génère données CMAPSS simplifiées"""
+    records = []
+    for eng in range(n_engines):
+        life = np.random.randint(150, max_cycles)
+        for cyc in range(1, life+1):
+            degradation = cyc / life
+            sensors = {
+                'T2':   288 + degradation*5  + np.random.normal(0,.5),
+                'T24':  632 + degradation*15 + np.random.normal(0,1),
+                'T30':  1590 + degradation*30 + np.random.normal(0,5),
+                'Nf':   2390 - degradation*50 + np.random.normal(0,3),
+                'Nc':   9070 - degradation*80 + np.random.normal(0,5),
+                'Ps30': 9.2 - degradation*.3  + np.random.normal(0,.05),
+                'phi':  392 + degradation*8   + np.random.normal(0,1),
+            }
+            records.append({'engine': eng, 'cycle': cyc,
+                            'RUL': life-cyc, **sensors})
+    return pd.DataFrame(records)
+
+df = generate_cmapss_like()
+sensors = ['T2','T24','T30','Nf','Nc','Ps30','phi']
+
+# ── Normalisation ──
+scaler = MinMaxScaler()
+df[sensors] = scaler.fit_transform(df[sensors])
+
+# ── Fenêtrage temporel (window = 20 cycles) ──
+WINDOW = 20
+def make_sequences(data, window):
+    X, y = [], []
+    for eng in data['engine'].unique():
+        eng_data = data[data['engine']==eng][sensors].values
+        eng_rul  = data[data['engine']==eng]['RUL'].values
+        for i in range(len(eng_data)-window):
+            X.append(eng_data[i:i+window])
+            y.append(eng_rul[i+window])
+    return np.array(X), np.array(y)
+
+X, y = make_sequences(df, WINDOW)
+split = int(0.8 * len(X))
+X_tr, X_te = X[:split], X[split:]
+y_tr, y_te = y[:split], y[split:]
+
+# ── MLP PyTorch ──
+class RULNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.net = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(WINDOW * len(sensors), 256),
+            nn.BatchNorm1d(256), nn.ReLU(), nn.Dropout(0.3),
+            nn.Linear(256, 128),
+            nn.BatchNorm1d(128), nn.ReLU(), nn.Dropout(0.2),
+            nn.Linear(128, 64),  nn.ReLU(),
+            nn.Linear(64, 1)
+        )
+    def forward(self, x): return self.net(x).squeeze()
+
+model = RULNet()
+opt  = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+loss_fn = nn.HuberLoss(delta=10)
+
+X_tr_t = torch.FloatTensor(X_tr); y_tr_t = torch.FloatTensor(y_tr)
+loader = DataLoader(TensorDataset(X_tr_t, y_tr_t), batch_size=256, shuffle=True)
+
+for epoch in range(50):
+    model.train()
+    for xb, yb in loader:
+        opt.zero_grad()
+        loss_fn(model(xb), yb).backward()
+        opt.step()
+    if (epoch+1) % 10 == 0:
+        model.eval()
+        with torch.no_grad():
+            val_pred = model(torch.FloatTensor(X_te)).numpy()
+        rmse = np.sqrt(np.mean((val_pred - y_te)**2))
+        print(f"Epoch {epoch+1:3d} | RMSE val: {rmse:.1f} cycles")
+</code></pre>
+  </div>
+</div>
+
+<!-- ===== COMPARISON ===== -->
+<div id="page-comparison" class="page">
+  <div class="algo-header">
+    <h1>Guide de sélection des algorithmes</h1>
+    <div class="subtitle">Choisir le bon modèle selon le problème industriel, la taille du dataset et les contraintes opérationnelles.</div>
+  </div>
+  <div class="content">
+    <table>
+      <tr>
+        <th>Algorithme</th><th>Type</th><th>Taille données</th>
+        <th>Interprétabilité</th><th>Exemple génie</th>
+      </tr>
+      <tr><td>Régression linéaire</td><td>Régression</td><td>Toute</td><td>⭐⭐⭐⭐⭐</td><td>Courbe I-V, rendement</td></tr>
+      <tr><td>Ridge / Lasso</td><td>Régression</td><td>Toute</td><td>⭐⭐⭐⭐</td><td>Sélection capteurs</td></tr>
+      <tr><td>SVM</td><td>Classif.</td><td>Faible–moyen</td><td>⭐⭐</td><td>CND, défauts roulement</td></tr>
+      <tr><td>Random Forest</td><td>Classif./Reg.</td><td>Moyen–grand</td><td>⭐⭐⭐</td><td>Qualité produit, alarmes</td></tr>
+      <tr><td>K-Means</td><td>Clustering</td><td>Grand</td><td>⭐⭐⭐⭐</td><td>Profils de charge</td></tr>
+      <tr><td>DBSCAN</td><td>Clustering</td><td>Moyen</td><td>⭐⭐⭐</td><td>Détection outliers</td></tr>
+      <tr><td>PCA</td><td>Réduction dim.</td><td>Toute</td><td>⭐⭐⭐</td><td>Monitoring procédé, NIR</td></tr>
+      <tr><td>MLP</td><td>Universel</td><td>Grand</td><td>⭐</td><td>RUL, contrôle</td></tr>
+      <tr><td>LSTM</td><td>Séries temp.</td><td>Grand</td><td>⭐</td><td>Dégradation batterie</td></tr>
+    </table>
+
+    <h2>Arbre de décision rapide</h2>
+    <div class="info-card accent">
+      <p><strong>Y a-t-il des étiquettes (labels) ?</strong></p>
+      <ul>
+        <li>✅ Oui → Apprentissage supervisé (Régression / Classification)</li>
+        <li>❌ Non → Apprentissage non supervisé (Clustering / Réduction de dimension)</li>
+      </ul>
+    </div>
+    <div class="info-card accent">
+      <p><strong>La sortie est-elle continue ou catégorielle ?</strong></p>
+      <ul>
+        <li>Continue (température, puissance, RUL) → <span class="tag">Régression</span></li>
+        <li>Catégorielle (sain/défaut, classe matériau) → <span class="tag">Classification</span></li>
+      </ul>
+    </div>
+    <div class="info-card accent">
+      <p><strong>Contraintes opérationnelles ?</strong></p>
+      <ul>
+        <li>Interprétabilité requise (certification, audit) → Régression linéaire, Arbre de décision</li>
+        <li>Peu de données (&lt;500 exemples) → SVM, Régression Ridge</li>
+        <li>Données temporelles → LSTM, régression avec features lag</li>
+        <li>Haute performance, données abondantes → MLP, Random Forest, XGBoost</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Stubs for other pages -->
+<div id="page-polynomial-regression" class="page">
+  <div class="breadcrumb">Régression <span>›</span> <span class="curr">Polynomiale</span></div>
+  <div class="algo-header"><h1>Régression Polynomiale</h1>
+  <div class="subtitle">Extension non-linéaire de la régression linéaire par transformation des features — idéale pour la courbe caractéristique d'une pompe, la viscosité vs température.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Modèle</div>ŷ = β₀ + β₁x + β₂x² + ... + βₙxⁿ</div>
+    <p>On transforme x → [x, x², ..., xⁿ] puis on applique la régression linéaire standard. Le degré n contrôle la complexité — un n trop grand entraîne du surapprentissage.</p>
+    <h2>Exemple : courbe caractéristique pompe centrifuge</h2>
+    <p>La relation H(Q) (hauteur manométrique vs débit) suit un polynôme de degré 2 : H = H₀ − aQ² . On identifie les coefficients à partir de 20-30 points de mesure.</p>
+  </div>
+</div>
+
+<div id="page-ridge-lasso" class="page">
+  <div class="breadcrumb">Régression <span>›</span> <span class="curr">Ridge &amp; Lasso</span></div>
+  <div class="algo-header"><h1>Ridge &amp; Lasso</h1>
+  <div class="subtitle">Régression régularisée pour sélectionner les capteurs les plus pertinents et éviter le surapprentissage dans les espaces de haute dimension.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Ridge (L2)</div>min ‖y − Xβ‖² + λ‖β‖²</div>
+    <div class="formula"><div class="label">Lasso (L1)</div>min ‖y − Xβ‖² + λ‖β‖₁</div>
+    <p>Lasso force certains coefficients à exactement 0 → sélection automatique de variables. Ridge réduit tous les coefficients proportionnellement → utile quand tous les capteurs contribuent.</p>
+    <h2>Application : sélection de capteurs PEM</h2>
+    <p>Parmi 50 signaux mesurés sur un électrolyseur, Lasso identifie automatiquement les 8 capteurs les plus informatifs pour prédire l'efficacité Faradique.</p>
+  </div>
+</div>
+
+<div id="page-logistic" class="page">
+  <div class="breadcrumb">Classification <span>›</span> <span class="curr">Logistique</span></div>
+  <div class="algo-header"><h1>Régression Logistique</h1>
+  <div class="subtitle">Classification binaire probabiliste — détection go/no-go, alarme procédé, présence de défaut dans une pièce.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Fonction sigmoïde</div>P(y=1|x) = σ(w·x + b) = 1/(1 + e^{−(w·x+b)})</div>
+    <div class="formula"><div class="label">Log-vraisemblance (cross-entropy)</div>L = −Σ [yᵢ log(ŷᵢ) + (1−yᵢ)log(1−ŷᵢ)]</div>
+    <p>La régression logistique fournit des <strong>probabilités calibrées</strong>, essentielles pour le réglage du seuil d'alarme dans un contexte industriel (coût fausse alarme vs coût panne manquée).</p>
+  </div>
+</div>
+
+<div id="page-knn" class="page">
+  <div class="breadcrumb">Classification <span>›</span> <span class="curr">KNN</span></div>
+  <div class="algo-header"><h1>K-Nearest Neighbors</h1>
+  <div class="subtitle">Classification par similarité — associer un nouveau spectre ou signal à la classe de ses k voisins les plus proches dans la base de données.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Distance euclidienne</div>d(xᵢ, xⱼ) = √Σₖ (xᵢₖ − xⱼₖ)²</div>
+    <p>KNN est un algorithme <em>lazy</em> : il mémorise toutes les données d'entraînement et vote parmi les k plus proches voisins au moment de la prédiction. Sensible à l'échelle des features → normaliser obligatoire.</p>
+    <h2>Application : bibliothèque de spectres Raman</h2>
+    <p>Chaque spectre Raman d'un matériau (1000 points) est comparé à une bibliothèque de référence par distance cosinus. KNN avec k=3 identifie le matériau et ses contaminants potentiels.</p>
+  </div>
+</div>
+
+<div id="page-decision-tree" class="page">
+  <div class="breadcrumb">Classification <span>›</span> <span class="curr">Arbre de décision</span></div>
+  <div class="algo-header"><h1>Arbre de Décision</h1>
+  <div class="subtitle">Règles de décision interprétables — audit qualité, certification de procédé, diagnostic d'alarme explicable aux opérateurs.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Impureté Gini</div>Gini = 1 − Σₖ pₖ²</div>
+    <div class="formula"><div class="label">Gain d'information (entropie)</div>IG = H(parent) − Σ (nᵢ/n)·H(enfant_i)</div>
+    <p>L'arbre sépare récursivement les données à chaque nœud par la feature et le seuil qui maximisent la pureté. Le résultat est un ensemble de règles if/then lisibles par un opérateur.</p>
+  </div>
+</div>
+
+<div id="page-random-forest" class="page">
+  <div class="breadcrumb">Classification <span>›</span> <span class="curr">Random Forest</span></div>
+  <div class="algo-header"><h1>Random Forest</h1>
+  <div class="subtitle">Ensemble d'arbres de décision pour la robustesse — classification de modes de défaillance, prédiction de qualité de produit fini.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Prédiction par vote majoritaire</div>ŷ = mode{ h₁(x), h₂(x), ..., hₙ(x) }</div>
+    <p>Random Forest combine N arbres entraînés sur des sous-échantillons Bootstrap (Bagging) avec une sélection aléatoire de √p features à chaque nœud. Robuste au surapprentissage et fournit une <strong>importance des variables</strong> utile en diagnostic.</p>
+    <h2>Importance des features — Maintenance prédictive</h2>
+    <p>Sur 30 features vibratoires, Random Forest identifie que kurtosis (bande 2-4 kHz), RMS global et énergie sidebands sont les 3 indicateurs les plus prédictifs du type de défaut de roulement.</p>
+  </div>
+</div>
+
+<div id="page-dbscan" class="page">
+  <div class="breadcrumb">Clustering <span>›</span> <span class="curr">DBSCAN</span></div>
+  <div class="algo-header"><h1>DBSCAN</h1>
+  <div class="subtitle">Clustering basé sur la densité — détection d'anomalies dans des nuages de points de forme quelconque, sans spécifier K à l'avance.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Paramètres</div>ε : rayon de voisinage  |  MinPts : points minimum dans ε</div>
+    <p>DBSCAN classe chaque point en <em>core point</em> (≥MinPts voisins dans ε), <em>border point</em> ou <em>bruit</em> (outlier). Les points bruit correspondent à des anomalies — ce qui en fait un outil de détection d'anomalies sans étiquettes.</p>
+    <h2>Détection d'anomalies — Réseau de capteurs géotechniques</h2>
+    <p>Les déplacements (x,y,z) mesurés par inclinomètres sur un barrage forment des clusters normaux. DBSCAN identifie automatiquement les capteurs dérivants (points bruit) sans avoir à définir un seuil par capteur.</p>
+  </div>
+</div>
+
+<div id="page-tsne" class="page">
+  <div class="breadcrumb">Réduction de dimension <span>›</span> <span class="curr">t-SNE</span></div>
+  <div class="algo-header"><h1>t-SNE</h1>
+  <div class="subtitle">Visualisation non-linéaire en 2D/3D de données haute dimension — explorer des clusters de régimes de procédé, comparer des empreintes spectrales.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Probabilité de similarité (espace original)</div>pⱼ|ᵢ = exp(−‖xᵢ−xⱼ‖²/2σᵢ²) / Σₖ exp(−‖xᵢ−xₖ‖²/2σᵢ²)</div>
+    <p>t-SNE minimise la divergence KL entre les distributions de similitudes dans l'espace original et l'espace réduit. Idéal pour la visualisation, non pour la régression. Résultats non reproductibles sans fix de graine aléatoire.</p>
+    <h2>Exploration : empreintes thermiques turbine</h2>
+    <p>Les profils de température de 8 thermocouples sur 10 000 cycles de turbine forment des clusters visibles en t-SNE 2D : fonctionnement nominal, démarrage à froid, charge partielle, transitoires.</p>
+  </div>
+</div>
+
+<div id="page-cnn" class="page">
+  <div class="breadcrumb">Réseaux de neurones <span>›</span> <span class="curr">CNN</span></div>
+  <div class="algo-header"><h1>Réseau Neuronal Convolutif (CNN)</h1>
+  <div class="subtitle">Extraction automatique de features locales — analyse de spectrogrammes vibratoires, contrôle visuel automatique, traitement de signaux 1D/2D.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Convolution 1D (signaux)</div>(x * w)[n] = Σₖ x[n−k]·w[k]</div>
+    <p>Les CNN apprennent des filtres optimaux pour détecter des patterns locaux (pics spectraux, défauts visuels). Pour les signaux industriels 1D, Conv1D + GlobalAveragePooling surpasse souvent le MLP sur features manuelles.</p>
+    <h2>Contrôle visuel automatique — Soudure laser</h2>
+    <p>Un CNN ResNet-18 entraîné sur 5000 images de soudures (bonnes/défauts) atteint 99.2% de précision en inspection in-line à 30 pièces/min, remplaçant l'inspection visuelle humaine.</p>
+  </div>
+</div>
+
+<div id="page-lstm" class="page">
+  <div class="breadcrumb">Réseaux de neurones <span>›</span> <span class="curr">LSTM</span></div>
+  <div class="algo-header"><h1>Long Short-Term Memory (LSTM)</h1>
+  <div class="subtitle">Modélisation de dépendances à long terme dans les séries temporelles — dégradation de batterie, prévision de consommation, suivi d'état procédé.</div>
+  </div>
+  <div class="content">
+    <div class="formula"><div class="label">Équations LSTM</div>
+fₜ = σ(Wf·[hₜ₋₁, xₜ] + bf)   ← porte oubli
+iₜ = σ(Wi·[hₜ₋₁, xₜ] + bi)   ← porte entrée
+C̃ₜ = tanh(WC·[hₜ₋₁, xₜ] + bC)
+Cₜ = fₜ⊙Cₜ₋₁ + iₜ⊙C̃ₜ
+oₜ = σ(Wo·[hₜ₋₁, xₜ] + bo)
+hₜ = oₜ⊙tanh(Cₜ)
+    </div>
+    <p>La mémoire cellulaire Cₜ permet de propager des informations sur des centaines de pas de temps, crucial pour prédire la dégradation graduelle d'un composant.</p>
+    <h2>Dégradation capacité batterie Li-ion</h2>
+    <p>En entrée : séquence de 50 cycles (capacité, résistance interne, température de charge). En sortie : capacité aux 20 prochains cycles. LSTM atteint RMSE &lt; 1% de capacité nominale sur le dataset NASA PCoE.</p>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+// ── Theme ──
+const root = document.documentElement;
+function toggleTheme(){
+  root.dataset.theme = root.dataset.theme==='dark' ? 'light' : 'dark';
+  try{localStorage.setItem('theme',root.dataset.theme)}catch(e){}
+}
+try{const t=localStorage.getItem('theme');if(t)root.dataset.theme=t}catch(e){}
+
+// ── Sidebar mobile ──
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+// ── Navigation ──
+function nav(pageId, el){
+  // hide all pages
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const target = document.getElementById('page-'+pageId);
+  if(target) target.classList.add('active');
+  // sidebar active state
+  document.querySelectorAll('.sidebar-item').forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
+  else {
+    const found = document.querySelector(`.sidebar-item[data-page="${pageId}"]`);
+    if(found) found.classList.add('active');
+  }
+  // close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  // init viz if needed
+  if(pageId==='linear-regression') setTimeout(lrInit,50);
+  if(pageId==='kmeans') setTimeout(kmInit,50);
+  // hash
+  location.hash = pageId;
+  // highlight code
+  setTimeout(()=>{
+    document.querySelectorAll('.page.active pre code').forEach(b=>{
+      if(!b.dataset.highlighted) hljs.highlightElement(b);
+    });
+  },50);
+}
+
+// ── Tab switching ──
+function tab(btn, panelId){
+  const container = btn.closest('.tabs');
+  const page = btn.closest('.page');
+  container.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  page.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  const panel = document.getElementById(panelId);
+  if(panel){
+    panel.classList.add('active');
+    // highlight on first show
+    panel.querySelectorAll('pre code').forEach(b=>{
+      if(!b.dataset.highlighted) hljs.highlightElement(b);
+    });
+    // init viz
+    if(panelId==='lr-viz') lrInit();
+    if(panelId==='km-viz') kmInit();
+  }
+}
+
+// ══════════════════════════════════════
+// LINEAR REGRESSION VIZ
+// ══════════════════════════════════════
+let lrPoints=[], lrCanvas, lrCtx;
+
+function lrInit(){
+  lrCanvas = document.getElementById('lrCanvas');
+  if(!lrCanvas) return;
+  lrCanvas.width = lrCanvas.offsetWidth;
+  lrCanvas.height = 300;
+  lrCtx = lrCanvas.getContext('2d');
+  // seed with wind power data
+  const seeds=[
+    [4,50],[5,100],[6,190],[7,330],[8,520],[9,740],
+    [10,980],[11,1280],[12,1600],[13,1700],[14,1750],[15,1800]
+  ];
+  lrPoints = seeds.map(([x,y])=>({x,y}));
+  lrDraw();
+  lrCanvas.onclick = e=>{
+    const rect = lrCanvas.getBoundingClientRect();
+    const px = e.clientX - rect.left;
+    const py = e.clientY - rect.top;
+    const x = 3 + (px/lrCanvas.width)*13;
+    const y = 2000 - (py/lrCanvas.height)*2000;
+    lrPoints.push({x,y});
+    lrDraw();
+  };
+}
+
+function lrDraw(){
+  if(!lrCtx) return;
+  const W=lrCanvas.width, H=lrCanvas.height;
+  lrCtx.clearRect(0,0,W,H);
+  lrCtx.fillStyle='#0f172a'; lrCtx.fillRect(0,0,W,H);
+  const toX=x=>(x-3)/13*W;
+  const toY=y=>(1-y/2000)*H;
+
+  // grid
+  lrCtx.strokeStyle='#1e293b'; lrCtx.lineWidth=1;
+  for(let v=3;v<=16;v+=2){
+    lrCtx.beginPath();lrCtx.moveTo(toX(v),0);lrCtx.lineTo(toX(v),H);lrCtx.stroke();
+  }
+  for(let v=0;v<=2000;v+=500){
+    lrCtx.beginPath();lrCtx.moveTo(0,toY(v));lrCtx.lineTo(W,toY(v));lrCtx.stroke();
+  }
+  // axes labels
+  lrCtx.fillStyle='#64748b'; lrCtx.font='11px Inter';
+  for(let v=3;v<=16;v+=2) lrCtx.fillText(v+'m/s',toX(v)-10,H-4);
+  for(let v=500;v<=2000;v+=500) lrCtx.fillText(v+'kW',2,toY(v)+4);
+
+  if(lrPoints.length<2){
+    lrCtx.fillStyle='#2dd4bf';lrCtx.font='14px Inter';
+    lrCtx.fillText('Cliquez pour ajouter des mesures',W/2-120,H/2);
+    return;
+  }
+  // OLS
+  const n=lrPoints.length;
+  const sx=lrPoints.reduce((a,p)=>a+p.x,0)/n;
+  const sy=lrPoints.reduce((a,p)=>a+p.y,0)/n;
+  let num=0,den=0;
+  lrPoints.forEach(p=>{num+=(p.x-sx)*(p.y-sy);den+=(p.x-sx)**2});
+  const b1=num/den, b0=sy-b1*sx;
+  // regression line
+  lrCtx.strokeStyle='#2dd4bf'; lrCtx.lineWidth=2;
+  lrCtx.beginPath();
+  lrCtx.moveTo(toX(3),toY(b0+b1*3));
+  lrCtx.lineTo(toX(16),toY(b0+b1*16));
+  lrCtx.stroke();
+  // residuals
+  lrCtx.strokeStyle='rgba(249,115,22,.5)'; lrCtx.lineWidth=1;
+  lrPoints.forEach(p=>{
+    lrCtx.beginPath();lrCtx.moveTo(toX(p.x),toY(p.y));lrCtx.lineTo(toX(p.x),toY(b0+b1*p.x));lrCtx.stroke();
+  });
+  // points
+  lrPoints.forEach(p=>{
+    lrCtx.fillStyle='#60a5fa';
+    lrCtx.beginPath();lrCtx.arc(toX(p.x),toY(p.y),4,0,Math.PI*2);lrCtx.fill();
+  });
+  // R²
+  const ym=lrPoints.reduce((a,p)=>a+p.y,0)/n;
+  const sst=lrPoints.reduce((a,p)=>a+(p.y-ym)**2,0);
+  const sse=lrPoints.reduce((a,p)=>a+(p.y-b0-b1*p.x)**2,0);
+  const r2=1-sse/sst;
+  document.getElementById('lrInfo').textContent=`n=${n}  |  ŷ=${b0.toFixed(0)}+${b1.toFixed(1)}·v  |  R²=${r2.toFixed(3)}`;
+  const s=document.getElementById('lrStats');
+  s.style.display='block';
+  document.getElementById('lrStatsText').textContent=`P̂(10 m/s) = ${(b0+b1*10).toFixed(0)} kW  |  R² = ${r2.toFixed(4)}  |  Pente = ${b1.toFixed(1)} kW/(m/s)`;
+}
+
+function lrReset(){lrPoints=[];lrDraw();document.getElementById('lrStats').style.display='none';}
+function lrAddNoise(){
+  const ws=[4,5,6,7,8,9,10,11,12,13,14,15];
+  ws.forEach(v=>{
+    const P=Math.min(2000,Math.max(0,v**3*1.2+Math.random()*150-75));
+    lrPoints.push({x:v+(Math.random()-.5)*.3,y:P});
+  });
+  lrDraw();
+}
+
+// ══════════════════════════════════════
+// K-MEANS VIZ
+// ══════════════════════════════════════
+let kmData=[], kmCentroids=[], kmLabels=[], kmIteration=0, kmConverged=false;
+const kmColors=['#2dd4bf','#f97316','#60a5fa','#a78bfa','#f43f5e'];
+
+function kmInit(){
+  const canvas = document.getElementById('kmCanvas');
+  if(!canvas) return;
+  canvas.width=canvas.offsetWidth; canvas.height=300;
+  const K=parseInt(document.getElementById('kmK').value)||3;
+  kmIteration=0; kmConverged=false;
+  // Generate 3 clusters of load profiles
+  kmData=[];
+  const centers=[[0.25,0.25],[0.65,0.65],[0.8,0.25],[0.3,0.75],[0.5,0.5]];
+  for(let k=0;k<K;k++){
+    const cx=centers[k][0], cy=centers[k][1];
+    for(let i=0;i<60;i++){
+      kmData.push({
+        x:Math.min(.95,Math.max(.05,cx+randn()*.08)),
+        y:Math.min(.95,Math.max(.05,cy+randn()*.08))
+      });
+    }
+  }
+  // Random initial centroids
+  kmCentroids=[];
+  for(let k=0;k<K;k++){
+    kmCentroids.push({x:Math.random()*.8+.1,y:Math.random()*.8+.1});
+  }
+  kmLabels=new Array(kmData.length).fill(0);
+  document.getElementById('kmInfo').textContent='Itération 0 — centroïdes initiaux';
+  kmDraw();
+}
+
+function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+function kmStep(){
+  if(kmConverged){document.getElementById('kmInfo').textContent='Convergé ✓';return;}
+  const K=kmCentroids.length;
+  // Assignment
+  const newLabels=kmData.map(p=>{
+    let best=0,bestD=Infinity;
+    kmCentroids.forEach((c,k)=>{
+      const d=(p.x-c.x)**2+(p.y-c.y)**2;
+      if(d<bestD){bestD=d;best=k;}
+    });
+    return best;
+  });
+  // Check convergence
+  const changed=newLabels.some((l,i)=>l!==kmLabels[i]);
+  kmLabels=newLabels;
+  // Update centroids
+  const newCentroids=[];
+  for(let k=0;k<K;k++){
+    const pts=kmData.filter((_,i)=>kmLabels[i]===k);
+    if(pts.length===0){newCentroids.push(kmCentroids[k]);continue;}
+    newCentroids.push({x:pts.reduce((a,p)=>a+p.x,0)/pts.length,y:pts.reduce((a,p)=>a+p.y,0)/pts.length});
+  }
+  kmCentroids=newCentroids;
+  kmIteration++;
+  if(!changed){kmConverged=true;document.getElementById('kmInfo').textContent=`Convergé en ${kmIteration} itérations ✓`;}
+  else document.getElementById('kmInfo').textContent=`Itération ${kmIteration} — ${changed?'points réassignés':'stable'}`;
+  kmDraw();
+}
+
+function kmRun(){let max=50;while(!kmConverged&&max-->0)kmStep();}
+
+function kmDraw(){
+  const canvas=document.getElementById('kmCanvas');
+  if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#0f172a';ctx.fillRect(0,0,W,H);
+  const toX=x=>x*W, toY=y=>(1-y)*H;
+  // points
+  kmData.forEach((p,i)=>{
+    ctx.fillStyle=kmColors[kmLabels[i]%kmColors.length]+'99';
+    ctx.beginPath();ctx.arc(toX(p.x),toY(p.y),4,0,Math.PI*2);ctx.fill();
+  });
+  // centroid lines
+  const K=kmCentroids.length;
+  kmData.forEach((p,i)=>{
+    const c=kmCentroids[kmLabels[i]];
+    ctx.strokeStyle=kmColors[kmLabels[i]%kmColors.length]+'33';
+    ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(toX(p.x),toY(p.y));ctx.lineTo(toX(c.x),toY(c.y));ctx.stroke();
+  });
+  // centroids
+  kmCentroids.forEach((c,k)=>{
+    ctx.fillStyle=kmColors[k%kmColors.length];
+    ctx.strokeStyle='#fff';ctx.lineWidth=2;
+    ctx.beginPath();
+    ctx.moveTo(toX(c.x),toY(c.y)-10);
+    ctx.lineTo(toX(c.x)+9,toY(c.y)+7);
+    ctx.lineTo(toX(c.x)-9,toY(c.y)+7);
+    ctx.closePath();ctx.fill();ctx.stroke();
+  });
+}
+
+// ── Init from hash ──
+window.addEventListener('load',()=>{
+  const hash=location.hash.replace('#','');
+  if(hash){nav(hash);}
+  else{
+    // highlight home code if any
+    document.querySelectorAll('.page.active pre code').forEach(b=>hljs.highlightElement(b));
+  }
+});
+</script>

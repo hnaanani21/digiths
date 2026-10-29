@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>digiths.ma | AI & Digital Twins Solutions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            400: '#2dd4bf',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                            cyan: '#06b6d4',
+                            emerald: '#10b981'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f17;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        canvas { touch-action: none; }
+        .tool-card:hover { transform: translateY(-4px); transition: transform 0.2s ease; }
+    </style>
+</head>
+<body class="bg-[#0b0f17] text-gray-100 antialiased">
+
+    <!-- HEADER -->
+    <header class="fixed top-0 left-0 w-full z-50 glass-card border-b border-gray-800/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-500 to-cyan-500 flex items-center justify-center text-slate-900 font-extrabold text-xl">d</div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold text-white">digiths<span class="text-brand-400">.ma</span></span>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">AI & Digital Twins</span>
+                </div>
+            </a>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-gray-300">
+                <a href="#competencies" class="hover:text-brand-400 transition-colors">Compétences</a>
+                <a href="#outils" class="hover:text-brand-400 transition-colors">Outils</a>
+                <a href="#digital-twin-demo" class="hover:text-brand-400 transition-colors">Démo 3D</a>
+                <a href="cours.html" class="flex items-center gap-1.5 text-brand-400 hover:text-brand-300 font-semibold">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    Cours & Académie
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 flex items-center min-h-screen">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                        L'Intelligence Artificielle & les <span class="gradient-text">Jumeaux Numériques</span> au service de l'Industrie.
+                    </h1>
+                    <p class="text-lg text-gray-400 max-w-2xl mx-auto lg:mx-0">
+                        <strong class="text-gray-200">digiths.ma</strong> transforme vos données complexes en décisions stratégiques grâce aux modèles PINNs et à la maintenance prédictive.
+                    </p>
+                    <div class="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="cours.html" class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-slate-950 font-bold flex items-center gap-2">
+                            <i data-lucide="graduation-cap" class="w-5 h-5"></i>
+                            Accéder aux Cours (0 to Expert)
+                        </a>
+                        <a href="ml-notebook.html" class="px-8 py-4 rounded-xl border border-brand-500/40 hover:border-brand-400 text-brand-300 font-semibold flex items-center gap-2 transition-colors">
+                            <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                            ML Notebook Interactif
+                        </a>
+                    </div>
+                </div>
+                <div class="lg:col-span-5 relative">
+                    <div class="glass-card p-6 rounded-3xl border border-gray-800 shadow-2xl">
+                        <div id="canvas3dContainer" class="w-full h-[350px] bg-slate-950 rounded-2xl relative">
+                            <canvas id="digitalTwinCanvas" class="w-full h-full block"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUTILS INTERACTIFS -->
+    <section id="outils" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold uppercase mb-4">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                    Outils Pédagogiques Interactifs
+                </div>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white">Apprenez par la pratique</h2>
+                <p class="mt-3 text-gray-400 max-w-xl mx-auto">Des environnements interactifs pour maîtriser l'IA industrielle, du Python de base aux réseaux de neurones physiques.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- CARD : ML Notebook -->
+                <a href="ml-notebook.html" class="tool-card glass-card p-8 rounded-3xl border border-brand-500/30 hover:border-brand-400/60 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-brand-500/10 blur-[60px] pointer-events-none group-hover:bg-brand-500/20 transition-all"></div>
+                    <div class="flex items-start gap-4 relative z-10">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-brand-500/30">
+                            <i data-lucide="brain-circuit" class="w-7 h-7 text-slate-900"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-xl font-bold text-white">ML Notebook Interactif</h3>
+                                <span class="px-2 py-0.5 rounded-md bg-brand-500/20 text-brand-400 text-[10px] font-bold uppercase">Nouveau</span>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed">16 algorithmes de Machine Learning avec visualisations animées et exemples industriels : électrolyseurs PEM, turbines éoliennes, analyse vibratoire, PINNs.</p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Régression</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Classification</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Clustering</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Deep Learning</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">PINNs</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-center gap-2 text-brand-400 text-sm font-semibold relative z-10">
+                        <span>Explorer le notebook</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+                <!-- CARD : Python pour l'Ingénieur -->
+                <a href="cours.html" class="tool-card glass-card p-8 rounded-3xl border border-gray-800 hover:border-cyan-500/40 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-cyan-500/5 blur-[60px] pointer-events-none group-hover:bg-cyan-500/10 transition-all"></div>
+                    <div class="flex items-start gap-4 relative z-10">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-cyan-500/30">
+                            <i data-lucide="code-2" class="w-7 h-7 text-slate-900"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-xl font-bold text-white">Python pour l'Ingénieur</h3>
+                                <span class="px-2 py-0.5 rounded-md bg-cyan-500/20 text-cyan-400 text-[10px] font-bold uppercase">Niveau 01</span>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed">4 modules pratiques : programmation Python, NumPy, Pandas et visualisation scientifique appliqués aux capteurs IoT et systèmes industriels.</p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Python</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">NumPy</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Pandas</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Matplotlib</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Labs Jupyter</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-center gap-2 text-cyan-400 text-sm font-semibold relative z-10">
+                        <span>Voir l'académie</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-8 bg-slate-950 border-t border-gray-800 text-center text-xs text-gray-500">
+        <p>© 2026 digiths.ma • Tous droits réservés.</p>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        let scene, camera, renderer, coreMesh;
+        function init3D() {
+            const container = document.getElementById('canvas3dContainer');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.set(0, 0, 7);
+            renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('digitalTwinCanvas'), antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+            coreMesh = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5, 3), new THREE.MeshStandardMaterial({ color: 0x14b8a6, wireframe: true }));
+            scene.add(coreMesh);
+            animate();
+        }
+        function animate() {
+            requestAnimationFrame(animate);
+            if(coreMesh) { coreMesh.rotation.x += 0.005; coreMesh.rotation.y += 0.01; }
+            renderer.render(scene, camera);
+        }
+        window.onload = init3D;
+    </script>
+</body>
+</html>

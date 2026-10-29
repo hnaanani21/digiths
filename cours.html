@@ -27,6 +27,7 @@
         body { font-family: 'Inter', sans-serif; background-color: #0b0f17; color: #f3f4f6; overflow-x: hidden; }
         .glass-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .gradient-text { background: linear-gradient(135deg, #2dd4bf 0%, #06b6d4 50%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tool-card:hover { transform: translateY(-3px); transition: transform 0.2s ease; }
     </style>
 </head>
 <body class="bg-[#0b0f17] text-gray-100 antialiased">
@@ -46,6 +47,10 @@
                 <a href="cours.html" class="text-brand-400 font-semibold flex items-center gap-1.5">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
                     <span data-i18n="nav_courses">Cours & Académie</span>
+                </a>
+                <a href="ml-notebook.html" class="hover:text-brand-400 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="brain-circuit" class="w-4 h-4"></i>
+                    ML Notebook
                 </a>
             </nav>
             <!-- LANGUAGE SELECTOR -->
@@ -75,14 +80,52 @@
         </div>
     </section>
 
+    <!-- ML NOTEBOOK BANNER -->
+    <section class="pb-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="ml-notebook.html" class="tool-card block glass-card p-6 sm:p-8 rounded-3xl border border-brand-500/40 hover:border-brand-400/70 shadow-2xl relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-brand-500/10 blur-[80px] pointer-events-none group-hover:bg-brand-500/15 transition-all"></div>
+                <div class="absolute top-0 left-0 w-32 h-32 bg-cyan-500/5 blur-[60px] pointer-events-none"></div>
+                <div class="flex flex-col md:flex-row md:items-center gap-6 relative z-10">
+                    <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-500 to-cyan-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-brand-500/30">
+                        <i data-lucide="brain-circuit" class="w-8 h-8 text-slate-900"></i>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex flex-wrap items-center gap-3 mb-2">
+                            <h2 class="text-2xl font-extrabold text-white">ML Notebook Interactif</h2>
+                            <span class="px-3 py-1 rounded-lg bg-brand-500/20 text-brand-400 text-xs font-bold uppercase border border-brand-500/30">Nouveau</span>
+                            <span class="px-3 py-1 rounded-lg bg-slate-800 text-gray-400 text-xs font-mono">16 algorithmes</span>
+                        </div>
+                        <p class="text-gray-400 text-sm leading-relaxed max-w-3xl">
+                            Une référence interactive pour ingénieurs et chercheurs : visualisations animées, code Python prêt à l'emploi et exemples industriels (électrolyseurs PEM, turbines éoliennes, CMAPSS NASA, spectroscopie Raman, PINNs).
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-gray-700 text-xs text-gray-300">Régression & Classification</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-gray-700 text-xs text-gray-300">Clustering & Réduction</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-gray-700 text-xs text-gray-300">Réseaux de Neurones</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-gray-700 text-xs text-gray-300">PINNs Exclusif</span>
+                            <span class="px-2.5 py-1 rounded-lg bg-slate-800/80 border border-gray-700 text-xs text-gray-300">Code Python</span>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-brand-500 hover:bg-brand-600 text-slate-900 font-bold text-sm transition-all shadow-lg shadow-brand-500/20">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            Ouvrir le Notebook
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </section>
+
     <!-- LISTE DES COURS -->
     <section class="py-12 relative">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-            
+
             <!-- NIVEAU 01 : DÉTAILLÉ -->
             <div class="glass-card p-8 sm:p-10 rounded-3xl border border-brand-500/30 shadow-xl relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-48 h-48 bg-brand-500/10 blur-[60px] pointer-events-none"></div>
-                
+
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-6 border-b border-gray-800">
                     <div>
                         <div class="flex items-center gap-3 mb-2">
@@ -177,14 +220,28 @@
                 </div>
             </div>
 
-            <!-- NIVEAU 02 -->
-            <div class="glass-card p-8 rounded-3xl border border-gray-800 opacity-75">
-                <div class="flex items-center gap-3 mb-2">
-                    <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-mono text-sm font-bold">Niveau 02</span>
-                    <span class="text-xs uppercase text-gray-400 font-semibold">Intermédiaire</span>
+            <!-- NIVEAU 02 : ML NOTEBOOK -->
+            <div class="glass-card p-8 sm:p-10 rounded-3xl border border-cyan-500/30 shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-cyan-500/8 blur-[60px] pointer-events-none"></div>
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <span class="px-3 py-1 rounded-lg bg-cyan-500/10 text-cyan-400 font-mono text-sm font-bold">Niveau 02</span>
+                            <span class="text-xs uppercase text-gray-400 font-semibold">Intermédiaire</span>
+                        </div>
+                        <h3 class="text-2xl font-bold text-white mb-2">Machine Learning & Deep Learning</h3>
+                        <p class="text-gray-400 text-sm">Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.</p>
+                    </div>
                 </div>
-                <h3 class="text-2xl font-bold text-white mb-2">Machine Learning & Deep Learning</h3>
-                <p class="text-gray-400 text-sm">Scikit-Learn, PyTorch, réseaux de neurones et séries temporelles pour la maintenance prédictive.</p>
+                <div class="mt-4 flex flex-wrap gap-4 items-center">
+                    <a href="ml-notebook.html" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/30 font-bold text-sm transition-all">
+                        <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+                        ML Notebook Interactif
+                    </a>
+                    <span class="text-xs text-gray-500 flex items-center gap-1.5">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i> 16 algorithmes · Visualisations · Code Python
+                    </span>
+                </div>
             </div>
 
             <!-- NIVEAU 03 -->
@@ -227,7 +284,7 @@
             const box = document.getElementById('aiResponseBox');
             box.classList.remove('hidden');
             box.innerHTML = "<span class='text-brand-400 animate-pulse'>Génération de l'explication...</span>";
-            
+
             setTimeout(() => {
                 box.innerHTML = explanations[topic].replace(/\n/g, '<br>');
             }, 300);
