@@ -1,960 +1,1422 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Digital Twin AI Studio — UM6P LIMSET</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d1117;
-    --bg2: #161b22;
-    --bg3: #1c2230;
-    --bg4: #21273a;
-    --border: #30363d;
-    --border2: #3a4455;
-    --text: #e6edf3;
-    --text2: #8b949e;
-    --text3: #6e7681;
-    --green: #3fb950;
-    --green-dim: #1a3a1e;
-    --blue: #58a6ff;
-    --blue-dim: #1a2a4a;
-    --purple: #bc8cff;
-    --purple-dim: #2a1a4a;
-    --orange: #f0883e;
-    --orange-dim: #3a2010;
-    --teal: #39d353;
-    --red: #f85149;
-    --yellow: #e3b341;
-    --sidebar-w: 200px;
-    --header-h: 56px;
-    --nav-h: 48px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 12px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2230;--bg4:#21273a;
+  --border:#30363d;--border2:#3a4455;
+  --text:#e6edf3;--text2:#8b949e;--text3:#6e7681;
+  --green:#3fb950;--green-d:#1a3a1e;
+  --blue:#58a6ff;--blue-d:#1a2a4a;
+  --purple:#bc8cff;--purple-d:#2a1a4a;
+  --orange:#f0883e;--orange-d:#3a2010;
+  --teal:#39d353;--red:#f85149;--yellow:#e3b341;
+  --sw:200px;--hh:54px;--nh:44px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:12px;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+button,select{font-family:'Inter',sans-serif;cursor:pointer}
+a{text-decoration:none;color:inherit}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
-  /* HEADER */
-  header {
-    height: var(--header-h);
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center;
-    padding: 0 16px; gap: 12px; flex-shrink: 0;
-    z-index: 100;
-  }
-  .logo-block { display: flex; align-items: center; gap: 10px; min-width: 190px; }
-  .logo-text-um6p { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
-  .logo-text-limset { font-size: 8px; color: var(--text2); line-height: 1.3; }
-  .logo-sep { width: 1px; height: 32px; background: var(--border2); }
-  .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #1a4a3a, #0f2a22); border: 1px solid #2a6a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .header-title { flex: 1; }
-  .header-title h1 { font-size: 18px; font-weight: 700; color: #fff; }
-  .header-subtitle { font-size: 10px; color: var(--text2); margin-top: 1px; }
-  .header-subtitle span { margin: 0 4px; }
-  .search-bar { flex: 0 0 320px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; padding: 0 10px; gap: 6px; height: 32px; }
-  .search-bar input { background: none; border: none; outline: none; color: var(--text); font-size: 11px; flex: 1; }
-  .search-bar input::placeholder { color: var(--text3); }
-  .header-icons { display: flex; align-items: center; gap: 10px; }
-  .notif-btn { width: 30px; height: 30px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 14px; }
-  .notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; background: var(--orange); border-radius: 50%; border: 1px solid var(--bg2); }
-  .user-block { display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px 4px 4px; cursor: pointer; }
-  .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #2a4a8a, #1a3a6a); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: var(--blue); }
-  .user-name { font-size: 11px; font-weight: 600; }
-  .user-role { font-size: 9px; color: var(--text2); }
-  .badge-green { background: linear-gradient(135deg, #1a3a2a, #0f2a1a); border: 1px solid #2a5a3a; border-radius: 6px; padding: 4px 8px; font-size: 8px; color: #3fb950; line-height: 1.4; text-align: right; }
+/* ── HEADER ── */
+header{height:var(--hh);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px;flex-shrink:0;z-index:200}
+.logo{display:flex;align-items:center;gap:8px;min-width:180px}
+.logo-um6p{font-size:16px;font-weight:700;color:#fff}
+.logo-limset{font-size:7.5px;color:var(--text2);line-height:1.35}
+.logo-div{width:1px;height:30px;background:var(--border2)}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,#1a4a3a,#0f2a22);border:1px solid #2a6a4a;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.hd-title{flex:1}
+.hd-title h1{font-size:17px;font-weight:700;color:#fff}
+.hd-sub{font-size:9.5px;color:var(--text2);margin-top:1px}
+.hd-sub span{margin:0 3px;color:var(--border2)}
+.search{flex:0 0 280px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;display:flex;align-items:center;padding:0 8px;gap:6px;height:30px}
+.search input{background:none;border:none;outline:none;color:var(--text);font-size:11px;flex:1;font-family:inherit}
+.search input::placeholder{color:var(--text3)}
+.notif-wrap{position:relative}
+.icon-btn{width:28px;height:28px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;transition:.15s}
+.icon-btn:hover{background:var(--bg4);border-color:var(--border2)}
+.notif-dot{position:absolute;top:4px;right:4px;width:7px;height:7px;background:var(--orange);border-radius:50%;border:1.5px solid var(--bg2)}
+.user-chip{display:flex;align-items:center;gap:7px;background:var(--bg3);border:1px solid var(--border);border-radius:7px;padding:3px 9px 3px 3px;cursor:pointer;transition:.15s}
+.user-chip:hover{border-color:var(--border2)}
+.avatar{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#2a4a8a,#1a3a6a);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:10px;color:var(--blue)}
+.user-name{font-size:10.5px;font-weight:600}
+.user-role{font-size:8.5px;color:var(--text2)}
+.hd-badge{background:linear-gradient(135deg,#1a3a2a,#0f2a1a);border:1px solid #2a5a3a;border-radius:5px;padding:3px 7px;font-size:7.5px;color:#3fb950;line-height:1.45;text-align:right}
 
-  /* NAV */
-  nav {
-    height: var(--nav-h);
-    background: var(--bg2);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center;
-    padding: 0 16px 0 calc(var(--sidebar-w) + 16px);
-    gap: 2px; flex-shrink: 0;
-  }
-  .nav-item { padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--text2); display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: all .15s; }
-  .nav-item:hover { background: var(--bg3); color: var(--text); }
-  .nav-item.active { background: var(--blue-dim); color: var(--blue); }
-  .nav-item .ni { font-size: 13px; }
-  .nav-sep { color: var(--border2); margin: 0 2px; }
-  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
-  .online-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+/* ── NAV ── */
+nav{height:var(--nh);background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 12px 0 calc(var(--sw)+12px);gap:1px;flex-shrink:0}
+.nav-item{display:flex;align-items:center;gap:5px;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:11.5px;font-weight:500;color:var(--text2);white-space:nowrap;transition:.15s;border:none;background:none}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:var(--blue-d);color:var(--blue)}
+.nav-icon{font-size:12px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:7px;font-size:10px;color:var(--text2)}
+.online-pill{display:flex;align-items:center;gap:4px;background:var(--green-d);border:1px solid #2a6a3a;border-radius:10px;padding:2px 8px;color:var(--green);font-size:10px;font-weight:600}
+.pulse{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 
-  /* MAIN LAYOUT */
-  .main-layout { display: flex; flex: 1; overflow: hidden; }
+/* ── LAYOUT ── */
+.layout{display:flex;flex:1;overflow:hidden}
 
-  /* SIDEBAR */
-  aside {
-    width: var(--sidebar-w);
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    flex-shrink: 0; overflow-y: auto;
-    padding-bottom: 12px;
-  }
-  .sidebar-section { padding: 12px 8px 4px; }
-  .sidebar-label { font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; padding: 0 6px 6px; }
-  .sidebar-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; cursor: pointer; color: var(--text2); font-size: 11px; font-weight: 500; transition: all .15s; }
-  .sidebar-item:hover { background: var(--bg3); color: var(--text); }
-  .sidebar-item.active { background: #1a2a4a; color: var(--blue); }
-  .sidebar-item .si { font-size: 13px; }
-  .sidebar-footer { margin-top: auto; padding: 12px 8px; border-top: 1px solid var(--border); }
-  .footer-tagline { font-size: 9px; color: var(--text3); text-align: center; line-height: 1.5; }
+/* ── SIDEBAR ── */
+aside{width:var(--sw);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sb-section{padding:10px 6px 2px}
+.sb-label{font-size:8.5px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;padding:0 6px 5px}
+.sb-item{display:flex;align-items:center;gap:7px;padding:6px 7px;border-radius:5px;cursor:pointer;color:var(--text2);font-size:11px;font-weight:500;transition:.15s;border:none;background:none;width:100%;text-align:left}
+.sb-item:hover{background:var(--bg3);color:var(--text)}
+.sb-item.active{background:#1a2a4a;color:var(--blue)}
+.sb-item.active-green{background:var(--green-d);color:var(--green)}
+.sb-footer{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border);font-size:8.5px;color:var(--text3);text-align:center;line-height:1.5}
 
-  /* CONTENT */
-  .content { flex: 1; overflow-y: auto; background: var(--bg); padding: 12px; display: grid; grid-template-columns: 1fr 1fr 300px; grid-template-rows: auto auto auto auto; gap: 10px; align-content: start; }
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;background:var(--bg);padding:10px;display:grid;grid-template-columns:220px 1fr 270px;grid-template-rows:auto auto auto auto;gap:9px;align-content:start}
 
-  /* CARDS */
-  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
-  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; border-bottom: 1px solid var(--border); }
-  .card-title { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .card-title .ct { font-size: 14px; }
-  .card-body { padding: 12px 14px; }
+/* ── CARD ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:9px;overflow:hidden}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:9px 12px 8px;border-bottom:1px solid var(--border)}
+.ct{font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:5px}
+.ct small{font-size:9px;color:var(--text2);font-weight:400}
+.cb{padding:10px 12px}
 
-  /* BATTERY CARD */
-  .battery-card { grid-column: 1; grid-row: 1 / 3; }
-  .battery-live-badge { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--green); font-weight: 600; }
-  .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
-  .battery-visual { width: 100%; height: 160px; background: linear-gradient(135deg, #1a1f2e, #0f1520); border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
-  .battery-img { font-size: 72px; filter: drop-shadow(0 0 20px #3fb95044); }
-  .battery-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 60%, #3fb95011 0%, transparent 70%); }
-  .btn-3d { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 12px; color: var(--text); font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0 auto; font-family: inherit; transition: all .15s; }
-  .btn-3d:hover { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
-  .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
-  .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; background: var(--bg3); border-radius: 5px; }
-  .spec-label { color: var(--text2); font-size: 10px; }
-  .spec-val { font-size: 11px; font-weight: 600; color: var(--text); }
-  .spec-val.green { color: var(--green); }
-  .spec-val.orange { color: var(--orange); }
+/* LIVE */
+.live-badge{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--green);font-weight:600}
 
-  /* MODEL BUILDER */
-  .builder-card { grid-column: 2; grid-row: 1; }
-  .builder-tabs { display: flex; gap: 4px; }
-  .btab { padding: 4px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 500; }
-  .btab.active { background: var(--green); color: #000; }
-  .btab:not(.active) { background: var(--bg3); color: var(--text2); }
-  .flow-canvas { padding: 12px 10px; display: flex; align-items: center; justify-content: space-around; min-height: 120px; }
-  .flow-node { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-  .node-box { width: 72px; height: 52px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 9px; font-weight: 600; text-align: center; line-height: 1.3; }
-  .node-box.phys { background: var(--blue-dim); border: 1px solid #3a6aaa; color: var(--blue); }
-  .node-box.ai { background: var(--purple-dim); border: 1px solid #6a3aaa; color: var(--purple); }
-  .node-box.ai.sel { background: #2a1a5a; border-color: var(--purple); box-shadow: 0 0 10px #bc8cff33; }
-  .node-box.twin { background: var(--green-dim); border: 1px solid #2a6a3a; color: var(--green); }
-  .node-icon { font-size: 18px; }
-  .flow-arrow { color: var(--text3); font-size: 16px; }
-  .flow-actions { display: flex; flex-direction: column; gap: 6px; padding: 0 8px 8px; }
-  .flow-btn { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; font-size: 10px; color: var(--text2); cursor: pointer; font-family: inherit; transition: all .15s; }
-  .flow-btn:hover { background: var(--bg4); color: var(--text); }
-  .btn-run { background: var(--green); color: #000; font-weight: 700; font-size: 11px; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-family: inherit; }
-  .btn-run:hover { background: #4aff60; }
-  .library-panel { padding: 4px 14px 0; }
-  .lib-section { margin-bottom: 8px; }
-  .lib-section-title { font-size: 9px; color: var(--text3); font-weight: 600; margin-bottom: 4px; }
-  .lib-items { display: flex; flex-wrap: wrap; gap: 3px; }
-  .lib-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 9px; color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 3px; }
-  .lib-chip:hover { border-color: var(--blue); color: var(--blue); }
+/* BATTERY */
+.bat-card{grid-column:1;grid-row:1/3}
+.bat-visual{width:100%;height:150px;background:linear-gradient(135deg,#1a1f2e,#0f1520);border-radius:7px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);margin-bottom:8px;position:relative;overflow:hidden;cursor:pointer;transition:.2s}
+.bat-visual:hover{border-color:var(--blue)}
+.bat-emoji{font-size:64px;filter:drop-shadow(0 0 18px #3fb95044)}
+.bat-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 60%,#3fb95011 0%,transparent 70%)}
+.spec-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:8px}
+.spec{display:flex;justify-content:space-between;align-items:center;padding:4px 7px;background:var(--bg3);border-radius:4px}
+.spec-l{color:var(--text2);font-size:9.5px}
+.spec-v{font-size:10.5px;font-weight:600}
+.spec-v.g{color:var(--green)}.spec-v.o{color:var(--orange)}.spec-v.b{color:var(--blue)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:6px;font-size:11px;font-weight:500;padding:6px 12px;cursor:pointer;transition:.15s;border:1px solid transparent}
+.btn-ghost{background:var(--bg3);border-color:var(--border2);color:var(--text2)}
+.btn-ghost:hover{background:var(--blue-d);border-color:var(--blue);color:var(--blue)}
+.btn-green{background:var(--green);color:#000;font-weight:700;border-color:transparent;font-size:11.5px}
+.btn-green:hover{background:#4aff60}
+.btn-orange{background:var(--orange);color:#000;font-weight:700;border-color:transparent}
+.btn-orange:hover{filter:brightness(1.1)}
+.btn-sm{padding:3px 8px;font-size:9.5px;border-radius:3px}
 
-  /* KEY INDICATORS */
-  .kpi-card { grid-column: 1; grid-row: 3; }
-  .kpi-header-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; border-bottom: 1px solid var(--border); }
-  .kpi-title { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .rt-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--green); }
-  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px 14px; }
-  .kpi-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .kpi-label { font-size: 9px; color: var(--text2); text-align: center; line-height: 1.3; }
-  .kpi-value { font-size: 18px; font-weight: 700; }
-  .kpi-value.green { color: var(--green); }
-  .kpi-value.blue { color: var(--blue); }
-  .ring { width: 62px; height: 62px; position: relative; }
-  .ring svg { transform: rotate(-90deg); }
-  .ring-bg { fill: none; stroke: var(--bg3); stroke-width: 5; }
-  .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dasharray .8s ease; }
-  .ring-fill.green { stroke: var(--green); }
-  .ring-fill.blue { stroke: var(--blue); }
-  .ring-fill.orange { stroke: var(--orange); }
-  .ring-fill.teal { stroke: var(--teal); }
-  .ring-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+/* BUILDER */
+.builder-card{grid-column:2;grid-row:1}
+.tab-row{display:flex;gap:3px}
+.tab{padding:3px 10px;border-radius:3px;font-size:10px;cursor:pointer;font-weight:500;transition:.15s}
+.tab.on{background:var(--green);color:#000}
+.tab.off{background:var(--bg3);color:var(--text2)}
+.tab.off:hover{background:var(--bg4)}
+.flow-wrap{display:flex;min-height:110px}
+.lib-panel{padding:6px 10px;border-right:1px solid var(--border);width:130px;flex-shrink:0}
+.lib-title{font-size:9px;color:var(--text2);font-weight:600;margin-bottom:5px}
+.lib-sec{margin-bottom:7px}
+.lib-sec-t{font-size:8.5px;color:var(--text3);font-weight:600;margin-bottom:3px}
+.chip{display:inline-flex;align-items:center;gap:2px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:2px 5px;font-size:8.5px;color:var(--text2);cursor:pointer;margin:1px;transition:.15s}
+.chip:hover,.chip.sel{border-color:var(--blue);color:var(--blue);background:var(--blue-d)}
+.flow-canvas{flex:1;display:flex;flex-direction:column;justify-content:center;padding:8px}
+.flow-row{display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:4px}
+.node{display:flex;flex-direction:column;align-items:center;justify-content:center;width:68px;height:46px;border-radius:7px;font-size:8.5px;font-weight:600;text-align:center;line-height:1.3;gap:2px;transition:.2s;cursor:pointer}
+.node:hover{transform:translateY(-1px);filter:brightness(1.1)}
+.node.phys{background:var(--blue-d);border:1px solid #3a6aaa;color:var(--blue)}
+.node.ai{background:var(--purple-d);border:1px solid #6a3aaa;color:var(--purple)}
+.node.ai.sel{background:#2a1a5a;border-color:var(--purple);box-shadow:0 0 8px #bc8cff33}
+.node.twin{background:var(--green-d);border:1px solid #2a6a3a;color:var(--green)}
+.arrow{color:var(--text3);font-size:13px}
+.flow-btns{display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px;border-top:1px solid var(--border)}
 
-  /* LIVE MONITORING */
-  .monitor-card { grid-column: 1 / 3; grid-row: 4; }
-  .monitor-tabs { display: flex; gap: 4px; }
-  .mtab { padding: 3px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; }
-  .mtab.active { background: var(--green); color: #000; font-weight: 600; }
-  .mtab:not(.active) { background: var(--bg3); color: var(--text2); }
-  .charts-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 14px; }
-  .mini-chart { background: var(--bg3); border-radius: 6px; padding: 8px; }
-  .mini-chart-title { font-size: 10px; color: var(--text2); margin-bottom: 6px; }
-  canvas.sparkline { width: 100%; height: 50px; display: block; }
+/* COPILOT */
+.copilot-card{grid-column:3;grid-row:1/4;display:flex;flex-direction:column}
+.cop-hd{padding:9px 12px;border-bottom:1px solid var(--border)}
+.cop-brand{font-size:8.5px;color:var(--text3)}
+.cop-title{font-size:12.5px;font-weight:700}
+.cop-sub{font-size:9.5px;color:var(--text2)}
+.cop-msgs{flex:1;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:5px;min-height:0}
+.msg{display:flex;gap:5px;align-items:flex-start}
+.msg-av{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0}
+.msg-av.user{background:linear-gradient(135deg,#2a4a8a,#1a3a6a);color:var(--blue)}
+.msg-av.bot{background:linear-gradient(135deg,#1a4a3a,#0f2a22);color:var(--green)}
+.msg-bub{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-size:10.5px;line-height:1.5}
+.msg-bub.bot{border-color:var(--green-d)}
+.qa-list{padding:0 10px 6px;display:flex;flex-direction:column;gap:3px}
+.qa-btn{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:6px 9px;font-size:10px;color:var(--text2);cursor:pointer;text-align:left;display:flex;align-items:center;gap:5px;transition:.15s;width:100%}
+.qa-btn:hover{background:var(--blue-d);border-color:var(--blue);color:var(--blue)}
+.cop-input-wrap{margin:6px 10px 10px;display:flex;background:var(--bg3);border:1px solid var(--border);border-radius:7px;overflow:hidden}
+.cop-input{flex:1;background:none;border:none;outline:none;padding:8px 10px;font-size:10.5px;color:var(--text);font-family:inherit}
+.cop-input::placeholder{color:var(--text3)}
+.cop-send{width:28px;background:var(--green);border:none;cursor:pointer;color:#000;font-size:13px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.cop-send:hover{background:#4aff60}
 
-  /* AI AGENTS HUB */
-  .agents-card { grid-column: 2; grid-row: 2 / 4; }
-  .agent-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 14px; }
-  .agent-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 8px; text-align: center; }
-  .agent-icon { font-size: 20px; margin-bottom: 4px; }
-  .agent-name { font-size: 10px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-  .agent-status { font-size: 9px; display: flex; align-items: center; justify-content: center; gap: 3px; margin-bottom: 3px; }
-  .agent-status.done { color: var(--green); }
-  .agent-status.run { color: var(--orange); }
-  .agent-status.wait { color: var(--text3); }
-  .agent-status.ready { color: var(--blue); }
-  .agent-desc { font-size: 8px; color: var(--text3); line-height: 1.4; }
-  .view-logs-btn { margin: 0 14px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; padding: 5px 12px; font-size: 10px; color: var(--text2); cursor: pointer; font-family: inherit; }
+/* KPI */
+.kpi-card{grid-column:1;grid-row:3}
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px 12px}
+.kpi-item{display:flex;flex-direction:column;align-items:center;gap:4px}
+.kpi-lbl{font-size:8.5px;color:var(--text2);text-align:center;line-height:1.3}
+.ring-wrap{position:relative;width:56px;height:56px}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:var(--bg3);stroke-width:5}
+.ring-f{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dasharray .8s}
+.ring-ctr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700}
 
-  /* AUTO DISCOVERY */
-  .discovery-card { grid-column: 2; grid-row: 4; }
-  .objectives-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 14px 4px; }
-  .obj-col-title { font-size: 9px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
-  .obj-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text); margin-bottom: 3px; }
-  .check { color: var(--green); font-size: 10px; }
-  .check-off { color: var(--border2); font-size: 10px; }
-  .btn-autodiscover { margin: 8px 14px; background: linear-gradient(135deg, #1a4a3a, #0f3a2a); border: 1px solid #2a6a4a; border-radius: 7px; padding: 10px; color: var(--green); font-size: 11px; font-weight: 700; cursor: pointer; width: calc(100% - 28px); font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s; }
-  .btn-autodiscover:hover { background: linear-gradient(135deg, #2a6a4a, #1a5a3a); }
+/* AGENTS */
+.agents-card{grid-column:2;grid-row:2/4}
+.agents-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:8px 10px}
+.agent{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:7px;text-align:center;cursor:pointer;transition:.15s}
+.agent:hover{border-color:var(--border2);transform:translateY(-1px)}
+.agent-ico{font-size:18px;margin-bottom:3px}
+.agent-name{font-size:9.5px;font-weight:600;margin-bottom:2px}
+.agent-st{font-size:8.5px;display:flex;align-items:center;justify-content:center;gap:3px;margin-bottom:3px}
+.st-done{color:var(--green)}.st-run{color:var(--orange)}.st-wait{color:var(--text3)}.st-ready{color:var(--blue)}
+.agent-desc{font-size:8px;color:var(--text3);line-height:1.35}
+.viz3d-wrap{border-top:1px solid var(--border);padding:8px 10px}
+.viz3d-title{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:600;margin-bottom:5px}
+.viz3d-box{position:relative;height:100px;background:linear-gradient(135deg,#080c14,#0f1520);border-radius:6px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);overflow:hidden;cursor:pointer;transition:.2s}
+.viz3d-box:hover{border-color:var(--orange)}
+.colorbar{position:absolute;right:8px;top:6px;bottom:6px;width:10px;background:linear-gradient(to bottom,#f85149,#f0883e,#e3b341,#39d353,#58a6ff);border-radius:2px}
+.cb-labels{position:absolute;right:22px;top:6px;bottom:6px;display:flex;flex-direction:column;justify-content:space-between}
+.cb-labels span{font-size:7.5px;color:var(--text2)}
 
-  /* AI COPILOT */
-  .copilot-card { grid-column: 3; grid-row: 1 / 4; display: flex; flex-direction: column; }
-  .copilot-header { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-  .copilot-brand { font-size: 9px; color: var(--text3); }
-  .copilot-title { font-size: 13px; font-weight: 700; color: var(--text); }
-  .copilot-sub { font-size: 10px; color: var(--text2); }
-  .copilot-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  .copilot-msg { padding: 10px 14px; }
-  .msg-user { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 8px; }
-  .msg-avatar { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #2a4a8a, #1a3a6a); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--blue); }
-  .msg-bubble { background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--text); }
-  .quick-actions { padding: 0 14px 8px; display: flex; flex-direction: column; gap: 4px; }
-  .qa-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; padding: 7px 10px; font-size: 10px; color: var(--text2); cursor: pointer; text-align: left; display: flex; align-items: center; gap: 5px; font-family: inherit; transition: all .15s; }
-  .qa-btn:hover { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
-  .qa-icon { font-size: 11px; }
-  .copilot-input { margin: auto 14px 14px; display: flex; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-  .copilot-input input { flex: 1; background: none; border: none; outline: none; padding: 9px 12px; font-size: 11px; color: var(--text); font-family: inherit; }
-  .copilot-input input::placeholder { color: var(--text3); }
-  .copilot-send { width: 30px; background: var(--green); border: none; cursor: pointer; color: #000; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+/* MONITOR */
+.monitor-card{grid-column:1/3;grid-row:4}
+.monitor-tabs{display:flex;gap:3px}
+.charts-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:8px 10px}
+.mini-chart{background:var(--bg3);border-radius:5px;padding:7px;cursor:pointer;transition:.15s}
+.mini-chart:hover{border:1px solid var(--border2)}
+.mc-title{font-size:9.5px;color:var(--text2);margin-bottom:5px}
 
-  /* 3D VIZ */
-  .viz3d-card { grid-column: 3; grid-row: 4; }
-  .viz3d-body { position: relative; height: 130px; background: linear-gradient(135deg, #080c14, #0f1520); }
-  .viz3d-img { font-size: 60px; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
-  .colorbar { position: absolute; right: 10px; top: 8px; bottom: 8px; width: 14px; display: flex; flex-direction: column; border-radius: 4px; overflow: hidden; }
-  .colorbar-labels { position: absolute; right: 28px; top: 8px; bottom: 8px; display: flex; flex-direction: column; justify-content: space-between; }
-  .colorbar-labels span { font-size: 8px; color: var(--text2); text-align: right; }
-  .fullscreen-btn { position: absolute; top: 8px; left: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px; font-size: 9px; color: var(--text2); cursor: pointer; }
+/* DISCOVERY */
+.disc-card{grid-column:2;grid-row:4}
+.obj-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:7px 12px 4px}
+.obj-col-t{font-size:8.5px;font-weight:600;color:var(--text2);margin-bottom:3px}
+.obj-item{display:flex;align-items:center;gap:4px;font-size:9.5px;margin-bottom:2px;cursor:pointer}
+.chk{color:var(--green)}.chk-off{color:var(--border2)}
+.btn-discover{margin:6px 12px;background:linear-gradient(135deg,#1a4a3a,#0f3a2a);border:1px solid #2a6a4a;border-radius:6px;padding:9px;color:var(--green);font-size:10.5px;font-weight:700;cursor:pointer;width:calc(100% - 24px);display:flex;align-items:center;justify-content:center;gap:5px;transition:.15s}
+.btn-discover:hover{background:linear-gradient(135deg,#2a6a4a,#1a5a3a)}
+.adv-link{text-align:right;padding:0 12px 7px;font-size:8.5px;color:var(--text3);cursor:pointer}
+.adv-link:hover{color:var(--text2)}
 
-  /* TOP MODELS TABLE */
-  .models-card { grid-column: 1 / 3; grid-row: 5; }
-  .models-table { width: 100%; border-collapse: collapse; font-size: 10px; }
-  .models-table th { padding: 6px 10px; color: var(--text3); font-weight: 600; text-align: left; background: var(--bg3); }
-  .models-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
-  .models-table tr:last-child td { border-bottom: none; }
-  .models-table tr:hover td { background: var(--bg3); }
-  .tag-hybrid { background: var(--purple-dim); color: var(--purple); padding: 2px 6px; border-radius: 3px; font-size: 9px; }
-  .tag-ensemble { background: var(--blue-dim); color: var(--blue); padding: 2px 6px; border-radius: 3px; font-size: 9px; }
-  .btn-best { background: var(--orange); color: #000; padding: 3px 8px; border-radius: 3px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; }
-  .btn-select { background: var(--bg3); border: 1px solid var(--border); padding: 3px 8px; border-radius: 3px; font-size: 9px; color: var(--text2); cursor: pointer; font-family: inherit; }
-  .btn-select:hover { border-color: var(--blue); color: var(--blue); }
-  .rank-num { font-weight: 700; color: var(--text2); }
+/* MODELS TABLE */
+.models-card{grid-column:1/3;grid-row:5}
+.tbl{width:100%;border-collapse:collapse;font-size:10px}
+.tbl th{padding:5px 8px;color:var(--text3);font-weight:600;text-align:left;background:var(--bg3);font-size:9px}
+.tbl td{padding:5px 8px;border-bottom:1px solid var(--border)}
+.tbl tr:last-child td{border:none}
+.tbl tbody tr{cursor:pointer;transition:.1s}
+.tbl tbody tr:hover td{background:var(--bg3)}
+.tbl tbody tr.selected td{background:var(--blue-d)}
+.tag{padding:2px 5px;border-radius:2px;font-size:8.5px;font-weight:600}
+.tag-h{background:var(--purple-d);color:var(--purple)}
+.tag-e{background:var(--blue-d);color:var(--blue)}
 
-  /* EXPLAINABILITY */
-  .explain-card { grid-column: 3; grid-row: 5; }
-  .shap-bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
-  .shap-label { width: 80px; font-size: 9px; color: var(--text2); text-align: right; }
-  .shap-bar-bg { flex: 1; background: var(--bg3); border-radius: 3px; height: 12px; overflow: hidden; }
-  .shap-bar-fill { height: 100%; border-radius: 3px; background: var(--orange); transition: width .8s; }
-  .shap-val { font-size: 9px; color: var(--text2); width: 30px; }
-  .insights-box { margin-top: 8px; background: var(--bg3); border-radius: 5px; padding: 7px; }
-  .insights-title { font-size: 9px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
-  .insight-item { font-size: 9px; color: var(--text); margin-bottom: 3px; line-height: 1.4; padding-left: 8px; position: relative; }
-  .insight-item::before { content: "•"; position: absolute; left: 0; color: var(--orange); }
+/* EXPLAIN */
+.explain-card{grid-column:3;grid-row:4/6}
+.shap-row{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.shap-lbl{width:78px;font-size:8.5px;color:var(--text2);text-align:right}
+.shap-bg{flex:1;background:var(--bg3);border-radius:2px;height:11px;overflow:hidden}
+.shap-fill{height:100%;border-radius:2px;transition:width .8s}
+.shap-val{font-size:8.5px;color:var(--text2);width:26px}
+.insights{margin-top:7px;background:var(--bg3);border-radius:5px;padding:6px 8px}
+.ins-title{font-size:9px;font-weight:600;color:var(--text2);margin-bottom:3px}
+.ins-item{font-size:8.5px;color:var(--text);margin-bottom:2px;line-height:1.4;padding-left:8px;position:relative}
+.ins-item::before{content:"•";position:absolute;left:0;color:var(--orange)}
 
-  /* FOOTER */
-  footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 6px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .footer-links { display: flex; gap: 16px; }
-  .footer-links a { color: var(--text3); font-size: 10px; text-decoration: none; }
-  .footer-links a:hover { color: var(--text2); }
-  .footer-right { font-size: 10px; color: var(--text3); }
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:#000a;z-index:500;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;padding:20px;max-width:460px;width:90%;max-height:80vh;overflow-y:auto;position:relative}
+.modal-close{position:absolute;top:12px;right:12px;background:var(--bg3);border:1px solid var(--border);border-radius:5px;width:26px;height:26px;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;color:var(--text2)}
+.modal-close:hover{color:var(--text)}
+.modal h2{font-size:14px;font-weight:700;margin-bottom:12px}
 
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+/* TOAST */
+.toast-wrap{position:fixed;bottom:16px;right:16px;display:flex;flex-direction:column;gap:6px;z-index:600;pointer-events:none}
+.toast{background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:8px 14px;font-size:11px;display:flex;align-items:center;gap:7px;animation:slide-in .25s ease;pointer-events:auto;min-width:200px}
+.toast.green{border-color:#2a6a3a}
+.toast.orange{border-color:#5a3a10}
+.toast.blue{border-color:#2a4a8a}
+@keyframes slide-in{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
 
-  /* SELECT DROPDOWN */
-  .select-sm { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 9px; color: var(--text2); cursor: pointer; font-family: inherit; outline: none; }
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:5px 14px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ft-links{display:flex;gap:14px}
+.ft-links a{color:var(--text3);font-size:9.5px;transition:.15s}
+.ft-links a:hover{color:var(--text2)}
+.ft-r{font-size:9.5px;color:var(--text3)}
+
+/* SECTION VIEWS */
+.view{display:none}
+.view.active{display:contents}
+.page-view{display:none;flex:1;overflow-y:auto;padding:20px}
+.page-view.active{display:block}
+.page-title{font-size:18px;font-weight:700;margin-bottom:16px}
+.coming-soon{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--text2);gap:8px}
+.coming-soon .big{font-size:40px}
+.coming-soon p{font-size:13px}
+
+/* PROGRESS BAR */
+.progress-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden;margin:4px 0}
+.progress-fill{height:100%;border-radius:2px;background:var(--orange);transition:width 1s}
+
+/* select */
+select.sel-sm{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:2px 6px;font-size:9px;color:var(--text2);outline:none;cursor:pointer}
+select.sel-sm:hover{border-color:var(--border2)}
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <header>
-  <div class="logo-block">
+  <div class="logo">
     <div>
-      <div class="logo-text-um6p">UM6P</div>
-      <div class="logo-text-limset">LIMSET<br>Sustainable Solutions<br>for a Better Tomorrow</div>
+      <div class="logo-um6p">UM6P</div>
+      <div class="logo-limset">LIMSET<br>Sustainable Solutions<br>for a Better Tomorrow</div>
     </div>
-    <div class="logo-sep"></div>
+    <div class="logo-div"></div>
     <div class="logo-icon">🔷</div>
   </div>
-  <div class="header-title">
+  <div class="hd-title">
     <h1>Digital Twin AI Studio</h1>
-    <div class="header-subtitle">Model <span>|</span> Simulate <span>|</span> Optimize <span>|</span> Explain <span>|</span> Accelerate a Sustainable Future</div>
+    <div class="hd-sub">Model<span>|</span>Simulate<span>|</span>Optimize<span>|</span>Explain<span>|</span>Accelerate a Sustainable Future</div>
   </div>
-  <div class="search-bar">
-    <span style="color:var(--text3);font-size:13px;">🔍</span>
-    <input type="text" placeholder="Search experiments, models, datasets...">
+  <div class="search">
+    <span style="color:var(--text3)">🔍</span>
+    <input type="text" placeholder="Search experiments, models, datasets..." id="search-input" oninput="doSearch(this.value)">
   </div>
-  <div class="header-icons">
-    <div class="notif-btn">🔔<div class="notif-dot"></div></div>
-    <div class="user-block">
-      <div class="user-avatar">HN</div>
-      <div>
-        <div class="user-name">Hassan NAANANI</div>
-        <div class="user-role">Research Engineer</div>
-      </div>
+  <div class="notif-wrap">
+    <div class="icon-btn" onclick="toggleNotif()">🔔</div>
+    <div class="notif-dot" id="notif-dot"></div>
+  </div>
+  <div class="user-chip" onclick="showModal('modal-profile')">
+    <div class="avatar">HN</div>
+    <div>
+      <div class="user-name">Hassan NAANANI</div>
+      <div class="user-role">Research Engineer</div>
     </div>
-    <div class="badge-green">Green Energy<br>Smarter Industry<br>Brighter Tomorrow</div>
   </div>
+  <div class="hd-badge">Green Energy<br>Smarter Industry<br>Brighter Tomorrow</div>
 </header>
 
 <!-- NAV -->
 <nav>
-  <div class="nav-item active"><span class="ni">📊</span> Dashboard</div>
-  <div class="nav-item"><span class="ni">🧩</span> Models</div>
-  <div class="nav-item"><span class="ni">🤖</span> Agents</div>
-  <div class="nav-item"><span class="ni">⚡</span> Optimization</div>
-  <div class="nav-item"><span class="ni">🧪</span> Experiments</div>
-  <div class="nav-item"><span class="ni">🌐</span> Twin 3D</div>
-  <div class="nav-item"><span class="ni">📋</span> Reports</div>
-  <div class="nav-item"><span class="ni">⚙️</span> Settings</div>
+  <button class="nav-item active" onclick="setNav(this,'dash')"><span class="nav-icon">📊</span>Dashboard</button>
+  <button class="nav-item" onclick="setNav(this,'models')"><span class="nav-icon">🧩</span>Models</button>
+  <button class="nav-item" onclick="setNav(this,'agents')"><span class="nav-icon">🤖</span>Agents</button>
+  <button class="nav-item" onclick="setNav(this,'optim')"><span class="nav-icon">⚡</span>Optimization</button>
+  <button class="nav-item" onclick="setNav(this,'exp')"><span class="nav-icon">🧪</span>Experiments</button>
+  <button class="nav-item" onclick="setNav(this,'twin3d')"><span class="nav-icon">🌐</span>Twin 3D</button>
+  <button class="nav-item" onclick="setNav(this,'reports')"><span class="nav-icon">📋</span>Reports</button>
+  <button class="nav-item" onclick="setNav(this,'settings')"><span class="nav-icon">⚙️</span>Settings</button>
   <div class="nav-right">
-    <span>Mar 18, 2025</span>&nbsp;&nbsp;<span>10:24</span>
-    <div class="online-dot"></div>
-    <span style="color:var(--green);font-weight:600;">Twin Online</span>
+    <span id="nav-date">Nov 02, 2026</span>&nbsp;
+    <span id="nav-time">23:16</span>
+    <div class="online-pill"><div class="pulse"></div>Twin Online</div>
   </div>
 </nav>
 
-<div class="main-layout">
+<div class="layout">
 
-  <!-- SIDEBAR -->
-  <aside>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Assets</div>
-      <div class="sidebar-item active"><span class="si">🔋</span> Battery</div>
-      <div class="sidebar-item"><span class="si">⚡</span> SOEC</div>
-      <div class="sidebar-item"><span class="si">💧</span> Hydrogen</div>
-      <div class="sidebar-item"><span class="si">🌿</span> Ammonia</div>
-      <div class="sidebar-item"><span class="si">🔄</span> Rotary Kiln</div>
-      <div class="sidebar-item"><span class="si">➕</span> Custom Asset</div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Data</div>
-      <div class="sidebar-item"><span class="si">⬆️</span> Upload Data</div>
-      <div class="sidebar-item"><span class="si">🗄️</span> Datasets</div>
-      <div class="sidebar-item"><span class="si">📡</span> Live Data (IoT)</div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-label">Library</div>
-      <div class="sidebar-item"><span class="si">🦁</span> Model Zoo</div>
-      <div class="sidebar-item"><span class="si">📐</span> Templates</div>
-      <div class="sidebar-item"><span class="si">📚</span> Case Studies</div>
-    </div>
-    <div class="sidebar-footer">
-      <div class="footer-tagline">Engineering Tomorrow's<br>Sustainable World</div>
-    </div>
-  </aside>
+<!-- SIDEBAR -->
+<aside>
+  <div class="sb-section">
+    <div class="sb-label">Assets</div>
+    <button class="sb-item active-green" onclick="setSidebar(this)"><span>🔋</span>Battery</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>⚡</span>SOEC</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>💧</span>Hydrogen</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>🌿</span>Ammonia</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>🔄</span>Rotary Kiln</button>
+    <button class="sb-item" onclick="setSidebar(this);showModal('modal-asset')"><span>➕</span>Custom Asset</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Data</div>
+    <button class="sb-item" onclick="showModal('modal-upload')"><span>⬆️</span>Upload Data</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>🗄️</span>Datasets</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>📡</span>Live Data (IoT)</button>
+  </div>
+  <div class="sb-section">
+    <div class="sb-label">Library</div>
+    <button class="sb-item" onclick="setSidebar(this)"><span>🦁</span>Model Zoo</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>📐</span>Templates</button>
+    <button class="sb-item" onclick="setSidebar(this)"><span>📚</span>Case Studies</button>
+  </div>
+  <div class="sb-footer">Engineering Tomorrow's<br>Sustainable World</div>
+</aside>
 
-  <!-- CONTENT -->
-  <div class="content" id="main-content">
+<!-- MAIN CONTENT (dashboard) -->
+<div class="content" id="dashboard-view">
 
-    <!-- BATTERY CARD -->
-    <div class="card battery-card">
-      <div class="card-header">
-        <div class="card-title"><span class="ct">🔋</span> Battery Digital Twin<br><small style="font-size:9px;color:var(--text2);font-weight:400;">From data to decisions</small></div>
-        <div class="battery-live-badge"><div class="live-dot"></div> Live</div>
+  <!-- BATTERY CARD -->
+  <div class="card bat-card">
+    <div class="ch">
+      <div class="ct">🔋 Battery Digital Twin<br><small>From data to decisions</small></div>
+      <div class="live-badge"><div class="pulse"></div>Live</div>
+    </div>
+    <div class="cb">
+      <div class="bat-visual" onclick="showModal('modal-3d')" title="Click to view 3D">
+        <span class="bat-emoji">🔋</span>
+        <div class="bat-glow"></div>
+        <div style="position:absolute;bottom:6px;right:8px;font-size:8px;color:var(--text3)">Click → 3D View</div>
       </div>
-      <div class="card-body" style="padding:10px 12px;">
-        <div class="battery-visual">
-          <div class="battery-img">🔋</div>
-          <div class="battery-glow"></div>
-        </div>
-        <div style="text-align:center;margin-bottom:8px;">
-          <button class="btn-3d">📦 View 3D Model</button>
-        </div>
-        <div class="specs-grid">
-          <div class="spec-row"><span class="spec-label">Battery Pack</span><span class="spec-val green">● Live</span></div>
-          <div class="spec-row"><span class="spec-label">Voltage</span><span class="spec-val">388.4 V</span></div>
-          <div class="spec-row"><span class="spec-label">Current</span><span class="spec-val orange">-24.3 A</span></div>
-          <div class="spec-row"><span class="spec-label">Temperature</span><span class="spec-val">28.7 °C</span></div>
-          <div class="spec-row"><span class="spec-label">SOC</span><span class="spec-val green">62 %</span></div>
-          <div class="spec-row"><span class="spec-label">SOH</span><span class="spec-val green">78 %</span></div>
-          <div class="spec-row"><span class="spec-label">Cycle #</span><span class="spec-val">1,245</span></div>
-        </div>
+      <div style="text-align:center;margin-bottom:7px">
+        <button class="btn btn-ghost" onclick="showModal('modal-3d')">📦 View 3D Model</button>
+      </div>
+      <div class="spec-grid">
+        <div class="spec"><span class="spec-l">Battery Pack</span><span class="spec-v g">● Live</span></div>
+        <div class="spec"><span class="spec-l">Voltage</span><span class="spec-v" id="val-voltage">388.4 V</span></div>
+        <div class="spec"><span class="spec-l">Current</span><span class="spec-v o" id="val-current">-24.3 A</span></div>
+        <div class="spec"><span class="spec-l">Temperature</span><span class="spec-v" id="val-temp">28.7 °C</span></div>
+        <div class="spec"><span class="spec-l">SOC</span><span class="spec-v g" id="val-soc">62 %</span></div>
+        <div class="spec"><span class="spec-l">SOH</span><span class="spec-v g" id="val-soh">78 %</span></div>
+        <div class="spec"><span class="spec-l">Cycle #</span><span class="spec-v" id="val-cycle">1,245</span></div>
       </div>
     </div>
+  </div>
 
-    <!-- MODEL BUILDER -->
-    <div class="card builder-card">
-      <div class="card-header">
-        <div class="card-title"><span class="ct">⚙️</span> Model Builder <small style="font-weight:400;color:var(--text2)">(Drag & Drop)</small></div>
-        <div class="builder-tabs">
-          <div class="btab active">Flow</div>
-          <div class="btab">Code</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:0;">
-        <div style="flex:1;">
-          <div class="library-panel">
-            <div style="font-size:10px;font-weight:600;color:var(--text2);padding:8px 0 4px;">Library</div>
-            <div class="lib-section">
-              <div class="lib-section-title">Physics Models</div>
-              <div class="lib-items">
-                <div class="lib-chip">⚛️ ECM</div>
-                <div class="lib-chip">📐 P2D</div>
-                <div class="lib-chip">🌡️ Thermal Model</div>
-              </div>
-            </div>
-            <div class="lib-section">
-              <div class="lib-section-title">AI Models</div>
-              <div class="lib-items">
-                <div class="lib-chip">🔁 LSTM</div>
-                <div class="lib-chip">🔀 GRU</div>
-                <div class="lib-chip">⚡ Transformer</div>
-                <div class="lib-chip">🌲 XGBoost</div>
-                <div class="lib-chip">🌳 Random Forest</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div style="flex:1.5;border-left:1px solid var(--border);">
-          <div class="flow-canvas">
-            <div class="flow-node">
-              <div class="node-box phys"><span class="node-icon">📐</span>P2D<br>(Physics Model)</div>
-            </div>
-            <div class="flow-arrow">→</div>
-            <div class="flow-node">
-              <div class="node-box ai sel"><span class="node-icon">⚡</span>Transformer<br>(AI Model)</div>
-            </div>
-            <div class="flow-arrow" style="transform:rotate(90deg);margin:0;position:absolute;"></div>
-          </div>
-          <div style="display:flex;justify-content:center;gap:8px;padding:0 10px 6px;align-items:center;">
-            <div class="flow-arrow">↓</div>
-            <div class="flow-node">
-              <div class="node-box ai" style="width:80px;"><span class="node-icon">🌲</span>XGBoost<br>(AI Model)</div>
-            </div>
-            <div class="flow-arrow">↓</div>
-            <div class="flow-node">
-              <div class="node-box twin"><span class="node-icon">🌐</span>Digital Twin<br>(Hybrid Model)</div>
-            </div>
-          </div>
-          <div class="flow-actions">
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="flow-btn">➕ Add Model</button>
-              <button class="flow-btn">🔗 Connect</button>
-              <button class="flow-btn">⚙️ Configure</button>
-              <button class="flow-btn">💾 Save</button>
-            </div>
-            <button class="btn-run" onclick="runExperiment()">▶ Run Experiment</button>
-          </div>
-        </div>
+  <!-- MODEL BUILDER -->
+  <div class="card builder-card">
+    <div class="ch">
+      <div class="ct">⚙️ Model Builder <small>(Drag & Drop)</small></div>
+      <div class="tab-row">
+        <div class="tab on" onclick="setBuilderTab(this,'flow')">Flow</div>
+        <div class="tab off" onclick="setBuilderTab(this,'code')">Code</div>
       </div>
     </div>
-
-    <!-- AI COPILOT -->
-    <div class="card copilot-card">
-      <div class="copilot-header">
-        <div class="copilot-brand">Powered by UM6P AI</div>
-        <div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
-          <span style="font-size:16px;">🤖</span>
-          <div>
-            <div class="copilot-title">AI Copilot <sup style="font-size:8px;color:var(--text3)">β</sup></div>
-            <div class="copilot-sub">Your AI research assistant</div>
+    <div id="builder-flow">
+      <div class="flow-wrap">
+        <div class="lib-panel">
+          <div class="lib-title">Library</div>
+          <div class="lib-sec">
+            <div class="lib-sec-t">Physics Models</div>
+            <span class="chip" onclick="selectChip(this)">⚛️ ECM</span>
+            <span class="chip sel" onclick="selectChip(this)">📐 P2D</span>
+            <span class="chip" onclick="selectChip(this)">🌡️ Thermal</span>
+          </div>
+          <div class="lib-sec">
+            <div class="lib-sec-t">AI Models</div>
+            <span class="chip" onclick="selectChip(this)">🔁 LSTM</span>
+            <span class="chip" onclick="selectChip(this)">🔀 GRU</span>
+            <span class="chip sel" onclick="selectChip(this)">⚡ Transformer</span>
+            <span class="chip sel" onclick="selectChip(this)">🌲 XGBoost</span>
+            <span class="chip" onclick="selectChip(this)">🌳 RF</span>
+          </div>
+        </div>
+        <div class="flow-canvas">
+          <div class="flow-row">
+            <div class="node phys" onclick="showModal('modal-node-p2d')" title="Configure P2D">📐<br>P2D<br><span style="font-size:7.5px;font-weight:400">(Physics)</span></div>
+            <div class="arrow">→</div>
+            <div class="node ai sel" onclick="showModal('modal-node-tr')" title="Configure Transformer">⚡<br>Transformer<br><span style="font-size:7.5px;font-weight:400">(AI)</span></div>
+          </div>
+          <div class="flow-row" style="margin-top:2px">
+            <div style="width:68px"></div>
+            <div class="arrow" style="transform:rotate(90deg)">→</div>
+            <div class="node ai" onclick="showModal('modal-node-xgb')" title="Configure XGBoost">🌲<br>XGBoost<br><span style="font-size:7.5px;font-weight:400">(AI)</span></div>
+            <div class="arrow">→</div>
+            <div class="node twin" onclick="showModal('modal-node-twin')" title="Digital Twin">🌐<br>Digital Twin<br><span style="font-size:7.5px;font-weight:400">(Hybrid)</span></div>
           </div>
         </div>
       </div>
-      <div class="copilot-body">
-        <div class="copilot-msg">
-          <div class="msg-user">
-            <div class="msg-avatar">HN</div>
-            <div class="msg-bubble">Hello Hassan !<br>How can I help you with your digital twin today?</div>
-          </div>
-        </div>
-        <div class="quick-actions">
-          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Find the best model for SOH prediction</button>
-          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Compare LSTM vs Transformer</button>
-          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Optimize the model for minimum error</button>
-          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Explain why the battery is degrading</button>
-          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Generate a scientific report</button>
-        </div>
-        <div class="copilot-input">
-          <input type="text" placeholder="Ask anything..." id="copilot-input" onkeydown="if(event.key==='Enter')sendCopilot()">
-          <button class="copilot-send" onclick="sendCopilot()">➤</button>
-        </div>
+      <div class="flow-btns">
+        <button class="btn btn-ghost btn-sm" onclick="addModel()">➕ Add Model</button>
+        <button class="btn btn-ghost btn-sm" onclick="connectNodes()">🔗 Connect</button>
+        <button class="btn btn-ghost btn-sm" onclick="configModel()">⚙️ Configure</button>
+        <button class="btn btn-ghost btn-sm" onclick="saveFlow()">💾 Save</button>
+        <button class="btn btn-green" onclick="runExperiment()" id="run-btn" style="margin-left:auto">▶ Run Experiment</button>
       </div>
     </div>
+    <div id="builder-code" style="display:none;padding:10px 12px">
+      <pre style="background:var(--bg3);border-radius:6px;padding:10px;font-size:10px;color:var(--green);overflow-x:auto;font-family:monospace;line-height:1.6"><span style="color:var(--text3)"># Digital Twin Model — Battery SOH/RUL</span>
+<span style="color:var(--blue)">from</span> digiths.models <span style="color:var(--blue)">import</span> P2D, Transformer, XGBoost
+<span style="color:var(--blue)">from</span> digiths.twin <span style="color:var(--blue)">import</span> HybridDigitalTwin
 
-    <!-- KEY INDICATORS -->
-    <div class="card kpi-card">
-      <div class="kpi-header-row">
-        <div class="kpi-title">⚡ Key Indicators</div>
-        <div class="rt-badge"><div class="live-dot"></div> Real-time</div>
-      </div>
-      <div class="kpi-grid">
-        <div class="kpi-item">
-          <div class="kpi-label">SOH<br>State of Health</div>
-          <div class="ring">
-            <svg viewBox="0 0 62 62" width="62" height="62">
-              <circle class="ring-bg" cx="31" cy="31" r="26"/>
-              <circle class="ring-fill green" cx="31" cy="31" r="26" stroke-dasharray="103 60" stroke-dashoffset="0"/>
-            </svg>
-            <div class="ring-center" style="color:var(--green);">78%</div>
-          </div>
-        </div>
-        <div class="kpi-item">
-          <div class="kpi-label">RUL<br>Remaining Useful Life</div>
-          <div class="ring">
-            <svg viewBox="0 0 62 62" width="62" height="62">
-              <circle class="ring-bg" cx="31" cy="31" r="26"/>
-              <circle class="ring-fill blue" cx="31" cy="31" r="26" stroke-dasharray="110 53" stroke-dashoffset="0"/>
-            </svg>
-            <div class="ring-center" style="color:var(--blue);font-size:9px;line-height:1.2;text-align:center;">12<br>months</div>
-          </div>
-        </div>
-        <div class="kpi-item">
-          <div class="kpi-label">Capacity<br>Remaining</div>
-          <div class="ring">
-            <svg viewBox="0 0 62 62" width="62" height="62">
-              <circle class="ring-bg" cx="31" cy="31" r="26"/>
-              <circle class="ring-fill orange" cx="31" cy="31" r="26" stroke-dasharray="100 63" stroke-dashoffset="0"/>
-            </svg>
-            <div class="ring-center" style="color:var(--orange);font-size:9px;line-height:1.2;text-align:center;">62<br>Ah</div>
-          </div>
-        </div>
-        <div class="kpi-item">
-          <div class="kpi-label">Model Accuracy<br>(Validation)</div>
-          <div class="ring">
-            <svg viewBox="0 0 62 62" width="62" height="62">
-              <circle class="ring-bg" cx="31" cy="31" r="26"/>
-              <circle class="ring-fill teal" cx="31" cy="31" r="26" stroke-dasharray="160 3" stroke-dashoffset="0"/>
-            </svg>
-            <div class="ring-center" style="color:var(--teal);font-size:9px;">98.4%</div>
-          </div>
-        </div>
-      </div>
+<span style="color:var(--text3)"># Build pipeline</span>
+physics = P2D(temp=<span style="color:var(--orange)">28.7</span>, cycles=<span style="color:var(--orange)">1245</span>)
+ai      = Transformer(layers=<span style="color:var(--orange)">6</span>, heads=<span style="color:var(--orange)">8</span>)
+boost   = XGBoost(n_estimators=<span style="color:var(--orange)">200</span>)
+
+twin = HybridDigitalTwin(physics, ai, boost)
+twin.fit(X_train, y_train)
+
+<span style="color:var(--text3)"># Predict</span>
+soh, rul = twin.predict(X_test)
+<span style="color:var(--text2)">>>> SOH: 78.2%   RUL: 11.8 months   MAE: 1.2%</span></pre>
+      <button class="btn btn-green" onclick="runCode()" style="margin-top:8px">▶ Run Code</button>
     </div>
+  </div>
 
-    <!-- AI AGENTS HUB -->
-    <div class="card agents-card">
-      <div class="card-header">
-        <div class="card-title"><span class="ct">🤖</span> AI Agents Hub<br><small style="font-size:9px;font-weight:400;color:var(--text2);">Multi-agent system for autonomous model discovery</small></div>
-        <button class="view-logs-btn" style="margin:0;">View Logs</button>
-      </div>
-      <div class="agent-row">
-        <div class="agent-item">
-          <div class="agent-icon">📊</div>
-          <div class="agent-name">Data Agent</div>
-          <div class="agent-status done">✅ Completed</div>
-          <div class="agent-desc">Data collected<br>1.2M points</div>
-        </div>
-        <div class="agent-item">
-          <div class="agent-icon">🔧</div>
-          <div class="agent-name">Feature Agent</div>
-          <div class="agent-status done">✅ Completed</div>
-          <div class="agent-desc">48 features<br>engineered</div>
-        </div>
-        <div class="agent-item">
-          <div class="agent-icon">🧠</div>
-          <div class="agent-name">Model Agent</div>
-          <div class="agent-status run">🔄 Running</div>
-          <div class="agent-desc">Testing<br>12 architectures</div>
-        </div>
-        <div class="agent-item">
-          <div class="agent-icon">⚡</div>
-          <div class="agent-name">Optimization Agent</div>
-          <div class="agent-status run">⭐ Running</div>
-          <div class="agent-desc">Bayesian search<br>45/100 trials</div>
-        </div>
-        <div class="agent-item">
-          <div class="agent-icon">🔍</div>
-          <div class="agent-name">Explainability Agent</div>
-          <div class="agent-status wait">⏳ Waiting</div>
-          <div class="agent-desc">Computing<br>SHAP</div>
-        </div>
-        <div class="agent-item">
-          <div class="agent-icon">📋</div>
-          <div class="agent-name">Report Agent</div>
-          <div class="agent-status ready">🔵 Ready</div>
-          <div class="agent-desc">Generate<br>report</div>
-        </div>
-      </div>
-      <!-- 3D Viz in same card -->
-      <div style="border-top:1px solid var(--border);padding:8px 14px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
-          <span style="font-size:11px;font-weight:600;">3D Visualization</span>
-          <span style="font-size:9px;color:var(--text2);cursor:pointer;">⛶ Full Screen</span>
-        </div>
-        <div style="position:relative;height:110px;background:linear-gradient(135deg,#080c14,#0f1520);border-radius:6px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);overflow:hidden;">
-          <span style="font-size:50px;filter:drop-shadow(0 0 15px #f0883e66);">🔋</span>
-          <div style="position:absolute;right:10px;top:8px;bottom:8px;width:12px;background:linear-gradient(to bottom,#f85149,#f0883e,#e3b341,#39d353,#58a6ff);border-radius:3px;"></div>
-          <div style="position:absolute;right:26px;top:8px;bottom:8px;display:flex;flex-direction:column;justify-content:space-between;">
-            <span style="font-size:8px;color:var(--text2);">60</span>
-            <span style="font-size:8px;color:var(--text2);">45</span>
-            <span style="font-size:8px;color:var(--text2);">30</span>
-            <span style="font-size:8px;color:var(--text2);">15</span>
-          </div>
-          <div style="position:absolute;bottom:5px;right:42px;font-size:8px;color:var(--text2);">Temperature (°C)</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- LIVE MONITORING -->
-    <div class="card monitor-card">
-      <div class="card-header">
-        <div class="card-title">📈 Live Monitoring</div>
-        <div class="monitor-tabs">
-          <div class="mtab active">Last 1h</div>
-          <div class="mtab">Last 24h</div>
-          <div class="mtab">Last 7d</div>
-          <div class="mtab">Custom</div>
-        </div>
-      </div>
-      <div class="charts-row">
-        <div class="mini-chart">
-          <div class="mini-chart-title">Voltage (V)</div>
-          <canvas id="chart-voltage" class="sparkline" width="200" height="50"></canvas>
-        </div>
-        <div class="mini-chart">
-          <div class="mini-chart-title">Temperature (°C)</div>
-          <canvas id="chart-temp" class="sparkline" width="200" height="50"></canvas>
-        </div>
-        <div class="mini-chart">
-          <div class="mini-chart-title">Capacity Degradation (%)</div>
-          <canvas id="chart-cap" class="sparkline" width="200" height="50"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- AUTO DISCOVERY -->
-    <div class="card discovery-card">
-      <div class="card-header">
-        <div class="card-title"><span class="ct">🔬</span> Auto Discovery Lab<br><small style="font-size:9px;font-weight:400;color:var(--text2);">Let AI find the best digital twin for your data</small></div>
-      </div>
-      <div class="objectives-grid">
+  <!-- AI COPILOT -->
+  <div class="card copilot-card">
+    <div class="cop-hd">
+      <div class="cop-brand">Powered by UM6P AI</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+        <span style="font-size:15px">🤖</span>
         <div>
-          <div class="obj-col-title">Optimization Objectives</div>
-          <div class="obj-item"><span class="check">✅</span> Maximize SOH prediction</div>
-          <div class="obj-item"><span class="check">✅</span> Maximize RUL prediction</div>
-          <div class="obj-item"><span class="check">✅</span> Minimize error</div>
-          <div class="obj-item"><span class="check">✅</span> Minimize training time</div>
-        </div>
-        <div>
-          <div class="obj-col-title">Model Selection</div>
-          <div class="obj-item"><span class="check">✅</span> ECM &nbsp;&nbsp;<span class="check">✅</span> Transformer</div>
-          <div class="obj-item"><span class="check">✅</span> P2D &nbsp;&nbsp;<span class="check">✅</span> XGBoost</div>
-          <div class="obj-item"><span class="check">✅</span> LSTM &nbsp;<span class="check-off">☐</span> Random Forest</div>
-        </div>
-      </div>
-      <button class="btn-autodiscover" onclick="autoDiscover()">🔬 AUTO DISCOVER BEST DIGITAL TWIN</button>
-      <div style="text-align:right;padding:0 14px 8px;font-size:9px;color:var(--text3);cursor:pointer;">⚙️ Advanced Settings</div>
-    </div>
-
-    <!-- TOP MODELS TABLE -->
-    <div class="card models-card">
-      <div class="card-header">
-        <div class="card-title">🏆 Top Models Comparison</div>
-      </div>
-      <div style="padding:0 4px;">
-        <table class="models-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Model Configuration</th>
-              <th>Type</th>
-              <th>SOH (MAE ↓)</th>
-              <th>RUL (MAE ↓)</th>
-              <th>Accuracy ↑</th>
-              <th>Training Time</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="rank-num">1</td>
-              <td style="color:var(--orange);font-weight:600;">P2D + Transformer + XGBoost</td>
-              <td><span class="tag-hybrid">Hybrid</span></td>
-              <td style="color:var(--green);">1.2 %</td>
-              <td style="color:var(--green);">1.8 months</td>
-              <td style="color:var(--green);font-weight:700;">98.4 %</td>
-              <td>12 min</td>
-              <td><button class="btn-best">⭐ Best</button></td>
-            </tr>
-            <tr>
-              <td class="rank-num">2</td>
-              <td>ECM + LSTM + XGBoost</td>
-              <td><span class="tag-hybrid">Hybrid</span></td>
-              <td>1.5 %</td>
-              <td>2.3 months</td>
-              <td>97.6 %</td>
-              <td>8 min</td>
-              <td><button class="btn-select">Select</button></td>
-            </tr>
-            <tr>
-              <td class="rank-num">3</td>
-              <td>Transformer + XGBoost</td>
-              <td><span class="tag-ensemble">Ensemble</span></td>
-              <td>1.8 %</td>
-              <td>2.9 months</td>
-              <td>96.8 %</td>
-              <td>6 min</td>
-              <td><button class="btn-select">Select</button></td>
-            </tr>
-            <tr>
-              <td class="rank-num">4</td>
-              <td>P2D + LSTM</td>
-              <td><span class="tag-hybrid">Hybrid</span></td>
-              <td>2.1 %</td>
-              <td>3.2 months</td>
-              <td>95.3 %</td>
-              <td>14 min</td>
-              <td><button class="btn-select">Select</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- EXPLAINABILITY -->
-    <div class="card explain-card">
-      <div class="card-header">
-        <div class="card-title">🔍 Explainability (SHAP)</div>
-        <select class="select-sm"><option>SOH Prediction</option><option>RUL Prediction</option></select>
-      </div>
-      <div class="card-body" style="padding:8px 14px;">
-        <div class="shap-bar-row">
-          <div class="shap-label">Temperature</div>
-          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:95%;background:var(--orange);"></div></div>
-          <div class="shap-val">0.38</div>
-        </div>
-        <div class="shap-bar-row">
-          <div class="shap-label">Cycle Number</div>
-          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:62%;background:var(--blue);"></div></div>
-          <div class="shap-val">0.25</div>
-        </div>
-        <div class="shap-bar-row">
-          <div class="shap-label">Current</div>
-          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:42%;background:var(--green);"></div></div>
-          <div class="shap-val">0.17</div>
-        </div>
-        <div class="shap-bar-row">
-          <div class="shap-label">Voltage</div>
-          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:30%;background:var(--purple);"></div></div>
-          <div class="shap-val">0.12</div>
-        </div>
-        <div class="shap-bar-row">
-          <div class="shap-label">C-rate</div>
-          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:20%;background:var(--yellow);"></div></div>
-          <div class="shap-val">0.08</div>
-        </div>
-        <div class="insights-box">
-          <div class="insights-title">Key Insights</div>
-          <div class="insight-item">Temperature is the most influential factor (38%).</div>
-          <div class="insight-item">High C-rate and deep discharge accelerate degradation.</div>
-          <div class="insight-item">The model is physically consistent with battery aging mechanisms.</div>
+          <div class="cop-title">AI Copilot <sup style="font-size:7.5px;color:var(--text3)">β</sup></div>
+          <div class="cop-sub">Your AI research assistant</div>
         </div>
       </div>
     </div>
+    <div class="cop-msgs" id="cop-msgs">
+      <div class="msg">
+        <div class="msg-av bot">🤖</div>
+        <div class="msg-bub bot">Hello Hassan! 👋<br>How can I help with your digital twin today?</div>
+      </div>
+    </div>
+    <div class="qa-list">
+      <button class="qa-btn" onclick="askCopilot(this)">✨ Find the best model for SOH prediction</button>
+      <button class="qa-btn" onclick="askCopilot(this)">✨ Compare LSTM vs Transformer</button>
+      <button class="qa-btn" onclick="askCopilot(this)">✨ Optimize the model for minimum error</button>
+      <button class="qa-btn" onclick="askCopilot(this)">✨ Explain why the battery is degrading</button>
+      <button class="qa-btn" onclick="askCopilot(this)">✨ Generate a scientific report</button>
+    </div>
+    <div class="cop-input-wrap">
+      <input class="cop-input" type="text" placeholder="Ask anything..." id="cop-input" onkeydown="if(event.key==='Enter')sendCopilot()">
+      <button class="cop-send" onclick="sendCopilot()">➤</button>
+    </div>
+  </div>
 
-  </div><!-- end content -->
-</div><!-- end main layout -->
+  <!-- KEY INDICATORS -->
+  <div class="card kpi-card">
+    <div class="ch">
+      <div class="ct">⚡ Key Indicators</div>
+      <div class="live-badge"><div class="pulse"></div>Real-time</div>
+    </div>
+    <div class="kpi-grid">
+      <div class="kpi-item">
+        <div class="kpi-lbl">SOH<br>State of Health</div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 56 56" width="56" height="56">
+            <circle class="ring-bg" cx="28" cy="28" r="23"/>
+            <circle class="ring-f" id="ring-soh" cx="28" cy="28" r="23" stroke="#3fb950" stroke-dasharray="113 31"/>
+          </svg>
+          <div class="ring-ctr" style="color:var(--green)" id="kpi-soh">78%</div>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-lbl">RUL<br>Remaining Life</div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 56 56" width="56" height="56">
+            <circle class="ring-bg" cx="28" cy="28" r="23"/>
+            <circle class="ring-f" cx="28" cy="28" r="23" stroke="#58a6ff" stroke-dasharray="119 25"/>
+          </svg>
+          <div class="ring-ctr" style="color:var(--blue);font-size:9px;line-height:1.2;text-align:center">12<br>mo</div>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-lbl">Capacity<br>Remaining</div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 56 56" width="56" height="56">
+            <circle class="ring-bg" cx="28" cy="28" r="23"/>
+            <circle class="ring-f" cx="28" cy="28" r="23" stroke="#f0883e" stroke-dasharray="90 54"/>
+          </svg>
+          <div class="ring-ctr" style="color:var(--orange);font-size:9px;line-height:1.2;text-align:center">62<br>Ah</div>
+        </div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-lbl">Model Accuracy<br>(Validation)</div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 56 56" width="56" height="56">
+            <circle class="ring-bg" cx="28" cy="28" r="23"/>
+            <circle class="ring-f" cx="28" cy="28" r="23" stroke="#39d353" stroke-dasharray="143 1"/>
+          </svg>
+          <div class="ring-ctr" style="color:var(--teal);font-size:9px">98.4%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI AGENTS HUB -->
+  <div class="card agents-card">
+    <div class="ch">
+      <div class="ct">🤖 AI Agents Hub<br><small>Multi-agent autonomous model discovery</small></div>
+      <button class="btn btn-ghost btn-sm" onclick="showModal('modal-logs')">View Logs</button>
+    </div>
+    <div class="agents-grid">
+      <div class="agent" onclick="showModal('modal-agent-data')">
+        <div class="agent-ico">📊</div>
+        <div class="agent-name">Data Agent</div>
+        <div class="agent-st st-done">✅ Completed</div>
+        <div class="agent-desc">Data collected<br>1.2M points</div>
+      </div>
+      <div class="agent" onclick="showModal('modal-agent-feat')">
+        <div class="agent-ico">🔧</div>
+        <div class="agent-name">Feature Agent</div>
+        <div class="agent-st st-done">✅ Completed</div>
+        <div class="agent-desc">48 features<br>engineered</div>
+      </div>
+      <div class="agent" onclick="showModal('modal-agent-model')">
+        <div class="agent-ico">🧠</div>
+        <div class="agent-name">Model Agent</div>
+        <div class="agent-st st-run">🔄 Running</div>
+        <div class="agent-desc">Testing<br>12 architectures</div>
+        <div class="progress-bar" style="margin-top:4px"><div class="progress-fill" style="width:55%"></div></div>
+      </div>
+      <div class="agent" onclick="showModal('modal-agent-optim')">
+        <div class="agent-ico">⚡</div>
+        <div class="agent-name">Optimization</div>
+        <div class="agent-st st-run">⭐ Running</div>
+        <div class="agent-desc">Bayesian<br>45/100 trials</div>
+        <div class="progress-bar" style="margin-top:4px"><div class="progress-fill" style="width:45%"></div></div>
+      </div>
+      <div class="agent" onclick="showModal('modal-agent-xai')">
+        <div class="agent-ico">🔍</div>
+        <div class="agent-name">Explainability</div>
+        <div class="agent-st st-wait">⏳ Waiting</div>
+        <div class="agent-desc">Computing<br>SHAP</div>
+      </div>
+      <div class="agent" onclick="showModal('modal-agent-rep')">
+        <div class="agent-ico">📋</div>
+        <div class="agent-name">Report Agent</div>
+        <div class="agent-st st-ready">🔵 Ready</div>
+        <div class="agent-desc">Generate<br>report</div>
+      </div>
+    </div>
+    <div class="viz3d-wrap">
+      <div class="viz3d-title">
+        <span>3D Visualization</span>
+        <button class="btn btn-ghost btn-sm" onclick="showModal('modal-3d')">⛶ Full Screen</button>
+      </div>
+      <div class="viz3d-box" onclick="showModal('modal-3d')">
+        <span style="font-size:44px;filter:drop-shadow(0 0 12px #f0883e66)">🔋</span>
+        <div class="colorbar"></div>
+        <div class="cb-labels"><span>60</span><span>45</span><span>30</span><span>15</span></div>
+        <div style="position:absolute;bottom:4px;right:46px;font-size:7.5px;color:var(--text2)">Temp (°C)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE MONITORING -->
+  <div class="card monitor-card">
+    <div class="ch">
+      <div class="ct">📈 Live Monitoring</div>
+      <div class="monitor-tabs">
+        <div class="tab on" onclick="setMonitorTab(this,'1h')">Last 1h</div>
+        <div class="tab off" onclick="setMonitorTab(this,'24h')">Last 24h</div>
+        <div class="tab off" onclick="setMonitorTab(this,'7d')">Last 7d</div>
+        <div class="tab off" onclick="setMonitorTab(this,'custom')">Custom</div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="mini-chart" onclick="showModal('modal-chart-v')">
+        <div class="mc-title">Voltage (V)</div>
+        <canvas id="chart-v" width="200" height="52"></canvas>
+      </div>
+      <div class="mini-chart" onclick="showModal('modal-chart-t')">
+        <div class="mc-title">Temperature (°C)</div>
+        <canvas id="chart-t" width="200" height="52"></canvas>
+      </div>
+      <div class="mini-chart" onclick="showModal('modal-chart-c')">
+        <div class="mc-title">Capacity Degradation (%)</div>
+        <canvas id="chart-c" width="200" height="52"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTO DISCOVERY -->
+  <div class="card disc-card">
+    <div class="ch">
+      <div class="ct">🔬 Auto Discovery Lab<br><small>Let AI find the best digital twin</small></div>
+    </div>
+    <div class="obj-grid">
+      <div>
+        <div class="obj-col-t">Optimization Objectives</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> Maximize SOH prediction</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> Maximize RUL prediction</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> Minimize error</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> Minimize training time</div>
+      </div>
+      <div>
+        <div class="obj-col-t">Model Selection</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> ECM &nbsp;<span class="chk">✅</span> Transformer</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> P2D &nbsp;<span class="chk">✅</span> XGBoost</div>
+        <div class="obj-item" onclick="toggleCheck(this)"><span class="chk">✅</span> LSTM &nbsp;<span class="chk-off">☐</span> Random Forest</div>
+      </div>
+    </div>
+    <button class="btn-discover" onclick="autoDiscover()" id="disc-btn">🔬 AUTO DISCOVER BEST DIGITAL TWIN</button>
+    <div class="adv-link" onclick="showModal('modal-adv')">⚙️ Advanced Settings</div>
+  </div>
+
+  <!-- TOP MODELS TABLE -->
+  <div class="card models-card">
+    <div class="ch">
+      <div class="ct">🏆 Top Models Comparison</div>
+      <button class="btn btn-ghost btn-sm" onclick="showModal('modal-export')">📤 Export</button>
+    </div>
+    <table class="tbl">
+      <thead>
+        <tr>
+          <th>#</th><th>Model Configuration</th><th>Type</th>
+          <th>SOH MAE↓</th><th>RUL MAE↓</th><th>Accuracy↑</th><th>Time</th><th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="selected" onclick="selectModel(this,1)">
+          <td><b>1</b></td>
+          <td style="color:var(--orange);font-weight:600">P2D + Transformer + XGBoost</td>
+          <td><span class="tag tag-h">Hybrid</span></td>
+          <td style="color:var(--green)">1.2 %</td>
+          <td style="color:var(--green)">1.8 mo</td>
+          <td style="color:var(--green);font-weight:700">98.4 %</td>
+          <td>12 min</td>
+          <td><button class="btn btn-orange btn-sm">⭐ Best</button></td>
+        </tr>
+        <tr onclick="selectModel(this,2)">
+          <td>2</td><td>ECM + LSTM + XGBoost</td>
+          <td><span class="tag tag-h">Hybrid</span></td>
+          <td>1.5 %</td><td>2.3 mo</td><td>97.6 %</td><td>8 min</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectModel(this.closest('tr'),2)">Select</button></td>
+        </tr>
+        <tr onclick="selectModel(this,3)">
+          <td>3</td><td>Transformer + XGBoost</td>
+          <td><span class="tag tag-e">Ensemble</span></td>
+          <td>1.8 %</td><td>2.9 mo</td><td>96.8 %</td><td>6 min</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectModel(this.closest('tr'),3)">Select</button></td>
+        </tr>
+        <tr onclick="selectModel(this,4)">
+          <td>4</td><td>P2D + LSTM</td>
+          <td><span class="tag tag-h">Hybrid</span></td>
+          <td>2.1 %</td><td>3.2 mo</td><td>95.3 %</td><td>14 min</td>
+          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectModel(this.closest('tr'),4)">Select</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- EXPLAINABILITY -->
+  <div class="card explain-card">
+    <div class="ch">
+      <div class="ct">🔍 Explainability (SHAP)</div>
+      <select class="sel-sm" onchange="updateShap(this.value)">
+        <option value="soh">SOH Prediction</option>
+        <option value="rul">RUL Prediction</option>
+      </select>
+    </div>
+    <div class="cb">
+      <div class="shap-row"><div class="shap-lbl">Temperature</div><div class="shap-bg"><div class="shap-fill" style="width:95%;background:var(--orange)"></div></div><div class="shap-val">0.38</div></div>
+      <div class="shap-row"><div class="shap-lbl">Cycle Number</div><div class="shap-bg"><div class="shap-fill" style="width:62%;background:var(--blue)"></div></div><div class="shap-val">0.25</div></div>
+      <div class="shap-row"><div class="shap-lbl">Current</div><div class="shap-bg"><div class="shap-fill" style="width:43%;background:var(--green)"></div></div><div class="shap-val">0.17</div></div>
+      <div class="shap-row"><div class="shap-lbl">Voltage</div><div class="shap-bg"><div class="shap-fill" style="width:30%;background:var(--purple)"></div></div><div class="shap-val">0.12</div></div>
+      <div class="shap-row"><div class="shap-lbl">C-rate</div><div class="shap-bg"><div class="shap-fill" style="width:20%;background:var(--yellow)"></div></div><div class="shap-val">0.08</div></div>
+      <div class="insights">
+        <div class="ins-title">Key Insights</div>
+        <div class="ins-item" id="ins1">Temperature is the most influential factor (38%).</div>
+        <div class="ins-item" id="ins2">High C-rate and deep discharge accelerate degradation.</div>
+        <div class="ins-item" id="ins3">Model is physically consistent with battery aging.</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end dashboard grid -->
+
+<!-- PAGE VIEWS for other nav sections -->
+<div class="page-view" id="page-models">
+  <div class="page-title">🧩 Models</div>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+    <div class="card" style="padding:14px;cursor:pointer" onclick="toast('Model P2D chargé','blue')">
+      <div style="font-size:22px;margin-bottom:6px">📐</div>
+      <div style="font-weight:600;margin-bottom:4px">P2D Physics Model</div>
+      <div style="font-size:10px;color:var(--text2)">Pseudo-2D electrochemical model for lithium-ion batteries</div>
+      <div style="margin-top:8px"><span class="tag tag-h">Physics</span></div>
+    </div>
+    <div class="card" style="padding:14px;cursor:pointer" onclick="toast('Transformer chargé','blue')">
+      <div style="font-size:22px;margin-bottom:6px">⚡</div>
+      <div style="font-weight:600;margin-bottom:4px">Transformer</div>
+      <div style="font-size:10px;color:var(--text2)">Attention-based deep learning model for time-series</div>
+      <div style="margin-top:8px"><span class="tag tag-e">AI Model</span></div>
+    </div>
+    <div class="card" style="padding:14px;cursor:pointer" onclick="toast('XGBoost chargé','blue')">
+      <div style="font-size:22px;margin-bottom:6px">🌲</div>
+      <div style="font-weight:600;margin-bottom:4px">XGBoost</div>
+      <div style="font-size:10px;color:var(--text2)">Gradient boosting for SOH/RUL regression tasks</div>
+      <div style="margin-top:8px"><span class="tag tag-e">AI Model</span></div>
+    </div>
+    <div class="card" style="padding:14px;cursor:pointer" onclick="toast('LSTM chargé','blue')">
+      <div style="font-size:22px;margin-bottom:6px">🔁</div>
+      <div style="font-weight:600;margin-bottom:4px">LSTM</div>
+      <div style="font-size:10px;color:var(--text2)">Long Short-Term Memory for sequential battery data</div>
+      <div style="margin-top:8px"><span class="tag tag-h">AI Model</span></div>
+    </div>
+    <div class="card" style="padding:14px;cursor:pointer" onclick="toast('ECM chargé','blue')">
+      <div style="font-size:22px;margin-bottom:6px">⚛️</div>
+      <div style="font-weight:600;margin-bottom:4px">ECM</div>
+      <div style="font-size:10px;color:var(--text2)">Equivalent Circuit Model — fast physics-based baseline</div>
+      <div style="margin-top:8px"><span class="tag tag-h">Physics</span></div>
+    </div>
+    <div class="card" style="padding:14px;cursor:pointer;border-style:dashed" onclick="showModal('modal-asset')">
+      <div style="font-size:22px;margin-bottom:6px">➕</div>
+      <div style="font-weight:600;margin-bottom:4px">Add Custom Model</div>
+      <div style="font-size:10px;color:var(--text2)">Upload your own model or import from HuggingFace</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-view" id="page-agents">
+  <div class="page-title">🤖 Agents — Autonomous Workflow</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">📊</span><div><b>Data Agent</b><div style="font-size:10px;color:var(--text2)">Collected 1.2M data points from IoT sensors</div></div></div>
+        <span style="color:var(--green);font-size:11px">✅ Done</span>
+      </div>
+    </div>
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🔧</span><div><b>Feature Agent</b><div style="font-size:10px;color:var(--text2)">48 features engineered from raw signals</div></div></div>
+        <span style="color:var(--green);font-size:11px">✅ Done</span>
+      </div>
+    </div>
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🧠</span><div><b>Model Agent</b><div style="font-size:10px;color:var(--text2)">Testing 12 architectures — 7/12 complete</div></div></div>
+        <span style="color:var(--orange);font-size:11px">🔄 Running</span>
+      </div>
+      <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:58%"></div></div>
+    </div>
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">⚡</span><div><b>Optimization Agent</b><div style="font-size:10px;color:var(--text2)">Bayesian search: 45/100 trials</div></div></div>
+        <span style="color:var(--orange);font-size:11px">⭐ Running</span>
+      </div>
+      <div class="progress-bar" style="margin-top:8px"><div class="progress-fill" style="width:45%"></div></div>
+    </div>
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">🔍</span><div><b>Explainability Agent</b><div style="font-size:10px;color:var(--text2)">Waiting for Model Agent to complete</div></div></div>
+        <span style="color:var(--text3);font-size:11px">⏳ Waiting</span>
+      </div>
+    </div>
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:8px"><span style="font-size:18px">📋</span><div><b>Report Agent</b><div style="font-size:10px;color:var(--text2)">Ready to generate scientific report</div></div></div>
+        <button class="btn btn-green btn-sm" onclick="toast('Rapport généré ! Ouverture...','green')">Generate</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="page-view" id="page-twin3d"><div class="coming-soon"><div class="big">🌐</div><p style="font-size:15px;font-weight:600">Twin 3D</p><p>Visualization 3D interactive — Unity WebGL</p><button class="btn btn-green" style="margin-top:10px" onclick="toast('Chargement du Twin 3D...','green')">▶ Launch 3D View</button></div></div>
+<div class="page-view" id="page-optim"><div class="coming-soon"><div class="big">⚡</div><p>Optimization Engine — Bayesian Search</p><button class="btn btn-ghost" style="margin-top:10px" onclick="toast('Optimisation lancée','orange')">Start Optimization</button></div></div>
+<div class="page-view" id="page-exp"><div class="coming-soon"><div class="big">🧪</div><p>Experiments Manager</p><button class="btn btn-ghost" style="margin-top:10px" onclick="showModal('modal-upload')">New Experiment</button></div></div>
+<div class="page-view" id="page-reports"><div class="coming-soon"><div class="big">📋</div><p>Reports & Publications</p><button class="btn btn-green" style="margin-top:10px" onclick="toast('Rapport généré','green')">Generate Report</button></div></div>
+<div class="page-view" id="page-settings">
+  <div class="page-title">⚙️ Settings</div>
+  <div class="card" style="padding:14px;max-width:500px">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-weight:600;font-size:12px">Live Data Refresh</div><div style="font-size:10px;color:var(--text2)">Interval for real-time data update</div></div>
+        <select class="sel-sm"><option>3s</option><option>5s</option><option>10s</option><option>30s</option></select>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-weight:600;font-size:12px">Theme</div><div style="font-size:10px;color:var(--text2)">Interface color theme</div></div>
+        <select class="sel-sm"><option>Dark</option><option>Light</option></select>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div><div style="font-weight:600;font-size:12px">Language</div></div>
+        <select class="sel-sm"><option>English</option><option>Français</option><option>العربية</option></select>
+      </div>
+      <button class="btn btn-green" onclick="toast('Paramètres sauvegardés','green')">💾 Save Settings</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- end layout -->
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-links">
+  <div class="ft-links">
+    <a href="https://digiths.ma">← digiths.ma</a>
     <a href="#">People</a>
     <a href="#">Solutions</a>
     <a href="#">Impact</a>
   </div>
-  <div class="footer-right">Digital Twins for a Sustainable Future</div>
+  <div class="ft-r">Digital Twins for a Sustainable Future — UM6P LIMSET</div>
 </footer>
 
+<!-- TOAST CONTAINER -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<!-- ═══════════════════ MODALS ═══════════════════ -->
+<!-- PROFILE -->
+<div class="modal-bg" id="modal-profile" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-profile')">✕</button>
+    <h2>👤 Hassan NAANANI</h2>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+      <div><b>Role:</b> Responsable de la Digitalisation</div>
+      <div><b>Lab:</b> LIMSET — UM6P, Benguerir, Morocco</div>
+      <div><b>Also:</b> CTO of DIGITHS</div>
+      <div><b>Research:</b> AI, Digital Twins, PINNs, Electrochemistry, H₂ Systems</div>
+      <div><b>Certifications:</b> VMware VCP, Azure Administrator</div>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn btn-ghost" onclick="toast('Profil exporté','blue');closeModal('modal-profile')">📤 Export Profile</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-profile')">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3D VIEW -->
+<div class="modal-bg" id="modal-3d" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:600px;text-align:center">
+    <button class="modal-close" onclick="closeModal('modal-3d')">✕</button>
+    <h2>🌐 Battery 3D Visualization</h2>
+    <div style="height:280px;background:linear-gradient(135deg,#080c14,#0f1520);border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);margin:12px 0;position:relative;overflow:hidden">
+      <span style="font-size:100px;filter:drop-shadow(0 0 30px #f0883e88)">🔋</span>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:10px;color:var(--text2)">Temperature heatmap — Battery Pack (1.2V × 324 cells)</div>
+      <div style="position:absolute;right:14px;top:10px;bottom:30px;width:14px;background:linear-gradient(to bottom,#f85149,#f0883e,#e3b341,#39d353,#58a6ff);border-radius:3px"></div>
+      <div style="position:absolute;right:32px;top:10px;bottom:30px;display:flex;flex-direction:column;justify-content:space-between"><span style="font-size:9px;color:var(--text2)">60°C</span><span style="font-size:9px;color:var(--text2)">15°C</span></div>
+    </div>
+    <button class="btn btn-green" onclick="toast('Export 3D en cours...','green')">📤 Export STL / GLTF</button>
+  </div>
+</div>
+
+<!-- UPLOAD DATA -->
+<div class="modal-bg" id="modal-upload" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-upload')">✕</button>
+    <h2>⬆️ Upload Data</h2>
+    <div id="drop-zone" style="border:2px dashed var(--border2);border-radius:8px;padding:30px;text-align:center;margin-bottom:12px;cursor:pointer;transition:.15s"
+         ondragover="event.preventDefault();this.style.borderColor='var(--blue)'"
+         ondragleave="this.style.borderColor='var(--border2)'"
+         ondrop="handleDrop(event)"
+         onclick="document.getElementById('file-input').click()">
+      <div style="font-size:28px;margin-bottom:6px">📂</div>
+      <div style="font-size:11px;color:var(--text2)">Drag & drop your CSV / Parquet / HDF5 files<br>or click to browse</div>
+      <input type="file" id="file-input" style="display:none" accept=".csv,.parquet,.h5,.hdf5" onchange="handleFileSelect(this)">
+    </div>
+    <div style="font-size:10px;color:var(--text3)">Supported: CSV, Parquet, HDF5, MATLAB .mat</div>
+  </div>
+</div>
+
+<!-- LOGS -->
+<div class="modal-bg" id="modal-logs" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('modal-logs')">✕</button>
+    <h2>📋 Agent Logs</h2>
+    <div style="background:var(--bg3);border-radius:6px;padding:10px;font-family:monospace;font-size:9.5px;color:var(--green);max-height:280px;overflow-y:auto;line-height:1.8" id="log-content">
+[10:24:01] ✅ DataAgent — Loaded 1,200,000 data points from IoT stream<br>
+[10:24:03] ✅ FeatureAgent — Engineered 48 features (voltage derivatives, thermal gradients)<br>
+[10:24:12] 🔄 ModelAgent — Testing architecture 7/12: P2D + Transformer<br>
+[10:24:15] 🔄 ModelAgent — SOH MAE: 1.3% | RUL MAE: 1.9 months<br>
+[10:24:18] ⭐ OptimizationAgent — Trial 45/100 | lr=0.0008 | heads=8<br>
+[10:24:18] ⭐ OptimizationAgent — Best so far: MAE=1.2% (P2D + Transformer + XGBoost)<br>
+[10:24:20] ⏳ ExplainabilityAgent — Waiting for ModelAgent...<br>
+[10:24:20] 🔵 ReportAgent — Template loaded, ready to generate
+    </div>
+    <button class="btn btn-ghost" style="margin-top:8px" onclick="refreshLogs()">🔄 Refresh</button>
+  </div>
+</div>
+
+<!-- NODE CONFIG MODALS -->
+<div class="modal-bg" id="modal-node-p2d" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-node-p2d')">✕</button>
+    <h2>📐 Configure P2D Model</h2>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Temperature (°C)</span><input type="range" min="10" max="60" value="28" oninput="this.nextElementSibling.textContent=this.value+'°C'" style="width:120px"><span style="min-width:36px">28°C</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Diffusion coefficient</span><input type="number" value="1e-14" style="width:90px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:10px">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Electrode thickness (μm)</span><input type="range" min="50" max="200" value="100" oninput="this.nextElementSibling.textContent=this.value+'μm'" style="width:120px"><span style="min-width:40px">100μm</span>
+      </div>
+      <button class="btn btn-green" onclick="toast('P2D configuré','green');closeModal('modal-node-p2d')">✅ Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-node-tr" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-node-tr')">✕</button>
+    <h2>⚡ Configure Transformer</h2>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Layers</span><input type="range" min="2" max="12" value="6" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:20px">6</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Attention heads</span><input type="range" min="1" max="16" value="8" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:20px">8</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Learning rate</span><input type="number" value="0.001" step="0.0001" style="width:90px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:3px 6px;color:var(--text);font-size:10px">
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Dropout</span><input type="range" min="0" max="50" value="10" oninput="this.nextElementSibling.textContent=this.value+'%'" style="width:120px"><span style="min-width:32px">10%</span>
+      </div>
+      <button class="btn btn-green" onclick="toast('Transformer configuré','green');closeModal('modal-node-tr')">✅ Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-node-xgb" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-node-xgb')">✕</button>
+    <h2>🌲 Configure XGBoost</h2>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>n_estimators</span><input type="range" min="50" max="500" value="200" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:30px">200</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>max_depth</span><input type="range" min="3" max="12" value="6" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:20px">6</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>learning_rate</span><input type="range" min="1" max="30" value="10" oninput="this.nextElementSibling.textContent='0.0'+this.value" style="width:120px"><span style="min-width:36px">0.010</span>
+      </div>
+      <button class="btn btn-green" onclick="toast('XGBoost configuré','green');closeModal('modal-node-xgb')">✅ Apply</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-node-twin" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-node-twin')">✕</button>
+    <h2>🌐 Digital Twin — Hybrid Config</h2>
+    <div style="font-size:11px;color:var(--text2);margin-bottom:10px">Physics + AI fusion strategy</div>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Physics weight</span><input type="range" min="0" max="100" value="40" oninput="this.nextElementSibling.textContent=this.value+'%'" style="width:120px"><span>40%</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Fusion strategy</span>
+        <select class="sel-sm"><option>Late fusion</option><option>Early fusion</option><option>Residual</option></select>
+      </div>
+      <button class="btn btn-green" onclick="toast('Twin configuré','green');closeModal('modal-node-twin')">✅ Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- AGENT MODALS -->
+<div class="modal-bg" id="modal-agent-data" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-agent-data')">✕</button>
+    <h2>📊 Data Agent — Report</h2>
+    <div style="font-size:11px;display:flex;flex-direction:column;gap:5px">
+      <div>✅ <b>1,200,000 points</b> collected from IoT sensors</div>
+      <div>📡 Sources: Voltage, Current, Temperature, SOC (4 sensors)</div>
+      <div>📅 Period: 2022-01 → 2025-03 (1,245 charge/discharge cycles)</div>
+      <div>🔍 Quality: 99.7% valid data — 0.3% imputed</div>
+      <div style="margin-top:8px"><button class="btn btn-ghost" onclick="toast('Dataset exporté','blue');closeModal('modal-agent-data')">📤 Export Dataset</button></div>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-agent-feat" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-agent-feat')">✕</button>
+    <h2>🔧 Feature Agent — Report</h2>
+    <div style="font-size:11px;display:flex;flex-direction:column;gap:5px">
+      <div>✅ <b>48 features</b> engineered</div>
+      <div>📐 Raw: V, I, T, SOC (4)</div>
+      <div>📐 Derived: dV/dt, d²V/dt², ΔT, IC curve peaks (12)</div>
+      <div>📐 Statistical: mean/std/min/max per window (16)</div>
+      <div>📐 Frequency: FFT coefficients (16)</div>
+      <div style="margin-top:8px"><button class="btn btn-ghost" onclick="toast('Feature list exportée','blue');closeModal('modal-agent-feat')">📤 Export Features</button></div>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-agent-model" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-agent-model')">✕</button>
+    <h2>🧠 Model Agent — Progress</h2>
+    <div style="font-size:11px;display:flex;flex-direction:column;gap:6px">
+      <div>Testing 12 architectures — <b>7 completed</b></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:58%"></div></div>
+      <div style="color:var(--green)">Best so far: P2D + Transformer + XGBoost — MAE 1.2%</div>
+      <div style="margin-top:4px"><button class="btn btn-orange btn-sm" onclick="toast('Agent arrêté','orange');closeModal('modal-agent-model')">⏹ Stop</button></div>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-agent-optim" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-agent-optim')">✕</button>
+    <h2>⚡ Optimization Agent</h2>
+    <div style="font-size:11px;display:flex;flex-direction:column;gap:6px">
+      <div>Bayesian search: <b>45 / 100 trials</b></div>
+      <div class="progress-bar"><div class="progress-fill" style="width:45%"></div></div>
+      <div>Current best: lr=0.0008, layers=6, heads=8</div>
+      <div style="color:var(--green)">Projected best MAE: 1.1%</div>
+    </div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-agent-xai" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-agent-xai')">✕</button>
+    <h2>🔍 Explainability Agent</h2>
+    <div style="font-size:11px;color:var(--text2)">Waiting for Model Agent to finish — will compute SHAP values automatically</div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-agent-rep" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-agent-rep')">✕</button>
+    <h2>📋 Generate Scientific Report</h2>
+    <div style="font-size:11px;display:flex;flex-direction:column;gap:8px">
+      <div>Format:</div>
+      <select class="sel-sm" style="width:100%"><option>PDF — LaTeX</option><option>Word DOCX</option><option>Jupyter Notebook</option><option>HTML</option></select>
+      <div>Include:</div>
+      <div style="display:flex;flex-direction:column;gap:3px">
+        <label style="display:flex;align-items:center;gap:5px"><input type="checkbox" checked> Model performance metrics</label>
+        <label style="display:flex;align-items:center;gap:5px"><input type="checkbox" checked> SHAP explainability plots</label>
+        <label style="display:flex;align-items:center;gap:5px"><input type="checkbox" checked> Live monitoring charts</label>
+        <label style="display:flex;align-items:center;gap:5px"><input type="checkbox"> 3D visualization screenshots</label>
+      </div>
+      <button class="btn btn-green" onclick="toast('Rapport généré ! Téléchargement...','green');closeModal('modal-agent-rep')">📄 Generate Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHART MODALS -->
+<div class="modal-bg" id="modal-chart-v" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('modal-chart-v')">✕</button>
+    <h2>📈 Voltage — Detailed View</h2>
+    <canvas id="chart-v-big" width="480" height="150" style="width:100%;background:var(--bg3);border-radius:6px"></canvas>
+    <div style="font-size:10px;color:var(--text2);margin-top:6px">Min: 342V &nbsp;|&nbsp; Max: 418V &nbsp;|&nbsp; Avg: 388.4V &nbsp;|&nbsp; Std: 12.3V</div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-chart-t" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('modal-chart-t')">✕</button>
+    <h2>🌡️ Temperature — Detailed View</h2>
+    <canvas id="chart-t-big" width="480" height="150" style="width:100%;background:var(--bg3);border-radius:6px"></canvas>
+    <div style="font-size:10px;color:var(--text2);margin-top:6px">Min: 18°C &nbsp;|&nbsp; Max: 47°C &nbsp;|&nbsp; Avg: 28.7°C &nbsp;|&nbsp; Std: 5.2°C</div>
+  </div>
+</div>
+<div class="modal-bg" id="modal-chart-c" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:520px">
+    <button class="modal-close" onclick="closeModal('modal-chart-c')">✕</button>
+    <h2>📉 Capacity Degradation — Detailed View</h2>
+    <canvas id="chart-c-big" width="480" height="150" style="width:100%;background:var(--bg3);border-radius:6px"></canvas>
+    <div style="font-size:10px;color:var(--text2);margin-top:6px">Trend: +0.5%/month &nbsp;|&nbsp; Projected EOL: 14 months</div>
+  </div>
+</div>
+
+<!-- EXPORT -->
+<div class="modal-bg" id="modal-export" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-export')">✕</button>
+    <h2>📤 Export Models Comparison</h2>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+      <button class="btn btn-ghost" onclick="toast('CSV exporté','blue');closeModal('modal-export')">📄 Export as CSV</button>
+      <button class="btn btn-ghost" onclick="toast('PDF exporté','blue');closeModal('modal-export')">📋 Export as PDF Report</button>
+      <button class="btn btn-ghost" onclick="toast('JSON exporté','blue');closeModal('modal-export')">🔗 Export as JSON</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADVANCED SETTINGS -->
+<div class="modal-bg" id="modal-adv" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-adv')">✕</button>
+    <h2>⚙️ Advanced Discovery Settings</h2>
+    <div style="display:flex;flex-direction:column;gap:9px;font-size:11px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Max trials (Bayesian)</span><input type="range" min="20" max="500" value="100" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:28px">100</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Cross-validation folds</span><input type="range" min="3" max="10" value="5" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:20px">5</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Metric to optimize</span>
+        <select class="sel-sm"><option>MAE</option><option>RMSE</option><option>R²</option><option>MAPE</option></select>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span>Parallel workers</span><input type="range" min="1" max="8" value="4" oninput="this.nextElementSibling.textContent=this.value" style="width:120px"><span style="min-width:20px">4</span>
+      </div>
+      <button class="btn btn-green" onclick="toast('Paramètres avancés sauvegardés','green');closeModal('modal-adv')">💾 Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- CUSTOM ASSET -->
+<div class="modal-bg" id="modal-asset" onclick="closeModalBg(event,this)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-asset')">✕</button>
+    <h2>➕ New Custom Asset</h2>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:11px">
+      <div>Asset Name:<br><input type="text" placeholder="e.g. PEM Electrolyzer Stack" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;color:var(--text);font-size:11px;margin-top:3px;font-family:inherit"></div>
+      <div>Category:<br>
+        <select class="sel-sm" style="width:100%;margin-top:3px"><option>Electrochemical</option><option>Thermal</option><option>Mechanical</option><option>Hydraulic</option><option>Other</option></select>
+      </div>
+      <div>Description:<br><textarea placeholder="Brief description of the asset..." style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:5px 8px;color:var(--text);font-size:11px;margin-top:3px;font-family:inherit;resize:vertical;min-height:60px"></textarea></div>
+      <button class="btn btn-green" onclick="toast('Asset créé !','green');closeModal('modal-asset')">✅ Create Asset</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="modal-bg" id="modal-notif" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:360px">
+    <button class="modal-close" onclick="closeModal('modal-notif')">✕</button>
+    <h2>🔔 Notifications</h2>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+      <div style="background:var(--bg3);border-radius:5px;padding:8px;border-left:3px solid var(--orange)">
+        <b>⭐ Optimization update</b><br><span style="color:var(--text2)">Trial 45/100 — New best MAE: 1.2%</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:5px;padding:8px;border-left:3px solid var(--green)">
+        <b>✅ Data Agent completed</b><br><span style="color:var(--text2)">1.2M data points collected</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:5px;padding:8px;border-left:3px solid var(--blue)">
+        <b>🔵 Report Agent ready</b><br><span style="color:var(--text2)">Scientific report can be generated</span>
+      </div>
+      <button class="btn btn-ghost" onclick="document.getElementById('notif-dot').style.display='none';closeModal('modal-notif')">Mark all as read</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// Draw sparkline charts
-function drawChart(id, data, color, yMin, yMax) {
-  const canvas = document.getElementById(id);
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.offsetWidth || 200;
-  const H = canvas.offsetHeight || 50;
-  canvas.width = W;
-  canvas.height = H;
-  ctx.clearRect(0, 0, W, H);
+// ── CLOCK ──
+function updateClock(){
+  const now=new Date();
+  document.getElementById('nav-date').textContent=now.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('nav-time').textContent=now.toHours=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+}
+updateClock();setInterval(updateClock,30000);
 
-  // Grid lines
-  ctx.strokeStyle = '#30363d';
-  ctx.lineWidth = 0.5;
-  for (let i = 0; i <= 3; i++) {
-    const y = (H / 3) * i;
-    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-  }
+// ── NAVIGATION ──
+const pageMap={dash:'dashboard-view',models:'page-models',agents:'page-agents',optim:'page-optim',exp:'page-exp',twin3d:'page-twin3d',reports:'page-reports',settings:'page-settings'};
+function setNav(btn,id){
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const dash=document.getElementById('dashboard-view');
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  if(id==='dash'){dash.style.display='grid';}
+  else{dash.style.display='none';const p=document.getElementById('page-'+id);if(p)p.classList.add('active');}
+}
 
-  // Line
-  ctx.beginPath();
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 1.5;
-  ctx.shadowColor = color;
-  ctx.shadowBlur = 4;
-  data.forEach((v, i) => {
-    const x = (i / (data.length - 1)) * W;
-    const y = H - ((v - yMin) / (yMax - yMin)) * H;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+// ── SIDEBAR ──
+function setSidebar(btn){
+  document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active','active-green'));
+  btn.classList.add('active-green');
+  toast('Asset: '+btn.textContent.trim(),'blue');
+}
+
+// ── BUILDER TABS ──
+function setBuilderTab(el,id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.contains('on')&&(t.classList.remove('on'),t.classList.add('off')));
+  el.classList.remove('off');el.classList.add('on');
+  document.getElementById('builder-flow').style.display=id==='flow'?'':'none';
+  document.getElementById('builder-code').style.display=id==='code'?'block':'none';
+}
+
+// ── MONITOR TABS ──
+function setMonitorTab(el,id){
+  document.querySelectorAll('.monitor-tabs .tab').forEach(t=>{t.classList.remove('on');t.classList.add('off')});
+  el.classList.remove('off');el.classList.add('on');
+  initCharts(id);toast('Période: '+el.textContent,'blue');
+}
+
+// ── CHIPS ──
+function selectChip(el){el.classList.toggle('sel')}
+
+// ── FLOW ACTIONS ──
+function addModel(){showModal('modal-asset')}
+function connectNodes(){toast('Mode connexion activé — cliquez sur deux nœuds','blue')}
+function configModel(){showModal('modal-node-tr')}
+function saveFlow(){toast('Flow sauvegardé ✅','green')}
+
+function runExperiment(){
+  const btn=document.getElementById('run-btn');
+  btn.textContent='⏳ Running...';btn.style.background='var(--orange)';btn.disabled=true;
+  let p=0;
+  const iv=setInterval(()=>{
+    p+=Math.random()*15;
+    if(p>=100){
+      clearInterval(iv);
+      btn.textContent='✅ Done!';btn.style.background='var(--green)';
+      toast('Expérience terminée — Accuracy: 98.4%','green');
+      setTimeout(()=>{btn.textContent='▶ Run Experiment';btn.style.background='';btn.disabled=false},2000);
+    }
+  },400);
+}
+function runCode(){toast('Code exécuté — SOH: 78.2% | RUL: 11.8 mo | MAE: 1.2%','green')}
+
+// ── DISCOVERY ──
+function autoDiscover(){
+  const btn=document.getElementById('disc-btn');
+  btn.textContent='⏳ Searching best model...';btn.disabled=true;
+  setTimeout(()=>{
+    btn.textContent='✅ Best: P2D + Transformer + XGBoost';
+    btn.style.color='var(--orange)';
+    toast('Best model found: 98.4% accuracy','green');
+    setTimeout(()=>{btn.textContent='🔬 AUTO DISCOVER BEST DIGITAL TWIN';btn.style.color='';btn.disabled=false},3500);
+  },2500);
+}
+
+// ── SELECT MODEL ──
+function selectModel(row,n){
+  document.querySelectorAll('.tbl tbody tr').forEach(r=>r.classList.remove('selected'));
+  row.classList.add('selected');
+  toast('Modèle #'+n+' sélectionné','blue');
+}
+
+// ── SHAP ──
+const shapData={
+  soh:{f:['Temperature','Cycle Number','Current','Voltage','C-rate'],v:[0.38,0.25,0.17,0.12,0.08],c:['var(--orange)','var(--blue)','var(--green)','var(--purple)','var(--yellow)'],i:['Temperature is the most influential factor (38%).','High C-rate and deep discharge accelerate degradation.','Model is physically consistent with battery aging.']},
+  rul:{f:['Cycle Number','C-rate','Temperature','Voltage','Current'],v:[0.42,0.28,0.15,0.10,0.05],c:['var(--blue)','var(--orange)','var(--green)','var(--purple)','var(--yellow)'],i:['Cycle count is the primary predictor of remaining life.','High C-rate cycling significantly reduces RUL.','Temperature effects are secondary for RUL vs SOH.']}
+};
+function updateShap(type){
+  const d=shapData[type];
+  document.querySelectorAll('.shap-row').forEach((row,i)=>{
+    if(i>=d.f.length)return;
+    row.querySelector('.shap-lbl').textContent=d.f[i];
+    const fill=row.querySelector('.shap-fill');
+    fill.style.width=Math.round(d.v[i]*250)+'%';
+    fill.style.background=d.c[i];
+    row.querySelector('.shap-val').textContent=d.v[i].toFixed(2);
   });
-  ctx.stroke();
-  ctx.shadowBlur = 0;
-
-  // Fill
-  ctx.beginPath();
-  data.forEach((v, i) => {
-    const x = (i / (data.length - 1)) * W;
-    const y = H - ((v - yMin) / (yMax - yMin)) * H;
-    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  });
-  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
-  ctx.fillStyle = color + '18';
-  ctx.fill();
+  ['ins1','ins2','ins3'].forEach((id,i)=>{document.getElementById(id).textContent=d.i[i]});
 }
 
-function genData(base, noise, n) {
-  return Array.from({length: n}, (_, i) => base + Math.sin(i * 0.3) * noise + (Math.random() - 0.5) * noise * 0.5);
+// ── CHECK TOGGLE ──
+function toggleCheck(el){
+  const c=el.querySelector('.chk,.chk-off');
+  if(c.classList.contains('chk')){c.classList.replace('chk','chk-off');c.textContent='☐';}
+  else{c.classList.replace('chk-off','chk');c.textContent='✅';}
 }
 
-function initCharts() {
-  const v = genData(388, 8, 30);
-  const t = genData(28, 5, 30);
-  const c = [];
-  for (let i = 0; i < 30; i++) c.push(5 + i * 0.5 + Math.random() * 1.5);
-
-  drawChart('chart-voltage', v, '#58a6ff', 370, 420);
-  drawChart('chart-temp', t, '#f0883e', 15, 60);
-  drawChart('chart-cap', c, '#f85149', 0, 25);
+// ── COPILOT ──
+const copResponses={
+  'Find the best model for SOH prediction':'📊 Best for SOH: **P2D + Transformer + XGBoost** — 98.4% accuracy, MAE 1.2%. Temperature (38% SHAP) is the key driver.',
+  'Compare LSTM vs Transformer':'⚡ Transformer wins: 98.4% vs 97.6% accuracy. Better at capturing long-range temporal dependencies. Training: 12 vs 18 min.',
+  'Optimize the model for minimum error':'🎯 Running Bayesian search... Trial 45/100. Optimal: lr=0.0008, layers=6, heads=8. Projected MAE: 1.1%.',
+  'Explain why the battery is degrading':'🔍 Primary causes: thermal stress (38% SHAP) + high C-rate cycling. 1,245 cycles — approaching capacity fade zone. Recommend thermal management.',
+  'Generate a scientific report':'📋 Generating report... Battery Digital Twin — SOH=78%, RUL=12mo, Accuracy=98.4%, SHAP analysis included. Ready in 30s.'
+};
+function askCopilot(btn){
+  const txt=btn.textContent.replace('✨ ','').trim();
+  addMsg(txt,true);
+  btn.style.background='var(--blue-d)';btn.style.color='var(--blue)';
+  setTimeout(()=>{
+    addMsg(copResponses[txt]||'🤖 Analysing your request...',false);
+    btn.style.background='';btn.style.color='';
+  },900);
+}
+function sendCopilot(){
+  const inp=document.getElementById('cop-input');
+  const t=inp.value.trim();if(!t)return;
+  addMsg(t,true);inp.value='';
+  setTimeout(()=>addMsg('🤖 Processing: "'+t.substring(0,40)+'..." Analysing your digital twin data.',false),700);
+}
+function addMsg(text,isUser){
+  const el=document.getElementById('cop-msgs');
+  const d=document.createElement('div');
+  d.className='msg';
+  d.innerHTML=`<div class="msg-av ${isUser?'user':'bot'}">${isUser?'HN':'🤖'}</div><div class="msg-bub ${isUser?'':'bot'}">${text}</div>`;
+  el.appendChild(d);
+  el.scrollTop=el.scrollHeight;
 }
 
-window.addEventListener('load', () => {
-  initCharts();
-  setTimeout(initCharts, 100); // Re-draw after layout settles
-});
-window.addEventListener('resize', initCharts);
-
-// Live data simulation
-setInterval(() => {
-  initCharts();
-}, 3000);
-
-// Nav tabs
-document.querySelectorAll('.nav-item').forEach(el => {
-  el.addEventListener('click', function() {
-    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-// Sidebar
-document.querySelectorAll('.sidebar-item').forEach(el => {
-  el.addEventListener('click', function() {
-    document.querySelectorAll('.sidebar-item').forEach(e => e.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-// Monitor tabs
-document.querySelectorAll('.mtab').forEach(el => {
-  el.addEventListener('click', function() {
-    document.querySelectorAll('.mtab').forEach(e => e.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-// Builder tabs
-document.querySelectorAll('.btab').forEach(el => {
-  el.addEventListener('click', function() {
-    document.querySelectorAll('.btab').forEach(e => e.classList.remove('active'));
-    this.classList.add('active');
-  });
-});
-
-// Run experiment
-function runExperiment() {
-  const btn = document.querySelector('.btn-run');
-  btn.textContent = '⏳ Running...';
-  btn.style.background = 'var(--orange)';
-  setTimeout(() => {
-    btn.textContent = '✅ Completed!';
-    btn.style.background = 'var(--green)';
-    setTimeout(() => {
-      btn.textContent = '▶ Run Experiment';
-      btn.style.background = '';
-    }, 2000);
-  }, 2000);
+// ── SEARCH ──
+function doSearch(v){
+  if(v.length<2)return;
+  // highlight matching cards visually
 }
 
-// Auto discover
-function autoDiscover() {
-  const btn = document.querySelector('.btn-autodiscover');
-  btn.textContent = '⏳ Discovering... Please wait';
-  btn.style.opacity = '0.7';
-  setTimeout(() => {
-    btn.textContent = '✅ Best Model Found: P2D + Transformer + XGBoost';
-    btn.style.opacity = '1';
-    btn.style.color = 'var(--orange)';
-    setTimeout(() => {
-      btn.textContent = '🔬 AUTO DISCOVER BEST DIGITAL TWIN';
-      btn.style.color = '';
-    }, 3000);
-  }, 2500);
+// ── NOTIFICATIONS ──
+function toggleNotif(){showModal('modal-notif')}
+
+// ── MODALS ──
+function showModal(id){
+  document.getElementById(id).classList.add('open');
+  // Draw big charts when relevant modal opens
+  setTimeout(()=>{
+    if(id==='modal-chart-v')drawBig('chart-v-big',genData(388,8,60),'#58a6ff',370,420);
+    if(id==='modal-chart-t')drawBig('chart-t-big',genData(28,5,60),'#f0883e',15,55);
+    if(id==='modal-chart-c'){const d=[];for(let i=0;i<60;i++)d.push(5+i*0.3+Math.random()*1.5);drawBig('chart-c-big',d,'#f85149',0,24);}
+  },50);
+}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function closeModalBg(e,bg){if(e.target===bg)bg.classList.remove('open')}
+
+// ── TOAST ──
+function toast(msg,type='blue'){
+  const icons={green:'✅',orange:'⚠️',blue:'ℹ️'};
+  const w=document.getElementById('toast-wrap');
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  w.appendChild(t);
+  setTimeout(()=>t.style.opacity='0',2500);
+  setTimeout(()=>t.remove(),2800);
 }
 
-// Copilot
-function askCopilot(btn) {
-  const body = document.querySelector('.copilot-body');
-  const msg = btn.textContent.trim().replace('✨ ', '');
-  addCopilotMessage(msg, true);
-  btn.style.background = 'var(--blue-dim)';
-  btn.style.color = 'var(--blue)';
-  setTimeout(() => {
-    const responses = {
-      'Find the best model for SOH prediction': '📊 Analysis complete! P2D + Transformer + XGBoost achieves 98.4% accuracy with MAE of 1.2% for SOH prediction. Temperature is the key driver (38% SHAP importance).',
-      'Compare LSTM vs Transformer': '⚡ Transformer outperforms LSTM: 98.4% vs 97.6% accuracy, faster training (12 vs 18 min). For long-range dependencies, Transformer captures temporal patterns better.',
-      'Optimize the model for minimum error': '🎯 Bayesian optimization running... Current best: 45/100 trials. Optimal hyperparameters: lr=0.001, layers=6, heads=8. Projected MAE: 1.1%.',
-      'Explain why the battery is degrading': '🔍 Degradation analysis: Temperature stress (38%) + high C-rate cycles are primary drivers. 1,245 cycles detected. Recommend thermal management optimization.',
-      'Generate a scientific report': '📋 Generating LaTeX report... Battery Digital Twin Model — SOH=78%, RUL=12 months, Model Accuracy=98.4%. SHAP analysis included. Ready in 30s.'
-    };
-    addCopilotMessage(responses[msg] || '🤖 Processing your request...', false);
-    btn.style.background = '';
-    btn.style.color = '';
-  }, 1200);
+// ── LOGS ──
+function refreshLogs(){
+  const el=document.getElementById('log-content');
+  const now=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  el.innerHTML+=`<br>[${now}] 🔄 ModelAgent — Trial ${Math.floor(Math.random()*12)+1}/12 completed`;
+  el.scrollTop=el.scrollHeight;
+  toast('Logs rafraîchis','blue');
 }
 
-function addCopilotMessage(text, isUser) {
-  const msgs = document.querySelector('.copilot-msg');
-  const div = document.createElement('div');
-  div.className = 'msg-user';
-  div.style.marginBottom = '8px';
-  div.innerHTML = `
-    <div class="msg-avatar" style="background:${isUser ? 'linear-gradient(135deg,#2a4a8a,#1a3a6a)' : 'linear-gradient(135deg,#1a4a3a,#0f2a22)'};">${isUser ? 'HN' : '🤖'}</div>
-    <div class="msg-bubble" style="${!isUser ? 'border-color:var(--green-dim);background:var(--green-dim);' : ''}">${text}</div>
-  `;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+// ── UPLOAD ──
+function handleDrop(e){
+  e.preventDefault();
+  const f=e.dataTransfer.files[0];
+  if(f)toast('Fichier uploadé: '+f.name,'green');
+  document.getElementById('modal-upload').classList.remove('open');
+}
+function handleFileSelect(inp){
+  if(inp.files[0])toast('Fichier uploadé: '+inp.files[0].name,'green');
+  closeModal('modal-upload');
 }
 
-function sendCopilot() {
-  const input = document.getElementById('copilot-input');
-  const text = input.value.trim();
-  if (!text) return;
-  addCopilotMessage(text, true);
-  input.value = '';
-  setTimeout(() => {
-    addCopilotMessage('🤖 Processing: "' + text + '"... I\'ll analyze your digital twin data and provide insights shortly.', false);
-  }, 800);
+// ── LIVE DATA ──
+let cycle=1245;
+function updateLive(){
+  cycle++;
+  document.getElementById('val-voltage').textContent=(385+Math.random()*8).toFixed(1)+' V';
+  document.getElementById('val-current').textContent=(-22-Math.random()*5).toFixed(1)+' A';
+  document.getElementById('val-temp').textContent=(27+Math.random()*4).toFixed(1)+' °C';
+  document.getElementById('val-soc').textContent=Math.max(58,Math.round(62-Math.random()*2))+' %';
+  document.getElementById('val-cycle').textContent=cycle.toLocaleString();
 }
+setInterval(updateLive,4000);
+
+// ── CHARTS ──
+function genData(base,noise,n,trend=0){
+  return Array.from({length:n},(_,i)=>base+Math.sin(i*.35)*noise+(Math.random()-.5)*noise*.6+i*trend);
+}
+function drawChart(id,data,color,yMin,yMax){
+  const c=document.getElementById(id);if(!c)return;
+  const W=c.offsetWidth||200,H=c.offsetHeight||52;
+  c.width=W;c.height=H;
+  const ctx=c.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+  // grid
+  ctx.strokeStyle='#30363d';ctx.lineWidth=.5;
+  for(let i=0;i<=3;i++){const y=H/3*i;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  const px=(i)=>(i/(data.length-1))*W;
+  const py=(v)=>H-((v-yMin)/(yMax-yMin))*H;
+  // fill
+  ctx.beginPath();data.forEach((v,i)=>i?ctx.lineTo(px(i),py(v)):ctx.moveTo(px(i),py(v)));
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+  ctx.fillStyle=color+'22';ctx.fill();
+  // line
+  ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.shadowColor=color;ctx.shadowBlur=3;
+  data.forEach((v,i)=>i?ctx.lineTo(px(i),py(v)):ctx.moveTo(px(i),py(v)));
+  ctx.stroke();ctx.shadowBlur=0;
+}
+function drawBig(id,data,color,yMin,yMax){
+  const c=document.getElementById(id);if(!c)return;
+  c.width=c.offsetWidth||480;c.height=150;
+  drawChart(id,data,color,yMin,yMax);
+}
+function initCharts(period='1h'){
+  const mult=period==='7d'?3:period==='24h'?2:1;
+  drawChart('chart-v',genData(388,8*mult,30),'#58a6ff',370,420);
+  drawChart('chart-t',genData(28,5*mult,30),'#f0883e',15,55);
+  const cap=[];for(let i=0;i<30;i++)cap.push(5+i*.5*mult+Math.random()*1.5);
+  drawChart('chart-c',cap,'#f85149',0,24);
+}
+window.addEventListener('load',()=>{setTimeout(initCharts,80)});
+window.addEventListener('resize',()=>initCharts());
+setInterval(()=>initCharts(),4000);
 </script>
 </body>
 </html>
