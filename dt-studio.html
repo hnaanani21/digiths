@@ -1188,11 +1188,113 @@ function setNav(btn,id){
   else{dash.style.display='none';const p=document.getElementById('page-'+id);if(p)p.classList.add('active');}
 }
 
-// ── SIDEBAR ──
+// ── SIDEBAR ASSET DATA ──
+const assetData={
+  'Battery':{
+    icon:'🔋',title:'Battery Digital Twin',sub:'LiFePO₄ Pack — 100 Ah / 400V',
+    specs:{Voltage:'388.4 V',Current:'-24.3 A',Temperature:'28.7 °C',SOC:'62 %',SOH:'78 %','Cycle #':'1,245'},
+    specColors:{Voltage:'',Current:'o',Temperature:'',SOC:'g',SOH:'g','Cycle #':''},
+    kpi:{soh:78,rul:12,cap:62,acc:98.4},
+    charts:{v:{base:388,noise:8,color:'#58a6ff',min:370,max:420},t:{base:28,noise:5,color:'#f0883e',min:15,max:55}},
+    emoji:'🔋',glow:'#3fb95044',
+    shap:{f:['Temperature','Cycle Number','Current','Voltage','C-rate'],v:[0.38,0.25,0.17,0.12,0.08],c:['var(--orange)','var(--blue)','var(--green)','var(--purple)','var(--yellow)'],i:['Temperature is the most influential factor (38%).','High C-rate and deep discharge accelerate degradation.','Model is physically consistent with battery aging.']}
+  },
+  'SOEC':{
+    icon:'⚡',title:'SOEC Digital Twin',sub:'Solid Oxide Electrolyzer Cell — 5 kW stack',
+    specs:{Voltage:'1.29 V/cell',Current:'42.0 A',Temperature:'780 °C','Pressure':'1.2 bar','Efficiency':'82 %','Power':'5.1 kW'},
+    specColors:{Voltage:'',Current:'o',Temperature:'o','Pressure':'','Efficiency':'g','Power':'b'},
+    kpi:{soh:82,rul:18,cap:91,acc:96.7},
+    charts:{v:{base:1.29,noise:0.04,color:'#f0883e',min:1.1,max:1.5},t:{base:780,noise:15,color:'#f85149',min:700,max:900}},
+    emoji:'⚡',glow:'#f0883e44',
+    shap:{f:['Temperature','Steam fraction','Current density','Pressure','Age'],v:[0.44,0.28,0.14,0.09,0.05],c:['var(--red)','var(--blue)','var(--orange)','var(--purple)','var(--text2)'],i:['High temperature (780°C) is critical for SOEC performance.','Steam ratio directly controls H₂ production rate.','Current density affects cell degradation over time.']}
+  },
+  'Hydrogen':{
+    icon:'💧',title:'Hydrogen Digital Twin',sub:'PEM Electrolyzer — 2 MW production unit',
+    specs:{Pressure:'30 bar',Current:'1200 A',Temperature:'65 °C','Flow Rate':'42 Nm³/h','Efficiency':'74 %','Stack Age':'3.2 yr'},
+    specColors:{Pressure:'b',Current:'o',Temperature:'','Flow Rate':'g','Efficiency':'g','Stack Age':''},
+    kpi:{soh:74,rul:9,cap:78,acc:97.2},
+    charts:{v:{base:65,noise:4,color:'#58a6ff',min:50,max:90},t:{base:30,noise:2,color:'#bc8cff',min:20,max:45}},
+    emoji:'💧',glow:'#58a6ff44',
+    shap:{f:['Stack temperature','Membrane age','Current density','Water purity','Pressure'],v:[0.35,0.30,0.18,0.11,0.06],c:['var(--orange)','var(--red)','var(--blue)','var(--green)','var(--purple)'],i:['Membrane age is the primary degradation driver.','Temperature control is essential for PEM efficiency.','Water purity directly affects electrolyzer lifespan.']}
+  },
+  'Ammonia':{
+    icon:'🌿',title:'Ammonia Digital Twin',sub:'Green NH₃ Synthesis — Haber-Bosch 50 t/day',
+    specs:{Pressure:'150 bar',Temperature:'450 °C','N₂ Flow':'680 Nm³/h','H₂ Flow':'1,240 Nm³/h','Conversion':'18.5 %','Production':'2.1 t/h'},
+    specColors:{Pressure:'b',Temperature:'o','N₂ Flow':'','H₂ Flow':'g','Conversion':'','Production':'g'},
+    kpi:{soh:85,rul:24,cap:95,acc:95.1},
+    charts:{v:{base:450,noise:12,color:'#3fb950',min:400,max:510},t:{base:150,noise:5,color:'#bc8cff',min:120,max:175}},
+    emoji:'🌿',glow:'#3fb95044',
+    shap:{f:['Temperature','Pressure','H₂/N₂ ratio','Catalyst age','Flow rate'],v:[0.40,0.32,0.15,0.08,0.05],c:['var(--orange)','var(--blue)','var(--green)','var(--yellow)','var(--purple)'],i:['Temperature and pressure jointly dominate NH₃ yield.','H₂/N₂ stoichiometry must be maintained at 3:1.','Catalyst deactivation is the main long-term risk.']}
+  },
+  'Rotary Kiln':{
+    icon:'🔄',title:'Rotary Kiln Digital Twin',sub:'Cement Clinker — 3,000 t/day kiln',
+    specs:{Temperature:'1,450 °C',Speed:'3.2 rpm','Inclination':'3.5°','Feed Rate':'125 t/h','Fuel Flow':'8.4 t/h','NOx':'320 mg/Nm³'},
+    specColors:{Temperature:'o',Speed:'','Inclination':'','Feed Rate':'b','Fuel Flow':'o','NOx':''},
+    kpi:{soh:71,rul:6,cap:88,acc:94.3},
+    charts:{v:{base:1450,noise:40,color:'#f85149',min:1300,max:1550},t:{base:3.2,noise:0.15,color:'#f0883e',min:2.5,max:4.0}},
+    emoji:'🔄',glow:'#f0883e66',
+    shap:{f:['Flame temperature','Feed rate','Kiln speed','Fuel moisture','Air excess'],v:[0.42,0.26,0.16,0.10,0.06],c:['var(--red)','var(--orange)','var(--blue)','var(--yellow)','var(--purple)'],i:['Flame temperature is the dominant control variable.','Feed rate variations cause thermal instability in the kiln.','Speed tuning is critical for residence time control.']}
+  }
+};
+
 function setSidebar(btn){
+  const name=btn.textContent.trim().replace(/^[^\w]+/,'').trim(); // strip emoji prefix
+  // find matching key
+  const key=Object.keys(assetData).find(k=>btn.textContent.includes(k));
   document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active','active-green'));
   btn.classList.add('active-green');
-  toast('Asset: '+btn.textContent.trim(),'blue');
+  if(key)loadAsset(key);
+  else toast('Asset: '+name,'blue');
+}
+
+function loadAsset(key){
+  const d=assetData[key];if(!d)return;
+  // Header
+  document.querySelector('.bat-card .ct').innerHTML=d.icon+' '+d.title+'<br><small>'+d.sub+'</small>';
+  // Emoji
+  document.querySelector('.bat-emoji').textContent=d.emoji;
+  document.querySelector('.bat-glow').style.background=`radial-gradient(ellipse at 50% 60%,${d.glow} 0%,transparent 70%)`;
+  // Specs
+  const specs=document.querySelectorAll('.spec');
+  const keys=Object.keys(d.specs);
+  specs.forEach((sp,i)=>{
+    if(i>=keys.length){sp.style.display='none';return;}
+    sp.style.display='';
+    sp.querySelector('.spec-l').textContent=keys[i];
+    const v=sp.querySelector('.spec-v');
+    v.textContent=d.specs[keys[i]];
+    v.className='spec-v'+(d.specColors[keys[i]]?' '+d.specColors[keys[i]]:'');
+  });
+  // KPIs
+  const soh=d.kpi.soh,circ=2*Math.PI*23;
+  document.getElementById('kpi-soh').textContent=soh+'%';
+  document.getElementById('ring-soh').setAttribute('stroke-dasharray',`${circ*soh/100} ${circ*(1-soh/100)}`);
+  // Charts colors
+  initChartsAsset(d.charts);
+  // SHAP
+  updateShapData(d.shap);
+  toast(d.icon+' '+key+' Digital Twin chargé','green');
+}
+
+function updateShapData(shap){
+  document.querySelectorAll('.shap-row').forEach((row,i)=>{
+    if(i>=shap.f.length)return;
+    row.querySelector('.shap-lbl').textContent=shap.f[i];
+    const fill=row.querySelector('.shap-fill');
+    fill.style.width=Math.round(shap.v[i]*250)+'%';
+    fill.style.background=shap.c[i];
+    row.querySelector('.shap-val').textContent=shap.v[i].toFixed(2);
+  });
+  ['ins1','ins2','ins3'].forEach((id,i)=>{
+    const el=document.getElementById(id);if(el)el.textContent=shap.i[i];
+  });
+}
+
+function initChartsAsset(charts){
+  drawChart('chart-v',genData(charts.v.base,charts.v.noise,30),charts.v.color,charts.v.min,charts.v.max);
+  drawChart('chart-t',genData(charts.t.base,charts.t.noise,30),charts.t.color,charts.t.min,charts.t.max);
+  const cap=[];for(let i=0;i<30;i++)cap.push(5+i*0.5+Math.random()*1.5);
+  drawChart('chart-c',cap,'#f85149',0,24);
 }
 
 // ── BUILDER TABS ──
