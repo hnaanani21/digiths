@@ -72,6 +72,7 @@ aside{width:var(--sw);background:var(--bg2);border-right:1px solid var(--border)
 .sb-item:hover{background:var(--bg3);color:var(--text)}
 .sb-item.active{background:#1a2a4a;color:var(--blue)}
 .sb-item.active-green{background:var(--green-d);color:var(--green)}
+.sb-ico{width:16px;height:16px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
 .sb-footer{margin-top:auto;padding:10px 8px;border-top:1px solid var(--border);font-size:8.5px;color:var(--text3);text-align:center;line-height:1.5}
 
 /* ── CONTENT ── */
@@ -326,24 +327,24 @@ select.sel-sm:hover{border-color:var(--border2)}
 <aside>
   <div class="sb-section">
     <div class="sb-label">Assets</div>
-    <button class="sb-item active-green" onclick="setSidebar(this)"><span>🔋</span>Battery</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>⚡</span>SOEC</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>💧</span>Hydrogen</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>🌿</span>Ammonia</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>🔄</span>Rotary Kiln</button>
-    <button class="sb-item" onclick="setSidebar(this);showModal('modal-asset')"><span>➕</span>Custom Asset</button>
+    <button class="sb-item active-green" onclick="setSidebar(this)" data-asset="Battery"><span class="sb-ico">🔋</span>Battery</button>
+    <button class="sb-item" onclick="setSidebar(this)" data-asset="SOEC"><span class="sb-ico">⚡</span>SOEC</button>
+    <button class="sb-item" onclick="setSidebar(this)" data-asset="Hydrogen"><span class="sb-ico">💧</span>Hydrogen</button>
+    <button class="sb-item" onclick="setSidebar(this)" data-asset="Ammonia"><span class="sb-ico">🌿</span>Ammonia</button>
+    <button class="sb-item" onclick="setSidebar(this)" data-asset="Rotary Kiln"><span class="sb-ico">🔄</span>Rotary Kiln</button>
+    <button class="sb-item" onclick="showModal('modal-asset')"><span class="sb-ico">➕</span>Custom Asset</button>
   </div>
   <div class="sb-section">
     <div class="sb-label">Data</div>
-    <button class="sb-item" onclick="showModal('modal-upload')"><span>⬆️</span>Upload Data</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>🗄️</span>Datasets</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>📡</span>Live Data (IoT)</button>
+    <button class="sb-item" onclick="showModal('modal-upload')"><span class="sb-ico">⬆</span>Upload Data</button>
+    <button class="sb-item" onclick="showDatasets()"><span class="sb-ico">▤</span>Datasets</button>
+    <button class="sb-item" onclick="showLiveIoT()"><span class="sb-ico">◎</span>Live Data (IoT)</button>
   </div>
   <div class="sb-section">
     <div class="sb-label">Library</div>
-    <button class="sb-item" onclick="setSidebar(this)"><span>🦁</span>Model Zoo</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>📐</span>Templates</button>
-    <button class="sb-item" onclick="setSidebar(this)"><span>📚</span>Case Studies</button>
+    <button class="sb-item" onclick="setNav(document.querySelector('.nav-item:nth-child(2)'),'models')"><span class="sb-ico">◈</span>Model Zoo</button>
+    <button class="sb-item" onclick="showTemplates()"><span class="sb-ico">◰</span>Templates</button>
+    <button class="sb-item" onclick="showCaseStudies()"><span class="sb-ico">◉</span>Case Studies</button>
   </div>
   <div class="sb-footer">Engineering Tomorrow's<br>Sustainable World</div>
 </aside>
@@ -1168,6 +1169,73 @@ soh, rul = twin.predict(X_test)
   </div>
 </div>
 
+<!-- DATASETS MODAL -->
+<div class="modal-bg" id="modal-datasets" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeModal('modal-datasets')">✕</button>
+    <h2>▤ Datasets</h2>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:11px">
+      <div style="background:var(--bg3);border-radius:5px;padding:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toast('Dataset Battery chargé','green')">
+        <div><b>Battery_LiFePO4_2022-2025.parquet</b><div style="color:var(--text2);font-size:9.5px">1,245 cycles · 1.2M points · 4 features</div></div>
+        <span style="color:var(--green)">✅</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:5px;padding:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toast('Dataset PEM chargé','green')">
+        <div><b>PEM_Electrolyzer_LIMSET.csv</b><div style="color:var(--text2);font-size:9.5px">3,200 hours · 680K points · 8 features</div></div>
+        <span style="color:var(--blue)">◎</span>
+      </div>
+      <div style="background:var(--bg3);border-radius:5px;padding:8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer" onclick="toast('Dataset NH3 chargé','green')">
+        <div><b>GreenAmmonia_HaberBosch.h5</b><div style="color:var(--text2);font-size:9.5px">12 months · 5.1M points · 12 features</div></div>
+        <span style="color:var(--orange)">◑</span>
+      </div>
+      <button class="btn btn-green" style="margin-top:4px" onclick="showModal('modal-upload');closeModal('modal-datasets')">⬆ Upload New Dataset</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEMPLATES MODAL -->
+<div class="modal-bg" id="modal-templates" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:460px">
+    <button class="modal-close" onclick="closeModal('modal-templates')">✕</button>
+    <h2>◰ Templates</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+      <div style="background:var(--bg3);border-radius:6px;padding:10px;cursor:pointer;transition:.15s" onclick="toast('Template Battery appliqué','green');closeModal('modal-templates')">
+        <div style="font-size:18px;margin-bottom:4px">🔋</div><b>Battery SOH/RUL</b><div style="font-size:9.5px;color:var(--text2);margin-top:3px">Hybrid P2D + Transformer</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:10px;cursor:pointer" onclick="toast('Template PEM appliqué','green');closeModal('modal-templates')">
+        <div style="font-size:18px;margin-bottom:4px">💧</div><b>PEM Degradation</b><div style="font-size:9.5px;color:var(--text2);margin-top:3px">LSTM + XGBoost ensemble</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:10px;cursor:pointer" onclick="toast('Template NH3 appliqué','green');closeModal('modal-templates')">
+        <div style="font-size:18px;margin-bottom:4px">🌿</div><b>NH₃ Yield Predict</b><div style="font-size:9.5px;color:var(--text2);margin-top:3px">Physics + GRU model</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:10px;cursor:pointer" onclick="toast('Template Kiln appliqué','green');closeModal('modal-templates')">
+        <div style="font-size:18px;margin-bottom:4px">🔄</div><b>Rotary Kiln</b><div style="font-size:9.5px;color:var(--text2);margin-top:3px">Thermal + Random Forest</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CASE STUDIES MODAL -->
+<div class="modal-bg" id="modal-casestudies" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeModal('modal-casestudies')">✕</button>
+    <h2>◉ Case Studies — UM6P LIMSET</h2>
+    <div style="display:flex;flex-direction:column;gap:7px;font-size:11px">
+      <div style="background:var(--bg3);border-radius:5px;padding:9px;cursor:pointer" onclick="toast('Case Study ouvert','blue')">
+        <b>Battery SOH Prediction — LiFePO₄ Pack</b>
+        <div style="color:var(--text2);font-size:9.5px;margin-top:2px">Hybrid P2D + Transformer · Accuracy 98.4% · Published IJHE 2024</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:5px;padding:9px;cursor:pointer" onclick="toast('Case Study ouvert','blue')">
+        <b>PEM Electrolyzer Degradation — LIMSET Lab</b>
+        <div style="color:var(--text2);font-size:9.5px;margin-top:2px">LSTM ensemble · MAE 1.8% · Computers & Chemical Engineering 2024</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:5px;padding:9px;cursor:pointer" onclick="toast('Case Study ouvert','blue')">
+        <b>Green Ammonia — Jorf Lasfar & Tarfaya sites</b>
+        <div style="color:var(--text2);font-size:9.5px;margin-top:2px">Techno-economic DT · Wind + PV integration · IJHE 2025</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ── CLOCK ──
 function updateClock(){
@@ -1238,13 +1306,10 @@ const assetData={
 };
 
 function setSidebar(btn){
-  const name=btn.textContent.trim().replace(/^[^\w]+/,'').trim(); // strip emoji prefix
-  // find matching key
-  const key=Object.keys(assetData).find(k=>btn.textContent.includes(k));
+  const key=btn.dataset.asset;
   document.querySelectorAll('.sb-item').forEach(b=>b.classList.remove('active','active-green'));
   btn.classList.add('active-green');
-  if(key)loadAsset(key);
-  else toast('Asset: '+name,'blue');
+  if(key && assetData[key]) loadAsset(key);
 }
 
 function loadAsset(key){
@@ -1413,10 +1478,26 @@ function addMsg(text,isUser){
   el.scrollTop=el.scrollHeight;
 }
 
+// ── SIDEBAR EXTRA BUTTONS ──
+function showDatasets(){
+  showModal('modal-datasets');
+}
+function showLiveIoT(){
+  toast('IoT Stream : 4 capteurs actifs — Fréquence 1Hz','green');
+}
+function showTemplates(){
+  showModal('modal-templates');
+}
+function showCaseStudies(){
+  showModal('modal-casestudies');
+}
+
 // ── SEARCH ──
 function doSearch(v){
   if(v.length<2)return;
-  // highlight matching cards visually
+  const terms=['Battery','SOEC','Hydrogen','Ammonia','Transformer','XGBoost','LSTM','P2D','SOH','RUL'];
+  const match=terms.filter(t=>t.toLowerCase().includes(v.toLowerCase()));
+  if(match.length)toast('Résultats : '+match.join(', '),'blue');
 }
 
 // ── NOTIFICATIONS ──
