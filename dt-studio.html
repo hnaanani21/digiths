@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Twin AI Studio — UM6P LIMSET</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2230;
+    --bg4: #21273a;
+    --border: #30363d;
+    --border2: #3a4455;
+    --text: #e6edf3;
+    --text2: #8b949e;
+    --text3: #6e7681;
+    --green: #3fb950;
+    --green-dim: #1a3a1e;
+    --blue: #58a6ff;
+    --blue-dim: #1a2a4a;
+    --purple: #bc8cff;
+    --purple-dim: #2a1a4a;
+    --orange: #f0883e;
+    --orange-dim: #3a2010;
+    --teal: #39d353;
+    --red: #f85149;
+    --yellow: #e3b341;
+    --sidebar-w: 200px;
+    --header-h: 56px;
+    --nav-h: 48px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 12px; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+
+  /* HEADER */
+  header {
+    height: var(--header-h);
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 16px; gap: 12px; flex-shrink: 0;
+    z-index: 100;
+  }
+  .logo-block { display: flex; align-items: center; gap: 10px; min-width: 190px; }
+  .logo-text-um6p { font-size: 17px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+  .logo-text-limset { font-size: 8px; color: var(--text2); line-height: 1.3; }
+  .logo-sep { width: 1px; height: 32px; background: var(--border2); }
+  .logo-icon { width: 36px; height: 36px; background: linear-gradient(135deg, #1a4a3a, #0f2a22); border: 1px solid #2a6a4a; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .header-title { flex: 1; }
+  .header-title h1 { font-size: 18px; font-weight: 700; color: #fff; }
+  .header-subtitle { font-size: 10px; color: var(--text2); margin-top: 1px; }
+  .header-subtitle span { margin: 0 4px; }
+  .search-bar { flex: 0 0 320px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; padding: 0 10px; gap: 6px; height: 32px; }
+  .search-bar input { background: none; border: none; outline: none; color: var(--text); font-size: 11px; flex: 1; }
+  .search-bar input::placeholder { color: var(--text3); }
+  .header-icons { display: flex; align-items: center; gap: 10px; }
+  .notif-btn { width: 30px; height: 30px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; font-size: 14px; }
+  .notif-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; background: var(--orange); border-radius: 50%; border: 1px solid var(--bg2); }
+  .user-block { display: flex; align-items: center; gap: 8px; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; padding: 4px 10px 4px 4px; cursor: pointer; }
+  .user-avatar { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, #2a4a8a, #1a3a6a); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; color: var(--blue); }
+  .user-name { font-size: 11px; font-weight: 600; }
+  .user-role { font-size: 9px; color: var(--text2); }
+  .badge-green { background: linear-gradient(135deg, #1a3a2a, #0f2a1a); border: 1px solid #2a5a3a; border-radius: 6px; padding: 4px 8px; font-size: 8px; color: #3fb950; line-height: 1.4; text-align: right; }
+
+  /* NAV */
+  nav {
+    height: var(--nav-h);
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 16px 0 calc(var(--sidebar-w) + 16px);
+    gap: 2px; flex-shrink: 0;
+  }
+  .nav-item { padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500; color: var(--text2); display: flex; align-items: center; gap: 6px; white-space: nowrap; transition: all .15s; }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: var(--blue-dim); color: var(--blue); }
+  .nav-item .ni { font-size: 13px; }
+  .nav-sep { color: var(--border2); margin: 0 2px; }
+  .nav-right { margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 11px; color: var(--text2); }
+  .online-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+
+  /* MAIN LAYOUT */
+  .main-layout { display: flex; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR */
+  aside {
+    width: var(--sidebar-w);
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    flex-shrink: 0; overflow-y: auto;
+    padding-bottom: 12px;
+  }
+  .sidebar-section { padding: 12px 8px 4px; }
+  .sidebar-label { font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.8px; padding: 0 6px 6px; }
+  .sidebar-item { display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px; cursor: pointer; color: var(--text2); font-size: 11px; font-weight: 500; transition: all .15s; }
+  .sidebar-item:hover { background: var(--bg3); color: var(--text); }
+  .sidebar-item.active { background: #1a2a4a; color: var(--blue); }
+  .sidebar-item .si { font-size: 13px; }
+  .sidebar-footer { margin-top: auto; padding: 12px 8px; border-top: 1px solid var(--border); }
+  .footer-tagline { font-size: 9px; color: var(--text3); text-align: center; line-height: 1.5; }
+
+  /* CONTENT */
+  .content { flex: 1; overflow-y: auto; background: var(--bg); padding: 12px; display: grid; grid-template-columns: 1fr 1fr 300px; grid-template-rows: auto auto auto auto; gap: 10px; align-content: start; }
+
+  /* CARDS */
+  .card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; border-bottom: 1px solid var(--border); }
+  .card-title { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .card-title .ct { font-size: 14px; }
+  .card-body { padding: 12px 14px; }
+
+  /* BATTERY CARD */
+  .battery-card { grid-column: 1; grid-row: 1 / 3; }
+  .battery-live-badge { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--green); font-weight: 600; }
+  .live-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.4;} }
+  .battery-visual { width: 100%; height: 160px; background: linear-gradient(135deg, #1a1f2e, #0f1520); border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border); position: relative; overflow: hidden; }
+  .battery-img { font-size: 72px; filter: drop-shadow(0 0 20px #3fb95044); }
+  .battery-glow { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 60%, #3fb95011 0%, transparent 70%); }
+  .btn-3d { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; padding: 6px 12px; color: var(--text); font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 5px; margin: 0 auto; font-family: inherit; transition: all .15s; }
+  .btn-3d:hover { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+  .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-top: 10px; }
+  .spec-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 8px; background: var(--bg3); border-radius: 5px; }
+  .spec-label { color: var(--text2); font-size: 10px; }
+  .spec-val { font-size: 11px; font-weight: 600; color: var(--text); }
+  .spec-val.green { color: var(--green); }
+  .spec-val.orange { color: var(--orange); }
+
+  /* MODEL BUILDER */
+  .builder-card { grid-column: 2; grid-row: 1; }
+  .builder-tabs { display: flex; gap: 4px; }
+  .btab { padding: 4px 12px; border-radius: 4px; font-size: 11px; cursor: pointer; font-weight: 500; }
+  .btab.active { background: var(--green); color: #000; }
+  .btab:not(.active) { background: var(--bg3); color: var(--text2); }
+  .flow-canvas { padding: 12px 10px; display: flex; align-items: center; justify-content: space-around; min-height: 120px; }
+  .flow-node { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .node-box { width: 72px; height: 52px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 9px; font-weight: 600; text-align: center; line-height: 1.3; }
+  .node-box.phys { background: var(--blue-dim); border: 1px solid #3a6aaa; color: var(--blue); }
+  .node-box.ai { background: var(--purple-dim); border: 1px solid #6a3aaa; color: var(--purple); }
+  .node-box.ai.sel { background: #2a1a5a; border-color: var(--purple); box-shadow: 0 0 10px #bc8cff33; }
+  .node-box.twin { background: var(--green-dim); border: 1px solid #2a6a3a; color: var(--green); }
+  .node-icon { font-size: 18px; }
+  .flow-arrow { color: var(--text3); font-size: 16px; }
+  .flow-actions { display: flex; flex-direction: column; gap: 6px; padding: 0 8px 8px; }
+  .flow-btn { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; font-size: 10px; color: var(--text2); cursor: pointer; font-family: inherit; transition: all .15s; }
+  .flow-btn:hover { background: var(--bg4); color: var(--text); }
+  .btn-run { background: var(--green); color: #000; font-weight: 700; font-size: 11px; border: none; border-radius: 6px; padding: 8px 14px; cursor: pointer; font-family: inherit; }
+  .btn-run:hover { background: #4aff60; }
+  .library-panel { padding: 4px 14px 0; }
+  .lib-section { margin-bottom: 8px; }
+  .lib-section-title { font-size: 9px; color: var(--text3); font-weight: 600; margin-bottom: 4px; }
+  .lib-items { display: flex; flex-wrap: wrap; gap: 3px; }
+  .lib-chip { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; font-size: 9px; color: var(--text2); cursor: pointer; display: flex; align-items: center; gap: 3px; }
+  .lib-chip:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* KEY INDICATORS */
+  .kpi-card { grid-column: 1; grid-row: 3; }
+  .kpi-header-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px 8px; border-bottom: 1px solid var(--border); }
+  .kpi-title { font-size: 12px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .rt-badge { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--green); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 12px 14px; }
+  .kpi-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .kpi-label { font-size: 9px; color: var(--text2); text-align: center; line-height: 1.3; }
+  .kpi-value { font-size: 18px; font-weight: 700; }
+  .kpi-value.green { color: var(--green); }
+  .kpi-value.blue { color: var(--blue); }
+  .ring { width: 62px; height: 62px; position: relative; }
+  .ring svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: var(--bg3); stroke-width: 5; }
+  .ring-fill { fill: none; stroke-width: 5; stroke-linecap: round; transition: stroke-dasharray .8s ease; }
+  .ring-fill.green { stroke: var(--green); }
+  .ring-fill.blue { stroke: var(--blue); }
+  .ring-fill.orange { stroke: var(--orange); }
+  .ring-fill.teal { stroke: var(--teal); }
+  .ring-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; }
+
+  /* LIVE MONITORING */
+  .monitor-card { grid-column: 1 / 3; grid-row: 4; }
+  .monitor-tabs { display: flex; gap: 4px; }
+  .mtab { padding: 3px 10px; border-radius: 4px; font-size: 10px; cursor: pointer; }
+  .mtab.active { background: var(--green); color: #000; font-weight: 600; }
+  .mtab:not(.active) { background: var(--bg3); color: var(--text2); }
+  .charts-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 10px 14px; }
+  .mini-chart { background: var(--bg3); border-radius: 6px; padding: 8px; }
+  .mini-chart-title { font-size: 10px; color: var(--text2); margin-bottom: 6px; }
+  canvas.sparkline { width: 100%; height: 50px; display: block; }
+
+  /* AI AGENTS HUB */
+  .agents-card { grid-column: 2; grid-row: 2 / 4; }
+  .agent-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 10px 14px; }
+  .agent-item { background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 8px; text-align: center; }
+  .agent-icon { font-size: 20px; margin-bottom: 4px; }
+  .agent-name { font-size: 10px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .agent-status { font-size: 9px; display: flex; align-items: center; justify-content: center; gap: 3px; margin-bottom: 3px; }
+  .agent-status.done { color: var(--green); }
+  .agent-status.run { color: var(--orange); }
+  .agent-status.wait { color: var(--text3); }
+  .agent-status.ready { color: var(--blue); }
+  .agent-desc { font-size: 8px; color: var(--text3); line-height: 1.4; }
+  .view-logs-btn { margin: 0 14px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; padding: 5px 12px; font-size: 10px; color: var(--text2); cursor: pointer; font-family: inherit; }
+
+  /* AUTO DISCOVERY */
+  .discovery-card { grid-column: 2; grid-row: 4; }
+  .objectives-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 8px 14px 4px; }
+  .obj-col-title { font-size: 9px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+  .obj-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--text); margin-bottom: 3px; }
+  .check { color: var(--green); font-size: 10px; }
+  .check-off { color: var(--border2); font-size: 10px; }
+  .btn-autodiscover { margin: 8px 14px; background: linear-gradient(135deg, #1a4a3a, #0f3a2a); border: 1px solid #2a6a4a; border-radius: 7px; padding: 10px; color: var(--green); font-size: 11px; font-weight: 700; cursor: pointer; width: calc(100% - 28px); font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all .15s; }
+  .btn-autodiscover:hover { background: linear-gradient(135deg, #2a6a4a, #1a5a3a); }
+
+  /* AI COPILOT */
+  .copilot-card { grid-column: 3; grid-row: 1 / 4; display: flex; flex-direction: column; }
+  .copilot-header { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  .copilot-brand { font-size: 9px; color: var(--text3); }
+  .copilot-title { font-size: 13px; font-weight: 700; color: var(--text); }
+  .copilot-sub { font-size: 10px; color: var(--text2); }
+  .copilot-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .copilot-msg { padding: 10px 14px; }
+  .msg-user { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 8px; }
+  .msg-avatar { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #2a4a8a, #1a3a6a); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; color: var(--blue); }
+  .msg-bubble { background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; font-size: 11px; color: var(--text); }
+  .quick-actions { padding: 0 14px 8px; display: flex; flex-direction: column; gap: 4px; }
+  .qa-btn { background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; padding: 7px 10px; font-size: 10px; color: var(--text2); cursor: pointer; text-align: left; display: flex; align-items: center; gap: 5px; font-family: inherit; transition: all .15s; }
+  .qa-btn:hover { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+  .qa-icon { font-size: 11px; }
+  .copilot-input { margin: auto 14px 14px; display: flex; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .copilot-input input { flex: 1; background: none; border: none; outline: none; padding: 9px 12px; font-size: 11px; color: var(--text); font-family: inherit; }
+  .copilot-input input::placeholder { color: var(--text3); }
+  .copilot-send { width: 30px; background: var(--green); border: none; cursor: pointer; color: #000; font-size: 14px; display: flex; align-items: center; justify-content: center; }
+
+  /* 3D VIZ */
+  .viz3d-card { grid-column: 3; grid-row: 4; }
+  .viz3d-body { position: relative; height: 130px; background: linear-gradient(135deg, #080c14, #0f1520); }
+  .viz3d-img { font-size: 60px; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
+  .colorbar { position: absolute; right: 10px; top: 8px; bottom: 8px; width: 14px; display: flex; flex-direction: column; border-radius: 4px; overflow: hidden; }
+  .colorbar-labels { position: absolute; right: 28px; top: 8px; bottom: 8px; display: flex; flex-direction: column; justify-content: space-between; }
+  .colorbar-labels span { font-size: 8px; color: var(--text2); text-align: right; }
+  .fullscreen-btn { position: absolute; top: 8px; left: 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 6px; font-size: 9px; color: var(--text2); cursor: pointer; }
+
+  /* TOP MODELS TABLE */
+  .models-card { grid-column: 1 / 3; grid-row: 5; }
+  .models-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+  .models-table th { padding: 6px 10px; color: var(--text3); font-weight: 600; text-align: left; background: var(--bg3); }
+  .models-table td { padding: 6px 10px; border-bottom: 1px solid var(--border); }
+  .models-table tr:last-child td { border-bottom: none; }
+  .models-table tr:hover td { background: var(--bg3); }
+  .tag-hybrid { background: var(--purple-dim); color: var(--purple); padding: 2px 6px; border-radius: 3px; font-size: 9px; }
+  .tag-ensemble { background: var(--blue-dim); color: var(--blue); padding: 2px 6px; border-radius: 3px; font-size: 9px; }
+  .btn-best { background: var(--orange); color: #000; padding: 3px 8px; border-radius: 3px; font-size: 9px; font-weight: 700; border: none; cursor: pointer; }
+  .btn-select { background: var(--bg3); border: 1px solid var(--border); padding: 3px 8px; border-radius: 3px; font-size: 9px; color: var(--text2); cursor: pointer; font-family: inherit; }
+  .btn-select:hover { border-color: var(--blue); color: var(--blue); }
+  .rank-num { font-weight: 700; color: var(--text2); }
+
+  /* EXPLAINABILITY */
+  .explain-card { grid-column: 3; grid-row: 5; }
+  .shap-bar-row { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; }
+  .shap-label { width: 80px; font-size: 9px; color: var(--text2); text-align: right; }
+  .shap-bar-bg { flex: 1; background: var(--bg3); border-radius: 3px; height: 12px; overflow: hidden; }
+  .shap-bar-fill { height: 100%; border-radius: 3px; background: var(--orange); transition: width .8s; }
+  .shap-val { font-size: 9px; color: var(--text2); width: 30px; }
+  .insights-box { margin-top: 8px; background: var(--bg3); border-radius: 5px; padding: 7px; }
+  .insights-title { font-size: 9px; font-weight: 600; color: var(--text2); margin-bottom: 4px; }
+  .insight-item { font-size: 9px; color: var(--text); margin-bottom: 3px; line-height: 1.4; padding-left: 8px; position: relative; }
+  .insight-item::before { content: "•"; position: absolute; left: 0; color: var(--orange); }
+
+  /* FOOTER */
+  footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 6px 16px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .footer-links { display: flex; gap: 16px; }
+  .footer-links a { color: var(--text3); font-size: 10px; text-decoration: none; }
+  .footer-links a:hover { color: var(--text2); }
+  .footer-right { font-size: 10px; color: var(--text3); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+  /* SELECT DROPDOWN */
+  .select-sm { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 3px 8px; font-size: 9px; color: var(--text2); cursor: pointer; font-family: inherit; outline: none; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-block">
+    <div>
+      <div class="logo-text-um6p">UM6P</div>
+      <div class="logo-text-limset">LIMSET<br>Sustainable Solutions<br>for a Better Tomorrow</div>
+    </div>
+    <div class="logo-sep"></div>
+    <div class="logo-icon">🔷</div>
+  </div>
+  <div class="header-title">
+    <h1>Digital Twin AI Studio</h1>
+    <div class="header-subtitle">Model <span>|</span> Simulate <span>|</span> Optimize <span>|</span> Explain <span>|</span> Accelerate a Sustainable Future</div>
+  </div>
+  <div class="search-bar">
+    <span style="color:var(--text3);font-size:13px;">🔍</span>
+    <input type="text" placeholder="Search experiments, models, datasets...">
+  </div>
+  <div class="header-icons">
+    <div class="notif-btn">🔔<div class="notif-dot"></div></div>
+    <div class="user-block">
+      <div class="user-avatar">HN</div>
+      <div>
+        <div class="user-name">Hassan NAANANI</div>
+        <div class="user-role">Research Engineer</div>
+      </div>
+    </div>
+    <div class="badge-green">Green Energy<br>Smarter Industry<br>Brighter Tomorrow</div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-item active"><span class="ni">📊</span> Dashboard</div>
+  <div class="nav-item"><span class="ni">🧩</span> Models</div>
+  <div class="nav-item"><span class="ni">🤖</span> Agents</div>
+  <div class="nav-item"><span class="ni">⚡</span> Optimization</div>
+  <div class="nav-item"><span class="ni">🧪</span> Experiments</div>
+  <div class="nav-item"><span class="ni">🌐</span> Twin 3D</div>
+  <div class="nav-item"><span class="ni">📋</span> Reports</div>
+  <div class="nav-item"><span class="ni">⚙️</span> Settings</div>
+  <div class="nav-right">
+    <span>Mar 18, 2025</span>&nbsp;&nbsp;<span>10:24</span>
+    <div class="online-dot"></div>
+    <span style="color:var(--green);font-weight:600;">Twin Online</span>
+  </div>
+</nav>
+
+<div class="main-layout">
+
+  <!-- SIDEBAR -->
+  <aside>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Assets</div>
+      <div class="sidebar-item active"><span class="si">🔋</span> Battery</div>
+      <div class="sidebar-item"><span class="si">⚡</span> SOEC</div>
+      <div class="sidebar-item"><span class="si">💧</span> Hydrogen</div>
+      <div class="sidebar-item"><span class="si">🌿</span> Ammonia</div>
+      <div class="sidebar-item"><span class="si">🔄</span> Rotary Kiln</div>
+      <div class="sidebar-item"><span class="si">➕</span> Custom Asset</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Data</div>
+      <div class="sidebar-item"><span class="si">⬆️</span> Upload Data</div>
+      <div class="sidebar-item"><span class="si">🗄️</span> Datasets</div>
+      <div class="sidebar-item"><span class="si">📡</span> Live Data (IoT)</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Library</div>
+      <div class="sidebar-item"><span class="si">🦁</span> Model Zoo</div>
+      <div class="sidebar-item"><span class="si">📐</span> Templates</div>
+      <div class="sidebar-item"><span class="si">📚</span> Case Studies</div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="footer-tagline">Engineering Tomorrow's<br>Sustainable World</div>
+    </div>
+  </aside>
+
+  <!-- CONTENT -->
+  <div class="content" id="main-content">
+
+    <!-- BATTERY CARD -->
+    <div class="card battery-card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct">🔋</span> Battery Digital Twin<br><small style="font-size:9px;color:var(--text2);font-weight:400;">From data to decisions</small></div>
+        <div class="battery-live-badge"><div class="live-dot"></div> Live</div>
+      </div>
+      <div class="card-body" style="padding:10px 12px;">
+        <div class="battery-visual">
+          <div class="battery-img">🔋</div>
+          <div class="battery-glow"></div>
+        </div>
+        <div style="text-align:center;margin-bottom:8px;">
+          <button class="btn-3d">📦 View 3D Model</button>
+        </div>
+        <div class="specs-grid">
+          <div class="spec-row"><span class="spec-label">Battery Pack</span><span class="spec-val green">● Live</span></div>
+          <div class="spec-row"><span class="spec-label">Voltage</span><span class="spec-val">388.4 V</span></div>
+          <div class="spec-row"><span class="spec-label">Current</span><span class="spec-val orange">-24.3 A</span></div>
+          <div class="spec-row"><span class="spec-label">Temperature</span><span class="spec-val">28.7 °C</span></div>
+          <div class="spec-row"><span class="spec-label">SOC</span><span class="spec-val green">62 %</span></div>
+          <div class="spec-row"><span class="spec-label">SOH</span><span class="spec-val green">78 %</span></div>
+          <div class="spec-row"><span class="spec-label">Cycle #</span><span class="spec-val">1,245</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODEL BUILDER -->
+    <div class="card builder-card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct">⚙️</span> Model Builder <small style="font-weight:400;color:var(--text2)">(Drag & Drop)</small></div>
+        <div class="builder-tabs">
+          <div class="btab active">Flow</div>
+          <div class="btab">Code</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:0;">
+        <div style="flex:1;">
+          <div class="library-panel">
+            <div style="font-size:10px;font-weight:600;color:var(--text2);padding:8px 0 4px;">Library</div>
+            <div class="lib-section">
+              <div class="lib-section-title">Physics Models</div>
+              <div class="lib-items">
+                <div class="lib-chip">⚛️ ECM</div>
+                <div class="lib-chip">📐 P2D</div>
+                <div class="lib-chip">🌡️ Thermal Model</div>
+              </div>
+            </div>
+            <div class="lib-section">
+              <div class="lib-section-title">AI Models</div>
+              <div class="lib-items">
+                <div class="lib-chip">🔁 LSTM</div>
+                <div class="lib-chip">🔀 GRU</div>
+                <div class="lib-chip">⚡ Transformer</div>
+                <div class="lib-chip">🌲 XGBoost</div>
+                <div class="lib-chip">🌳 Random Forest</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:1.5;border-left:1px solid var(--border);">
+          <div class="flow-canvas">
+            <div class="flow-node">
+              <div class="node-box phys"><span class="node-icon">📐</span>P2D<br>(Physics Model)</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">
+              <div class="node-box ai sel"><span class="node-icon">⚡</span>Transformer<br>(AI Model)</div>
+            </div>
+            <div class="flow-arrow" style="transform:rotate(90deg);margin:0;position:absolute;"></div>
+          </div>
+          <div style="display:flex;justify-content:center;gap:8px;padding:0 10px 6px;align-items:center;">
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node">
+              <div class="node-box ai" style="width:80px;"><span class="node-icon">🌲</span>XGBoost<br>(AI Model)</div>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-node">
+              <div class="node-box twin"><span class="node-icon">🌐</span>Digital Twin<br>(Hybrid Model)</div>
+            </div>
+          </div>
+          <div class="flow-actions">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="flow-btn">➕ Add Model</button>
+              <button class="flow-btn">🔗 Connect</button>
+              <button class="flow-btn">⚙️ Configure</button>
+              <button class="flow-btn">💾 Save</button>
+            </div>
+            <button class="btn-run" onclick="runExperiment()">▶ Run Experiment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI COPILOT -->
+    <div class="card copilot-card">
+      <div class="copilot-header">
+        <div class="copilot-brand">Powered by UM6P AI</div>
+        <div style="display:flex;align-items:center;gap:6px;margin:2px 0;">
+          <span style="font-size:16px;">🤖</span>
+          <div>
+            <div class="copilot-title">AI Copilot <sup style="font-size:8px;color:var(--text3)">β</sup></div>
+            <div class="copilot-sub">Your AI research assistant</div>
+          </div>
+        </div>
+      </div>
+      <div class="copilot-body">
+        <div class="copilot-msg">
+          <div class="msg-user">
+            <div class="msg-avatar">HN</div>
+            <div class="msg-bubble">Hello Hassan !<br>How can I help you with your digital twin today?</div>
+          </div>
+        </div>
+        <div class="quick-actions">
+          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Find the best model for SOH prediction</button>
+          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Compare LSTM vs Transformer</button>
+          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Optimize the model for minimum error</button>
+          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Explain why the battery is degrading</button>
+          <button class="qa-btn" onclick="askCopilot(this)"><span class="qa-icon">✨</span> Generate a scientific report</button>
+        </div>
+        <div class="copilot-input">
+          <input type="text" placeholder="Ask anything..." id="copilot-input" onkeydown="if(event.key==='Enter')sendCopilot()">
+          <button class="copilot-send" onclick="sendCopilot()">➤</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEY INDICATORS -->
+    <div class="card kpi-card">
+      <div class="kpi-header-row">
+        <div class="kpi-title">⚡ Key Indicators</div>
+        <div class="rt-badge"><div class="live-dot"></div> Real-time</div>
+      </div>
+      <div class="kpi-grid">
+        <div class="kpi-item">
+          <div class="kpi-label">SOH<br>State of Health</div>
+          <div class="ring">
+            <svg viewBox="0 0 62 62" width="62" height="62">
+              <circle class="ring-bg" cx="31" cy="31" r="26"/>
+              <circle class="ring-fill green" cx="31" cy="31" r="26" stroke-dasharray="103 60" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ring-center" style="color:var(--green);">78%</div>
+          </div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">RUL<br>Remaining Useful Life</div>
+          <div class="ring">
+            <svg viewBox="0 0 62 62" width="62" height="62">
+              <circle class="ring-bg" cx="31" cy="31" r="26"/>
+              <circle class="ring-fill blue" cx="31" cy="31" r="26" stroke-dasharray="110 53" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ring-center" style="color:var(--blue);font-size:9px;line-height:1.2;text-align:center;">12<br>months</div>
+          </div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Capacity<br>Remaining</div>
+          <div class="ring">
+            <svg viewBox="0 0 62 62" width="62" height="62">
+              <circle class="ring-bg" cx="31" cy="31" r="26"/>
+              <circle class="ring-fill orange" cx="31" cy="31" r="26" stroke-dasharray="100 63" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ring-center" style="color:var(--orange);font-size:9px;line-height:1.2;text-align:center;">62<br>Ah</div>
+          </div>
+        </div>
+        <div class="kpi-item">
+          <div class="kpi-label">Model Accuracy<br>(Validation)</div>
+          <div class="ring">
+            <svg viewBox="0 0 62 62" width="62" height="62">
+              <circle class="ring-bg" cx="31" cy="31" r="26"/>
+              <circle class="ring-fill teal" cx="31" cy="31" r="26" stroke-dasharray="160 3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="ring-center" style="color:var(--teal);font-size:9px;">98.4%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI AGENTS HUB -->
+    <div class="card agents-card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct">🤖</span> AI Agents Hub<br><small style="font-size:9px;font-weight:400;color:var(--text2);">Multi-agent system for autonomous model discovery</small></div>
+        <button class="view-logs-btn" style="margin:0;">View Logs</button>
+      </div>
+      <div class="agent-row">
+        <div class="agent-item">
+          <div class="agent-icon">📊</div>
+          <div class="agent-name">Data Agent</div>
+          <div class="agent-status done">✅ Completed</div>
+          <div class="agent-desc">Data collected<br>1.2M points</div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-icon">🔧</div>
+          <div class="agent-name">Feature Agent</div>
+          <div class="agent-status done">✅ Completed</div>
+          <div class="agent-desc">48 features<br>engineered</div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-icon">🧠</div>
+          <div class="agent-name">Model Agent</div>
+          <div class="agent-status run">🔄 Running</div>
+          <div class="agent-desc">Testing<br>12 architectures</div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-icon">⚡</div>
+          <div class="agent-name">Optimization Agent</div>
+          <div class="agent-status run">⭐ Running</div>
+          <div class="agent-desc">Bayesian search<br>45/100 trials</div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-icon">🔍</div>
+          <div class="agent-name">Explainability Agent</div>
+          <div class="agent-status wait">⏳ Waiting</div>
+          <div class="agent-desc">Computing<br>SHAP</div>
+        </div>
+        <div class="agent-item">
+          <div class="agent-icon">📋</div>
+          <div class="agent-name">Report Agent</div>
+          <div class="agent-status ready">🔵 Ready</div>
+          <div class="agent-desc">Generate<br>report</div>
+        </div>
+      </div>
+      <!-- 3D Viz in same card -->
+      <div style="border-top:1px solid var(--border);padding:8px 14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <span style="font-size:11px;font-weight:600;">3D Visualization</span>
+          <span style="font-size:9px;color:var(--text2);cursor:pointer;">⛶ Full Screen</span>
+        </div>
+        <div style="position:relative;height:110px;background:linear-gradient(135deg,#080c14,#0f1520);border-radius:6px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);overflow:hidden;">
+          <span style="font-size:50px;filter:drop-shadow(0 0 15px #f0883e66);">🔋</span>
+          <div style="position:absolute;right:10px;top:8px;bottom:8px;width:12px;background:linear-gradient(to bottom,#f85149,#f0883e,#e3b341,#39d353,#58a6ff);border-radius:3px;"></div>
+          <div style="position:absolute;right:26px;top:8px;bottom:8px;display:flex;flex-direction:column;justify-content:space-between;">
+            <span style="font-size:8px;color:var(--text2);">60</span>
+            <span style="font-size:8px;color:var(--text2);">45</span>
+            <span style="font-size:8px;color:var(--text2);">30</span>
+            <span style="font-size:8px;color:var(--text2);">15</span>
+          </div>
+          <div style="position:absolute;bottom:5px;right:42px;font-size:8px;color:var(--text2);">Temperature (°C)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIVE MONITORING -->
+    <div class="card monitor-card">
+      <div class="card-header">
+        <div class="card-title">📈 Live Monitoring</div>
+        <div class="monitor-tabs">
+          <div class="mtab active">Last 1h</div>
+          <div class="mtab">Last 24h</div>
+          <div class="mtab">Last 7d</div>
+          <div class="mtab">Custom</div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="mini-chart">
+          <div class="mini-chart-title">Voltage (V)</div>
+          <canvas id="chart-voltage" class="sparkline" width="200" height="50"></canvas>
+        </div>
+        <div class="mini-chart">
+          <div class="mini-chart-title">Temperature (°C)</div>
+          <canvas id="chart-temp" class="sparkline" width="200" height="50"></canvas>
+        </div>
+        <div class="mini-chart">
+          <div class="mini-chart-title">Capacity Degradation (%)</div>
+          <canvas id="chart-cap" class="sparkline" width="200" height="50"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTO DISCOVERY -->
+    <div class="card discovery-card">
+      <div class="card-header">
+        <div class="card-title"><span class="ct">🔬</span> Auto Discovery Lab<br><small style="font-size:9px;font-weight:400;color:var(--text2);">Let AI find the best digital twin for your data</small></div>
+      </div>
+      <div class="objectives-grid">
+        <div>
+          <div class="obj-col-title">Optimization Objectives</div>
+          <div class="obj-item"><span class="check">✅</span> Maximize SOH prediction</div>
+          <div class="obj-item"><span class="check">✅</span> Maximize RUL prediction</div>
+          <div class="obj-item"><span class="check">✅</span> Minimize error</div>
+          <div class="obj-item"><span class="check">✅</span> Minimize training time</div>
+        </div>
+        <div>
+          <div class="obj-col-title">Model Selection</div>
+          <div class="obj-item"><span class="check">✅</span> ECM &nbsp;&nbsp;<span class="check">✅</span> Transformer</div>
+          <div class="obj-item"><span class="check">✅</span> P2D &nbsp;&nbsp;<span class="check">✅</span> XGBoost</div>
+          <div class="obj-item"><span class="check">✅</span> LSTM &nbsp;<span class="check-off">☐</span> Random Forest</div>
+        </div>
+      </div>
+      <button class="btn-autodiscover" onclick="autoDiscover()">🔬 AUTO DISCOVER BEST DIGITAL TWIN</button>
+      <div style="text-align:right;padding:0 14px 8px;font-size:9px;color:var(--text3);cursor:pointer;">⚙️ Advanced Settings</div>
+    </div>
+
+    <!-- TOP MODELS TABLE -->
+    <div class="card models-card">
+      <div class="card-header">
+        <div class="card-title">🏆 Top Models Comparison</div>
+      </div>
+      <div style="padding:0 4px;">
+        <table class="models-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Model Configuration</th>
+              <th>Type</th>
+              <th>SOH (MAE ↓)</th>
+              <th>RUL (MAE ↓)</th>
+              <th>Accuracy ↑</th>
+              <th>Training Time</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="rank-num">1</td>
+              <td style="color:var(--orange);font-weight:600;">P2D + Transformer + XGBoost</td>
+              <td><span class="tag-hybrid">Hybrid</span></td>
+              <td style="color:var(--green);">1.2 %</td>
+              <td style="color:var(--green);">1.8 months</td>
+              <td style="color:var(--green);font-weight:700;">98.4 %</td>
+              <td>12 min</td>
+              <td><button class="btn-best">⭐ Best</button></td>
+            </tr>
+            <tr>
+              <td class="rank-num">2</td>
+              <td>ECM + LSTM + XGBoost</td>
+              <td><span class="tag-hybrid">Hybrid</span></td>
+              <td>1.5 %</td>
+              <td>2.3 months</td>
+              <td>97.6 %</td>
+              <td>8 min</td>
+              <td><button class="btn-select">Select</button></td>
+            </tr>
+            <tr>
+              <td class="rank-num">3</td>
+              <td>Transformer + XGBoost</td>
+              <td><span class="tag-ensemble">Ensemble</span></td>
+              <td>1.8 %</td>
+              <td>2.9 months</td>
+              <td>96.8 %</td>
+              <td>6 min</td>
+              <td><button class="btn-select">Select</button></td>
+            </tr>
+            <tr>
+              <td class="rank-num">4</td>
+              <td>P2D + LSTM</td>
+              <td><span class="tag-hybrid">Hybrid</span></td>
+              <td>2.1 %</td>
+              <td>3.2 months</td>
+              <td>95.3 %</td>
+              <td>14 min</td>
+              <td><button class="btn-select">Select</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EXPLAINABILITY -->
+    <div class="card explain-card">
+      <div class="card-header">
+        <div class="card-title">🔍 Explainability (SHAP)</div>
+        <select class="select-sm"><option>SOH Prediction</option><option>RUL Prediction</option></select>
+      </div>
+      <div class="card-body" style="padding:8px 14px;">
+        <div class="shap-bar-row">
+          <div class="shap-label">Temperature</div>
+          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:95%;background:var(--orange);"></div></div>
+          <div class="shap-val">0.38</div>
+        </div>
+        <div class="shap-bar-row">
+          <div class="shap-label">Cycle Number</div>
+          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:62%;background:var(--blue);"></div></div>
+          <div class="shap-val">0.25</div>
+        </div>
+        <div class="shap-bar-row">
+          <div class="shap-label">Current</div>
+          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:42%;background:var(--green);"></div></div>
+          <div class="shap-val">0.17</div>
+        </div>
+        <div class="shap-bar-row">
+          <div class="shap-label">Voltage</div>
+          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:30%;background:var(--purple);"></div></div>
+          <div class="shap-val">0.12</div>
+        </div>
+        <div class="shap-bar-row">
+          <div class="shap-label">C-rate</div>
+          <div class="shap-bar-bg"><div class="shap-bar-fill" style="width:20%;background:var(--yellow);"></div></div>
+          <div class="shap-val">0.08</div>
+        </div>
+        <div class="insights-box">
+          <div class="insights-title">Key Insights</div>
+          <div class="insight-item">Temperature is the most influential factor (38%).</div>
+          <div class="insight-item">High C-rate and deep discharge accelerate degradation.</div>
+          <div class="insight-item">The model is physically consistent with battery aging mechanisms.</div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end content -->
+</div><!-- end main layout -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="#">People</a>
+    <a href="#">Solutions</a>
+    <a href="#">Impact</a>
+  </div>
+  <div class="footer-right">Digital Twins for a Sustainable Future</div>
+</footer>
+
+<script>
+// Draw sparkline charts
+function drawChart(id, data, color, yMin, yMax) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.offsetWidth || 200;
+  const H = canvas.offsetHeight || 50;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid lines
+  ctx.strokeStyle = '#30363d';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= 3; i++) {
+    const y = (H / 3) * i;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+  }
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 1.5;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 4;
+  data.forEach((v, i) => {
+    const x = (i / (data.length - 1)) * W;
+    const y = H - ((v - yMin) / (yMax - yMin)) * H;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Fill
+  ctx.beginPath();
+  data.forEach((v, i) => {
+    const x = (i / (data.length - 1)) * W;
+    const y = H - ((v - yMin) / (yMax - yMin)) * H;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
+  ctx.fillStyle = color + '18';
+  ctx.fill();
+}
+
+function genData(base, noise, n) {
+  return Array.from({length: n}, (_, i) => base + Math.sin(i * 0.3) * noise + (Math.random() - 0.5) * noise * 0.5);
+}
+
+function initCharts() {
+  const v = genData(388, 8, 30);
+  const t = genData(28, 5, 30);
+  const c = [];
+  for (let i = 0; i < 30; i++) c.push(5 + i * 0.5 + Math.random() * 1.5);
+
+  drawChart('chart-voltage', v, '#58a6ff', 370, 420);
+  drawChart('chart-temp', t, '#f0883e', 15, 60);
+  drawChart('chart-cap', c, '#f85149', 0, 25);
+}
+
+window.addEventListener('load', () => {
+  initCharts();
+  setTimeout(initCharts, 100); // Re-draw after layout settles
+});
+window.addEventListener('resize', initCharts);
+
+// Live data simulation
+setInterval(() => {
+  initCharts();
+}, 3000);
+
+// Nav tabs
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.nav-item').forEach(e => e.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Sidebar
+document.querySelectorAll('.sidebar-item').forEach(el => {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.sidebar-item').forEach(e => e.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Monitor tabs
+document.querySelectorAll('.mtab').forEach(el => {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.mtab').forEach(e => e.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Builder tabs
+document.querySelectorAll('.btab').forEach(el => {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.btab').forEach(e => e.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Run experiment
+function runExperiment() {
+  const btn = document.querySelector('.btn-run');
+  btn.textContent = '⏳ Running...';
+  btn.style.background = 'var(--orange)';
+  setTimeout(() => {
+    btn.textContent = '✅ Completed!';
+    btn.style.background = 'var(--green)';
+    setTimeout(() => {
+      btn.textContent = '▶ Run Experiment';
+      btn.style.background = '';
+    }, 2000);
+  }, 2000);
+}
+
+// Auto discover
+function autoDiscover() {
+  const btn = document.querySelector('.btn-autodiscover');
+  btn.textContent = '⏳ Discovering... Please wait';
+  btn.style.opacity = '0.7';
+  setTimeout(() => {
+    btn.textContent = '✅ Best Model Found: P2D + Transformer + XGBoost';
+    btn.style.opacity = '1';
+    btn.style.color = 'var(--orange)';
+    setTimeout(() => {
+      btn.textContent = '🔬 AUTO DISCOVER BEST DIGITAL TWIN';
+      btn.style.color = '';
+    }, 3000);
+  }, 2500);
+}
+
+// Copilot
+function askCopilot(btn) {
+  const body = document.querySelector('.copilot-body');
+  const msg = btn.textContent.trim().replace('✨ ', '');
+  addCopilotMessage(msg, true);
+  btn.style.background = 'var(--blue-dim)';
+  btn.style.color = 'var(--blue)';
+  setTimeout(() => {
+    const responses = {
+      'Find the best model for SOH prediction': '📊 Analysis complete! P2D + Transformer + XGBoost achieves 98.4% accuracy with MAE of 1.2% for SOH prediction. Temperature is the key driver (38% SHAP importance).',
+      'Compare LSTM vs Transformer': '⚡ Transformer outperforms LSTM: 98.4% vs 97.6% accuracy, faster training (12 vs 18 min). For long-range dependencies, Transformer captures temporal patterns better.',
+      'Optimize the model for minimum error': '🎯 Bayesian optimization running... Current best: 45/100 trials. Optimal hyperparameters: lr=0.001, layers=6, heads=8. Projected MAE: 1.1%.',
+      'Explain why the battery is degrading': '🔍 Degradation analysis: Temperature stress (38%) + high C-rate cycles are primary drivers. 1,245 cycles detected. Recommend thermal management optimization.',
+      'Generate a scientific report': '📋 Generating LaTeX report... Battery Digital Twin Model — SOH=78%, RUL=12 months, Model Accuracy=98.4%. SHAP analysis included. Ready in 30s.'
+    };
+    addCopilotMessage(responses[msg] || '🤖 Processing your request...', false);
+    btn.style.background = '';
+    btn.style.color = '';
+  }, 1200);
+}
+
+function addCopilotMessage(text, isUser) {
+  const msgs = document.querySelector('.copilot-msg');
+  const div = document.createElement('div');
+  div.className = 'msg-user';
+  div.style.marginBottom = '8px';
+  div.innerHTML = `
+    <div class="msg-avatar" style="background:${isUser ? 'linear-gradient(135deg,#2a4a8a,#1a3a6a)' : 'linear-gradient(135deg,#1a4a3a,#0f2a22)'};">${isUser ? 'HN' : '🤖'}</div>
+    <div class="msg-bubble" style="${!isUser ? 'border-color:var(--green-dim);background:var(--green-dim);' : ''}">${text}</div>
+  `;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function sendCopilot() {
+  const input = document.getElementById('copilot-input');
+  const text = input.value.trim();
+  if (!text) return;
+  addCopilotMessage(text, true);
+  input.value = '';
+  setTimeout(() => {
+    addCopilotMessage('🤖 Processing: "' + text + '"... I\'ll analyze your digital twin data and provide insights shortly.', false);
+  }, 800);
+}
+</script>
+</body>
+</html>

@@ -69,6 +69,9 @@
                 <a href="#competencies" class="hover:text-brand-400 transition-colors">Compétences</a>
                 <a href="#outils" class="hover:text-brand-400 transition-colors">Outils</a>
                 <a href="#digital-twin-demo" class="hover:text-brand-400 transition-colors">Démo 3D</a>
+                <a href="dt-studio.html" class="flex items-center gap-1.5 text-emerald-400 hover:text-emerald-300 font-semibold">
+                    <i data-lucide="cpu" class="w-4 h-4"></i> DT Studio
+                </a>
                 <a href="cours.html" class="flex items-center gap-1.5 text-brand-400 hover:text-brand-300 font-semibold">
                     <i data-lucide="book-open" class="w-4 h-4"></i>
                     Cours & Académie
@@ -92,6 +95,9 @@
                         <a href="cours.html" class="px-8 py-4 rounded-xl bg-gradient-to-r from-brand-500 to-cyan-500 text-slate-950 font-bold flex items-center gap-2">
                             <i data-lucide="graduation-cap" class="w-5 h-5"></i>
                             Accéder aux Cours (0 to Expert)
+                        </a>
+                        <a href="dt-studio.html" class="px-8 py-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold flex items-center gap-2 hover:from-emerald-500 hover:to-teal-500 transition-colors">
+                            <i data-lucide="cpu" class="w-5 h-5"></i> Digital Twin Studio
                         </a>
                         <a href="ml-notebook.html" class="px-8 py-4 rounded-xl border border-brand-500/40 hover:border-brand-400 text-brand-300 font-semibold flex items-center gap-2 transition-colors">
                             <i data-lucide="brain-circuit" class="w-5 h-5"></i>
@@ -125,6 +131,34 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <!-- CARD : ML Notebook -->
+                <!-- CARD : Digital Twin AI Studio -->
+                <a href="dt-studio.html" class="tool-card glass-card p-8 rounded-3xl border border-emerald-500/30 hover:border-emerald-400/60 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 blur-[60px] pointer-events-none group-hover:bg-emerald-500/20 transition-all"></div>
+                    <div class="flex items-start gap-4 relative z-10">
+                        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0 shadow-lg shadow-emerald-500/30">
+                            <i data-lucide="cpu" class="w-7 h-7 text-slate-900"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <h3 class="text-xl font-bold text-white">Digital Twin AI Studio</h3>
+                                <span class="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase">UM6P · LIMSET</span>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed">Plateforme complète de modélisation, simulation et optimisation de jumeaux numériques industriels avec agents IA autonomes, SHAP explainability et monitoring temps réel.</p>
+                            <div class="mt-4 flex flex-wrap gap-2">
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Battery</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">Hydrogen</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">XGBoost</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">LSTM</span>
+                                <span class="px-2 py-1 rounded-lg bg-slate-800 text-xs text-gray-400">PINNs</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex items-center gap-2 text-emerald-400 text-sm font-semibold relative z-10">
+                        <span>Lancer le studio</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </a>
+
                 <a href="ml-notebook.html" class="tool-card glass-card p-8 rounded-3xl border border-brand-500/30 hover:border-brand-400/60 shadow-xl relative overflow-hidden group">
                     <div class="absolute top-0 right-0 w-40 h-40 bg-brand-500/10 blur-[60px] pointer-events-none group-hover:bg-brand-500/20 transition-all"></div>
                     <div class="flex items-start gap-4 relative z-10">
