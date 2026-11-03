@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>NASA Battery Degradation — ARC-FY08Q4 | UM6P LIMSET</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],throwOnError:false})"></script>
 <style>
 :root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#1c2230;--bg4:#21273a;
@@ -165,6 +169,22 @@ select.sel:hover{border-color:var(--border2)}
 .cyd{background:var(--bg3);border-radius:6px;padding:8px 10px;text-align:center}
 .cyd-l{font-size:8.5px;color:var(--text2)}
 .cyd-v{font-size:14px;font-weight:700;margin-top:2px}
+
+/* FORMULA PAGE */
+.formula-section{margin-bottom:20px}
+.formula-section h3{font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:7px}
+.formula-block{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 16px;margin-bottom:8px;font-family:'Courier New',monospace;font-size:11px;overflow-x:auto}
+.formula-block .eq{color:#c9d1d9;line-height:2;white-space:pre}
+.formula-block .eq .sym{color:#79c0ff;font-style:italic}
+.formula-block .eq .op{color:#ff7b72}
+.formula-block .eq .num{color:#79c0ff}
+.formula-block .eq .greek{color:#d2a8ff;font-style:italic}
+.formula-desc{font-size:9.5px;color:var(--text2);margin-top:5px;line-height:1.6;font-family:'Inter',sans-serif}
+.formula-tag{display:inline-block;background:var(--bg4);border:1px solid var(--border);border-radius:4px;padding:1px 7px;font-size:8.5px;color:var(--text3);margin-left:6px;font-family:'Inter',sans-serif;font-style:normal}
+.math-block{background:var(--bg3);border-left:3px solid var(--purple);border-radius:0 8px 8px 0;padding:10px 16px;margin:6px 0;font-size:12px;overflow-x:auto}
+.katex-render{color:#e6edf3;font-size:13px;line-height:2.2}
+/* KaTeX overrides */
+.katex{font-size:1em!important}
 </style>
 </head>
 <body>
@@ -194,6 +214,7 @@ select.sel:hover{border-color:var(--border2)}
   <button class="nav-tab" onclick="setPage(this,'cycle')">🔄 Cycle Explorer</button>
   <button class="nav-tab" onclick="setPage(this,'shap')">🔍 Feature Importance</button>
   <button class="nav-tab" onclick="setPage(this,'upload')">📂 Load Data</button>
+  <button class="nav-tab" onclick="setPage(this,'formulas')">🧮 Formulas</button>
 </nav>
 
 <div class="layout">
@@ -779,6 +800,91 @@ select.sel:hover{border-color:var(--border2)}
   </div>
 </div>
 
+<!-- ══════════════ FORMULAS ══════════════ -->
+<div class="page" id="page-formulas">
+
+  <!-- Model selector tabs -->
+  <div class="card">
+    <div class="ch">
+      <div class="ct">🧮 Mathematical Formulas — Degradation Models</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="formula-tabs">
+        <button class="btn btn-blue" onclick="showFormula(this,'pinn')">PINN</button>
+        <button class="btn" onclick="showFormula(this,'agpinn')">AG-PINN</button>
+        <button class="btn" onclick="showFormula(this,'gp')">Processus Gaussien</button>
+        <button class="btn" onclick="showFormula(this,'stoch')">Processus Stochastique</button>
+        <button class="btn" onclick="showFormula(this,'p2d')">P2D (Doyle-Newman)</button>
+        <button class="btn" onclick="showFormula(this,'sei')">SEI Growth</button>
+        <button class="btn" onclick="showFormula(this,'soh')">SOH / RUL</button>
+      </div>
+    </div>
+    <div class="cb" id="formula-content" style="font-size:11px;line-height:1.9;color:var(--text2)">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+  <!-- Quick reference cards -->
+  <div class="row3">
+    <div class="card">
+      <div class="ch"><div class="ct">📐 Constants &amp; Parameters</div></div>
+      <div class="cb">
+        <table class="tbl">
+          <thead><tr><th>Symbol</th><th>Description</th><th>Value / Unit</th></tr></thead>
+          <tbody>
+            <tr><td><span class="math-inline">F</span></td><td>Faraday constant</td><td>96 485 C/mol</td></tr>
+            <tr><td><span class="math-inline">R</span></td><td>Gas constant</td><td>8.314 J/(mol·K)</td></tr>
+            <tr><td><span class="math-inline">T</span></td><td>Temperature</td><td>298 K (25°C)</td></tr>
+            <tr><td><span class="math-inline">α<sub>a</sub>, α<sub>c</sub></span></td><td>Transfer coefficients</td><td>0.5 / 0.5</td></tr>
+            <tr><td><span class="math-inline">D<sub>s</sub></span></td><td>Solid diffusivity</td><td>~3.9×10⁻¹⁴ m²/s</td></tr>
+            <tr><td><span class="math-inline">D<sub>e</sub></span></td><td>Electrolyte diffusivity</td><td>~7.5×10⁻¹⁰ m²/s</td></tr>
+            <tr><td><span class="math-inline">ε<sub>e</sub></span></td><td>Electrolyte volume fraction</td><td>0.3–0.4</td></tr>
+            <tr><td><span class="math-inline">Q<sub>0</sub></span></td><td>Initial capacity</td><td>1.500 Ah</td></tr>
+            <tr><td><span class="math-inline">Q<sub>EOL</sub></span></td><td>EOL capacity (80%)</td><td>1.200 Ah</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">📊 Model Accuracy Summary</div></div>
+      <div class="cb">
+        <table class="tbl">
+          <thead><tr><th>Model</th><th>MAE SOH</th><th>MAE RUL</th><th>R²</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--orange)"><b>Hybrid P2D+TR</b></td><td style="color:var(--green)">0.82%</td><td style="color:var(--green)">3.2 cyc</td><td>0.987</td></tr>
+            <tr><td style="color:var(--purple)"><b>AG-PINN</b></td><td style="color:var(--green)">0.94%</td><td style="color:var(--green)">3.8 cyc</td><td>0.983</td></tr>
+            <tr><td style="color:var(--teal)"><b>PINN</b></td><td>1.10%</td><td>4.5 cyc</td><td>0.978</td></tr>
+            <tr><td style="color:var(--yellow)"><b>Proc. Gaussien</b></td><td>1.25%</td><td>4.9 cyc</td><td>0.971</td></tr>
+            <tr><td><b>LSTM</b></td><td>1.54%</td><td>5.4 cyc</td><td>0.962</td></tr>
+            <tr><td><b>Proc. Stochastique</b></td><td>1.72%</td><td>6.2 cyc</td><td>0.954</td></tr>
+            <tr><td><b>XGBoost</b></td><td>1.89%</td><td>7.1 cyc</td><td>0.941</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ch"><div class="ct">🔗 Model Taxonomy</div></div>
+      <div class="cb" style="font-size:10px;display:flex;flex-direction:column;gap:7px">
+        <div style="background:var(--bg3);border-radius:6px;padding:8px;border-left:3px solid var(--purple)">
+          <b style="color:var(--purple)">Physics-Informed (PINN / AG-PINN)</b><br>
+          <span style="color:var(--text2)">EDP intégrées dans la loss · Contraintes Butler-Volmer · Pas de données en dehors du domaine physique</span>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;padding:8px;border-left:3px solid var(--yellow)">
+          <b style="color:var(--yellow)">Probabiliste (GP / Stochastique)</b><br>
+          <span style="color:var(--text2)">Intervalles de confiance natifs · Distribution du RUL · Quantification d'incertitude</span>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;padding:8px;border-left:3px solid var(--orange)">
+          <b style="color:var(--orange)">Hybride (P2D + Transformer)</b><br>
+          <span style="color:var(--text2)">Physique + deep learning · Meilleure généralisation · Interprétable</span>
+        </div>
+        <div style="background:var(--bg3);border-radius:6px;padding:8px;border-left:3px solid var(--blue)">
+          <b style="color:var(--blue)">Data-Driven (LSTM / XGBoost)</b><br>
+          <span style="color:var(--text2)">Pas de prior physique · Requiert plus de données · Rapide à entraîner</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 </main>
 </div><!-- end layout -->
 
@@ -1252,6 +1358,14 @@ function drawPage(id){
   else if(id==='rul'){drawRUL();}
   else if(id==='cycle'){updateCycleExplorer();}
   else if(id==='shap'){drawShap('soh','hybrid');drawShap('rul','hybrid');drawCorrelation();}
+  else if(id==='formulas'){
+    // Initialize default formula tab
+    const defaultBtn=document.querySelector('#formula-tabs .btn');
+    if(defaultBtn&&!document.getElementById('formula-content').innerHTML.trim()){
+      defaultBtn.className='btn btn-blue';
+      renderFormulas(activeFormula);
+    }
+  }
 }
 
 // ═════════════════ SIDEBAR ═════════════════
@@ -1303,6 +1417,342 @@ function toast(msg,type='blue'){
   const t=document.createElement('div');t.className=`toast ${type}`;
   t.innerHTML=`<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
   w.appendChild(t);setTimeout(()=>t.style.opacity='0',2500);setTimeout(()=>t.remove(),2800);
+}
+
+// ═════════════════ FORMULAS ═════════════════
+const formulaData={
+  pinn:{
+    title:'PINN — Physics-Informed Neural Network',
+    color:'#39d353',
+    icon:'🧠',
+    sections:[
+      {
+        title:'Total Loss Function',
+        blocks:[{
+          latex:`\\mathcal{L}_{total} = \\underbrace{\\mathcal{L}_{data}}_{\\text{mesures}} + \\lambda_1 \\underbrace{\\mathcal{L}_{PDE}}_{\\text{résidu EDP}} + \\lambda_2 \\underbrace{\\mathcal{L}_{BC}}_{\\text{cond. limites}} + \\lambda_3 \\underbrace{\\mathcal{L}_{IC}}_{\\text{cond. initiales}}`,
+          desc:'La loss totale combine les données mesurées avec les contraintes physiques. Les poids λ équilibrent l\'importance relative de chaque terme.'
+        },{
+          latex:`\\mathcal{L}_{data} = \\frac{1}{N}\\sum_{i=1}^{N}\\left(\\hat{Q}(n_i) - Q_{meas}(n_i)\\right)^2`,
+          desc:'Terme données : erreur quadratique entre capacité prédite et mesurée sur les N cycles d\'entraînement.'
+        }]
+      },
+      {
+        title:'Diffusion Li⁺ — Phase Solide (Fick)',
+        blocks:[{
+          latex:`\\frac{\\partial c_s}{\\partial t} = \\frac{D_s}{r^2}\\frac{\\partial}{\\partial r}\\!\\left(r^2\\frac{\\partial c_s}{\\partial r}\\right)`,
+          desc:'Diffusion sphérique du lithium dans les particules d\'électrode. D_s = diffusivité solide ≈ 3.9×10⁻¹⁴ m²/s. Résidu PINN : résidu de cette EDP aux points de collocation.'
+        },{
+          latex:`\\mathcal{L}_{PDE}^{solid} = \\frac{1}{N_c}\\sum_j\\!\\left(\\frac{\\partial\\hat{c}_s}{\\partial t} - \\frac{D_s}{r^2}\\frac{\\partial}{\\partial r}\\!\\left(r^2\\frac{\\partial\\hat{c}_s}{\\partial r}\\right)\\right)^{\\!2}`,
+          desc:'Résidu de l\'EDP de diffusion solide intégré dans la loss. Le réseau apprend à satisfaire cette loi physique.'
+        }]
+      },
+      {
+        title:'Diffusion Li⁺ — Phase Électrolyte',
+        blocks:[{
+          latex:`\\varepsilon_e\\frac{\\partial c_e}{\\partial t} = \\frac{\\partial}{\\partial x}\\!\\left(D_e^{eff}\\frac{\\partial c_e}{\\partial x}\\right) + a_s(1-t_+^0)j_n`,
+          desc:'Diffusion du Li⁺ dans l\'électrolyte liquide avec terme source dû au flux interfacial j_n. ε_e = fraction volumique électrolyte.'
+        }]
+      },
+      {
+        title:'Cinétique — Butler-Volmer',
+        blocks:[{
+          latex:`j_n = j_0\\!\\left[\\exp\\!\\left(\\frac{\\alpha_a F\\eta}{RT}\\right) - \\exp\\!\\left(-\\frac{\\alpha_c F\\eta}{RT}\\right)\\right]`,
+          desc:'Flux d\'intercalation à l\'interface électrode/électrolyte. j_0 = courant d\'échange, η = surtension locale, α_a = α_c = 0.5.'
+        },{
+          latex:`\\eta = \\phi_s - \\phi_e - U(c_{s,surf}) \\qquad j_0 = k_0\\sqrt{c_e\\, c_{s,surf}(c_{s,max}-c_{s,surf})}`,
+          desc:'Surtension η et courant d\'échange j_0. U(c_s,surf) = potentiel d\'équilibre (OCP), fonction de l\'état de lithiation de surface.'
+        }]
+      }
+    ]
+  },
+  agpinn:{
+    title:'AG-PINN — Adaptive Gradient PINN',
+    color:'#bc8cff',
+    icon:'⚡',
+    sections:[
+      {
+        title:'Problème des conflits de gradient',
+        blocks:[{
+          latex:`\\nabla_\\theta\\mathcal{L}_{data} \\cdot \\nabla_\\theta\\mathcal{L}_{PDE} < 0 \\quad \\Rightarrow \\quad \\text{conflit de gradient}`,
+          desc:'Dans un PINN classique, les gradients du terme données et du terme physique peuvent pointer dans des directions opposées, bloquant l\'entraînement.'
+        }]
+      },
+      {
+        title:'Pondération Adaptative (NTK-inspired)',
+        blocks:[{
+          latex:`\\hat{\\lambda}_k = \\frac{\\overline{\\left|\\nabla_\\theta\\mathcal{L}_{data}\\right|}}{\\overline{\\left|\\nabla_\\theta\\mathcal{L}_{PDE_k}\\right|}}`,
+          desc:'Les poids λ_k sont calculés dynamiquement à chaque step comme le rapport des normes de gradients moyennes. Cela normalise automatiquement l\'échelle de chaque terme.'
+        },{
+          latex:`\\mathcal{L}_{AG} = \\mathcal{L}_{data} + \\sum_{k}\\hat{\\lambda}_k(t)\\cdot\\mathcal{L}_{PDE_k}`,
+          desc:'Loss AG-PINN avec poids adaptatifs. Les λ_k(t) sont mis à jour à chaque itération t selon la formule ci-dessus.'
+        }]
+      },
+      {
+        title:'Update Rule (Self-Adaptive)',
+        blocks:[{
+          latex:`\\lambda_k^{(t+1)} = \\lambda_k^{(t)} - \\eta_\\lambda\\,\\nabla_{\\lambda_k}\\mathcal{L}_{total}^{(t)} \\qquad \\eta_\\lambda \\ll \\eta_\\theta`,
+          desc:'Variante : les λ_k sont des paramètres appris par gradient descendant avec un taux d\'apprentissage η_λ plus petit que celui des poids du réseau η_θ.'
+        },{
+          latex:`\\mathcal{L}_{AG-PINN} = \\mathcal{L}_{data} + \\lambda_{BV}\\mathcal{L}_{Butler{-}Volmer} + \\lambda_{SEI}\\mathcal{L}_{SEI} + \\lambda_{diff}\\mathcal{L}_{diffusion}`,
+          desc:'Application batterie : trois contraintes physiques avec poids adaptatifs — cinétique BV, croissance SEI, et diffusion solide.'
+        }]
+      },
+      {
+        title:'ODE de Vieillissement (Aging ODE)',
+        blocks:[{
+          latex:`\\frac{dQ_{loss}}{dn} = A\\cdot\\exp\\!\\left(-\\frac{E_a}{RT}\\right)\\cdot\\left(Q_{loss}\\right)^{0.5}\\cdot I_{eff}`,
+          desc:'Équation différentielle empirique de perte de capacité. A = facteur pré-exponentiel, E_a = énergie d\'activation, I_eff = courant effectif par cycle.'
+        },{
+          latex:`\\mathcal{L}_{aging} = \\left\\|\\frac{d\\hat{Q}_{loss}}{dn} - A\\exp\\!\\left(-\\frac{E_a}{RT}\\right)\\hat{Q}_{loss}^{0.5}I_{eff}\\right\\|^2`,
+          desc:'Résidu de l\'ODE de vieillissement intégré dans la loss de l\'AG-PINN.'
+        }]
+      }
+    ]
+  },
+  gp:{
+    title:'Processus Gaussien (GP)',
+    color:'#e3b341',
+    icon:'📈',
+    sections:[
+      {
+        title:'Définition du GP',
+        blocks:[{
+          latex:`Q(n) \\sim \\mathcal{GP}\\!\\left(m(n),\\;k(n,n')\\right)`,
+          desc:'La capacité Q est modélisée comme une fonction aléatoire. m(n) = fonction moyenne (prior), k(n,n\') = fonction de covariance (noyau).'
+        },{
+          latex:`m(n) = Q_0 - \\alpha\\, n \\qquad \\alpha > 0`,
+          desc:'Prior de moyenne : dégradation linéaire initiale avec taux α estimé sur les premiers cycles.'
+        }]
+      },
+      {
+        title:'Noyaux de Covariance',
+        blocks:[{
+          latex:`k_{SE}(n,n') = \\sigma^2\\exp\\!\\left(-\\frac{(n-n')^2}{2l^2}\\right)`,
+          desc:'Noyau Squared Exponential (RBF) : lisse et infiniment différentiable. l = longueur de corrélation (nombre de cycles de "mémoire").'
+        },{
+          latex:`k_{M52}(n,n') = \\sigma^2\\!\\left(1 + \\frac{\\sqrt{5}|n-n'|}{l} + \\frac{5(n-n')^2}{3l^2}\\right)\\!\\exp\\!\\left(-\\frac{\\sqrt{5}|n-n'|}{l}\\right)`,
+          desc:'Noyau Matérn 5/2 : plus réaliste pour la dégradation batterie — deux fois différentiable, capture mieux les non-régularités.'
+        }]
+      },
+      {
+        title:'Prédiction avec Incertitude',
+        blocks:[{
+          latex:`\\hat{Q}(n^*) = m(n^*) + K_{*}\\bigl(K + \\sigma_n^2 I\\bigr)^{-1}\\bigl(Q - m\\bigr)`,
+          desc:'Moyenne prédite au point n*. K = matrice de Gram sur les données, K_* = vecteur de covariance entre n* et les données, σ_n² = variance du bruit.'
+        },{
+          latex:`\\sigma^2(n^*) = k(n^*,n^*) - K_*\\bigl(K + \\sigma_n^2 I\\bigr)^{-1}K_*^\\top`,
+          desc:'Variance de prédiction (incertitude épistémique). L\'intervalle de confiance à 95% est ±1.96·σ(n*).'
+        }]
+      },
+      {
+        title:'Optimisation des Hyperparamètres',
+        blocks:[{
+          latex:`\\ln p(Q|n,\\theta) = -\\frac{1}{2}Q^\\top K_\\theta^{-1}Q - \\frac{1}{2}\\ln|K_\\theta| - \\frac{N}{2}\\ln 2\\pi`,
+          desc:'Log-vraisemblance marginale maximisée par rapport aux hyperparamètres θ = {σ², l, σ_n²} via gradient ascent.'
+        }]
+      }
+    ]
+  },
+  stoch:{
+    title:'Processus Stochastique — SDE de Dégradation',
+    color:'#f0883e',
+    icon:'🎲',
+    sections:[
+      {
+        title:'Équation Différentielle Stochastique (SDE)',
+        blocks:[{
+          latex:`dQ = \\mu(Q,n)\\,dn + \\sigma(Q,n)\\,dW_n`,
+          desc:'Modèle de Wiener avec drift μ (tendance déterministe) et diffusion σ (variabilité stochastique). W_n = mouvement brownien standard.'
+        },{
+          latex:`Q(n) = Q_0 + \\mu n + \\sigma W(n) \\qquad W(n) \\sim \\mathcal{N}(0,n)`,
+          desc:'Solution analytique pour drift et diffusion constants : Q suit une loi normale de moyenne Q_0+μn et variance σ²n.'
+        }]
+      },
+      {
+        title:'Modèle de Wiener avec Drift (Degradation Wiener)',
+        blocks:[{
+          latex:`Q(n) = Q_0 - \\mu n + \\sigma B(n) \\qquad \\mu > 0,\\; \\sigma > 0`,
+          desc:'Modèle standard pour la dégradation : drift négatif μ (perte de capacité) + terme stochastique B(n) brownien standard.'
+        },{
+          latex:`\\hat{\\mu} = \\frac{\\Delta Q}{\\Delta n}, \\quad \\hat{\\sigma}^2 = \\frac{1}{N-1}\\sum_{i=1}^{N-1}\\frac{(\\Delta Q_i - \\hat{\\mu}\\,\\Delta n_i)^2}{\\Delta n_i}`,
+          desc:'Estimation des paramètres μ et σ² par maximum de vraisemblance sur les incréments ΔQ_i = Q(n_i+1) − Q(n_i).'
+        }]
+      },
+      {
+        title:'Distribution du RUL — First Passage Time',
+        blocks:[{
+          latex:`RUL = \\inf\\{n > 0 : Q(n) \\leq Q_{EOL}\\}`,
+          desc:'Le RUL est défini comme le premier temps où la capacité passe sous le seuil EOL. C\'est un temps de premier passage (FPT).'
+        },{
+          latex:`f_{RUL}(r) = \\frac{Q_0 - Q_{EOL}}{\\sqrt{2\\pi\\sigma^2 r^3}}\\exp\\!\\left(-\\frac{(\\mu r-(Q_0-Q_{EOL}))^2}{2\\sigma^2 r}\\right)`,
+          desc:'Distribution inverse-gaussienne (Wald) du RUL. Permet d\'obtenir des intervalles de confiance sur le nombre de cycles restants.'
+        },{
+          latex:`\\mathbb{E}[RUL] = \\frac{Q_0-Q_{EOL}}{\\mu}, \\qquad \\text{Var}[RUL] = \\frac{(Q_0-Q_{EOL})\\sigma^2}{\\mu^3}`,
+          desc:'Espérance et variance du RUL sous le modèle de Wiener avec drift.'
+        }]
+      },
+      {
+        title:'Mise à Jour Bayésienne (Online)',
+        blocks:[{
+          latex:`p(\\mu,\\sigma^2 | Q_{1:n}) \\propto p(Q_{1:n}|\\mu,\\sigma^2)\\cdot p(\\mu,\\sigma^2)`,
+          desc:'Mise à jour récursive des paramètres du processus au fur et à mesure des nouvelles mesures (filtre de Kalman ou MCMC).'
+        }]
+      }
+    ]
+  },
+  sei:{
+    title:'Croissance SEI — Solid Electrolyte Interphase',
+    color:'#f85149',
+    icon:'🔴',
+    sections:[
+      {
+        title:'Mécanisme de Croissance SEI',
+        blocks:[{
+          latex:`\\frac{d\\delta_{SEI}}{dt} = -\\frac{M_{SEI}}{2F\\rho_{SEI}}\\,j_{SEI}`,
+          desc:'Vitesse de croissance de l\'épaisseur SEI δ_SEI. M_SEI = masse molaire, ρ_SEI = densité, j_SEI = courant de réaction SEI.'
+        },{
+          latex:`j_{SEI} = -j_0^{SEI}\\exp\\!\\left(-\\frac{\\alpha_c F}{RT}\\eta_{SEI}\\right)\\exp\\!\\left(-\\frac{\\delta_{SEI}}{\\delta_{ref}}\\right)`,
+          desc:'Courant de formation SEI : terme cinétique Butler-Volmer + facteur de résistance de diffusion à travers la couche SEI existante.'
+        }]
+      },
+      {
+        title:'Perte de Lithium Actif',
+        blocks:[{
+          latex:`Q_{SEI}(t) = \\int_0^t \\frac{A_{electrode}\\cdot j_{SEI}(\\tau)}{F}\\,d\\tau`,
+          desc:'Quantité de lithium irrémédiablement consommé par la SEI au fil du temps (intégrale du courant parasitaire).'
+        },{
+          latex:`Q_{loss}^{SEI}(n) \\approx A\\sqrt{n}\\cdot\\exp\\!\\left(-\\frac{E_a^{SEI}}{RT}\\right)`,
+          desc:'Loi empirique en √n : la croissance SEI ralentit avec le temps car elle doit diffuser à travers une couche toujours plus épaisse.'
+        }]
+      },
+      {
+        title:'Résistance SEI',
+        blocks:[{
+          latex:`R_{SEI}(n) = R_{SEI,0} + \\frac{\\delta_{SEI}(n)}{\\kappa_{SEI}\\cdot A}`,
+          desc:'Résistance ohmique de la SEI proportionnelle à son épaisseur. κ_SEI = conductivité ionique de la SEI ≈ 10⁻⁴ S/m.'
+        },{
+          latex:`R_e(n) = R_{e,0} + \\beta_{SEI}\\cdot n \\qquad \\beta_{SEI} \\approx 2.9\\times10^{-4}\\;\\Omega/cycle`,
+          desc:'Croissance linéaire de la résistance d\'électrolyte Re avec le nombre de cycles — observable directement en EIS (mesurée sur B0005–B0018).'
+        }]
+      }
+    ]
+  },
+  p2d:{
+    title:'Modèle P2D — Doyle-Fuller-Newman',
+    color:'#58a6ff',
+    icon:'⚙️',
+    sections:[
+      {
+        title:'Transport de charge (loi d\'Ohm généralisée)',
+        blocks:[{
+          latex:`\\frac{\\partial}{\\partial x}\\!\\left(\\kappa_{eff}\\frac{\\partial\\phi_e}{\\partial x}\\right) + \\frac{\\partial}{\\partial x}\\!\\left(\\kappa_D^{eff}\\frac{\\partial\\ln c_e}{\\partial x}\\right) + j^{Li} = 0`,
+          desc:'Équation de transport ionique dans l\'électrolyte. φ_e = potentiel électrolyte, κ_eff = conductivité effective, κ_D = conductivité de diffusion.'
+        },{
+          latex:`\\frac{\\partial}{\\partial x}\\!\\left(\\sigma_{eff}\\frac{\\partial\\phi_s}{\\partial x}\\right) - j^{Li} = 0`,
+          desc:'Équation de transport électronique dans l\'électrode solide. σ_eff = conductivité électronique effective.'
+        }]
+      },
+      {
+        title:'Couplage électrochimique',
+        blocks:[{
+          latex:`j^{Li} = a_s\\, j_n \\qquad a_s = \\frac{3\\varepsilon_s}{R_s}`,
+          desc:'Densité volumique de flux Li (A/m³). a_s = surface spécifique des particules sphériques de rayon R_s et fraction volumique ε_s.'
+        },{
+          latex:`U_{OCP} = U^0 + \\frac{RT}{F}\\ln\\!\\left(\\frac{c_{s,surf}}{c_{s,max}-c_{s,surf}}\\right)`,
+          desc:'Potentiel à circuit ouvert (OCP) en fonction du taux de lithiation. Cette relation est tabulée expérimentalement pour LiCoO₂.'
+        }]
+      },
+      {
+        title:'Conditions limites',
+        blocks:[{
+          latex:`\\left.\\sigma_{eff}\\frac{\\partial\\phi_s}{\\partial x}\\right|_{x=0} = -\\frac{I}{A}, \\quad \\left.\\frac{\\partial c_s}{\\partial r}\\right|_{r=0} = 0, \\quad \\left.D_s\\frac{\\partial c_s}{\\partial r}\\right|_{r=R_s} = -\\frac{j_n}{F}`,
+          desc:'Conditions aux limites : courant appliqué à l\'électrode négative, symétrie au centre de la particule, flux interfacial à la surface.'
+        }]
+      }
+    ]
+  },
+  soh:{
+    title:'SOH, Capacity Fade et RUL',
+    color:'#3fb950',
+    icon:'📊',
+    sections:[
+      {
+        title:'State of Health (SOH)',
+        blocks:[{
+          latex:`SOH(n) = \\frac{Q(n)}{Q_0}\\times 100\\%`,
+          desc:'Définition du SOH comme rapport entre la capacité actuelle Q(n) et la capacité initiale Q_0 = 1.500 Ah. EOL défini à SOH = 80%.'
+        },{
+          latex:`SOH(n) = 1 - \\frac{Q_{loss}^{SEI}(n) + Q_{loss}^{Li-plating}(n) + Q_{loss}^{AM}(n)}{Q_0}`,
+          desc:'Décomposition physique des pertes : SEI, dépôt de lithium métallique (Li-plating), et perte de matériau actif (AM).'
+        }]
+      },
+      {
+        title:'Modèle Empirique de Fade',
+        blocks:[{
+          latex:`Q(n) = Q_0\\cdot\\exp(-\\alpha\\,n) \\qquad \\alpha = 1.72\\times10^{-3}\\;cycle^{-1}`,
+          desc:'Loi exponentielle ajustée sur B0005 (R² = 0.994). Valide en régime linéaire (phase 1). Paramètre α estimé par régression non-linéaire.'
+        },{
+          latex:`Q(n) = Q_0\\cdot\\exp(-\\alpha n)\\cdot\\exp(-\\beta(n-n_k)^+) \\qquad (n-n_k)^+ = \\max(0, n-n_k)`,
+          desc:'Extension avec accélération après le knee point n_k. β ≈ 3.5×10⁻³ pour B0005 (phase 3 de dégradation rapide).'
+        }]
+      },
+      {
+        title:'Remaining Useful Life (RUL)',
+        blocks:[{
+          latex:`RUL(n) = n_{EOL} - n \\qquad n_{EOL} = \\arg\\min_{n}\\{Q(n) \\leq 0.8\\,Q_0\\}`,
+          desc:'RUL déterministe : cycles restants avant EOL. n_EOL estimé par inversion du modèle de fade ou par prédiction du modèle.'
+        },{
+          latex:`\\hat{n}_{EOL} = -\\frac{1}{\\alpha}\\ln\\!\\left(\\frac{0.8\\,Q_0}{Q_0}\\right) = \\frac{\\ln(1.25)}{\\alpha} \\approx 130\\;cycles`,
+          desc:'Formule analytique de l\'EOL sous hypothèse exponentielle. Pour α = 1.72×10⁻³ : n_EOL ≈ 130 cycles (cohérent avec B0005).'
+        }]
+      },
+      {
+        title:'Knee Point Detection',
+        blocks:[{
+          latex:`n_k = \\arg\\max_n\\left|\\frac{d^2Q}{dn^2}\\right| \\qquad \\Leftrightarrow \\qquad \\frac{d^3Q}{dn^3} = 0`,
+          desc:'Le knee point est le maximum de la courbure (dérivée seconde). Détecté par la méthode "Elbow" ou par la dérivée d\'ordre 3 nulle.'
+        }]
+      }
+    ]
+  }
+};
+
+let activeFormula='pinn';
+function showFormula(btn,key){
+  document.querySelectorAll('#formula-tabs .btn').forEach(b=>b.className='btn');
+  btn.className='btn btn-blue';
+  activeFormula=key;
+  renderFormulas(key);
+}
+
+function renderFormulas(key){
+  const data=formulaData[key];if(!data)return;
+  const container=document.getElementById('formula-content');if(!container)return;
+  let html=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid ${data.color}33">
+    <span style="font-size:22px">${data.icon}</span>
+    <div>
+      <div style="font-size:14px;font-weight:700;color:${data.color}">${data.title}</div>
+    </div>
+  </div>`;
+  data.sections.forEach(sec=>{
+    html+=`<div class="formula-section">
+      <h3><span style="width:8px;height:8px;border-radius:50%;background:${data.color};display:inline-block"></span>${sec.title}</h3>`;
+    sec.blocks.forEach((b,i)=>{
+      html+=`<div class="math-block" style="border-color:${data.color}">
+        <div style="font-size:13px;color:var(--text);text-align:center;padding:6px 0">$$${b.latex}$$</div>
+      </div>
+      <div class="formula-desc">${b.desc}</div>`;
+    });
+    html+='</div>';
+  });
+  container.innerHTML=html;
+  // Re-render KaTeX
+  if(window.renderMathInElement){
+    renderMathInElement(container,{
+      delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}],
+      throwOnError:false
+    });
+  }
 }
 
 // ═════════════════ INIT ═════════════════
