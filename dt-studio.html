@@ -203,8 +203,12 @@ aside{width:var(--sw);background:var(--bg2);border-right:1px solid var(--border)
 .adv-link{text-align:right;padding:0 12px 7px;font-size:8.5px;color:var(--text3);cursor:pointer}
 .adv-link:hover{color:var(--text2)}
 
+/* DEGRADATION ANALYSIS */
+.degrad-card{grid-column:1/3;grid-row:5}
+.degrad-panel{padding:0}
+
 /* MODELS TABLE */
-.models-card{grid-column:1/3;grid-row:5}
+.models-card{grid-column:1/3;grid-row:6}
 .tbl{width:100%;border-collapse:collapse;font-size:10px}
 .tbl th{padding:5px 8px;color:var(--text3);font-weight:600;text-align:left;background:var(--bg3);font-size:9px}
 .tbl td{padding:5px 8px;border-bottom:1px solid var(--border)}
@@ -217,7 +221,7 @@ aside{width:var(--sw);background:var(--bg2);border-right:1px solid var(--border)
 .tag-e{background:var(--blue-d);color:var(--blue)}
 
 /* EXPLAIN */
-.explain-card{grid-column:3;grid-row:4/6}
+.explain-card{grid-column:3;grid-row:4/7}
 .shap-row{display:flex;align-items:center;gap:5px;margin-bottom:4px}
 .shap-lbl{width:78px;font-size:8.5px;color:var(--text2);text-align:right}
 .shap-bg{flex:1;background:var(--bg3);border-radius:2px;height:11px;overflow:hidden}
@@ -642,47 +646,118 @@ soh, rul = twin.predict(X_test)
     <div class="adv-link" onclick="showModal('modal-adv')">⚙️ Advanced Settings</div>
   </div>
 
-  <!-- TOP MODELS TABLE -->
+  <!-- BATTERY DEGRADATION ANALYSIS -->
+  <div class="card degrad-card">
+    <div class="ch">
+      <div class="ct">📉 Battery Degradation Analysis <small>— LiFePO₄</small></div>
+      <div class="tab-row">
+        <div class="tab on" onclick="setDegradTab(this,'soh')">SOH Curve</div>
+        <div class="tab off" onclick="setDegradTab(this,'cap')">Capacity</div>
+        <div class="tab off" onclick="setDegradTab(this,'rul')">RUL</div>
+        <div class="tab off" onclick="setDegradTab(this,'thermal')">Thermal</div>
+      </div>
+    </div>
+    <div id="degrad-soh" class="degrad-panel">
+      <canvas id="chart-degrad-soh" width="500" height="90" style="width:100%;border-radius:5px;background:var(--bg3)"></canvas>
+      <div style="display:flex;gap:14px;font-size:9.5px;color:var(--text2);margin-top:5px">
+        <span style="color:var(--green)">— Actual SOH</span>
+        <span style="color:var(--blue)">— P2D+Transformer (pred.)</span>
+        <span style="color:var(--orange)">— 80% EOL threshold</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:7px">
+        <div style="background:var(--bg3);border-radius:5px;padding:6px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">Fade Rate</div>
+          <div style="font-size:12px;font-weight:700;color:var(--orange)">0.018%/cycle</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:5px;padding:6px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">Cycles to EOL</div>
+          <div style="font-size:12px;font-weight:700;color:var(--red)">~1,110</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:5px;padding:6px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">Pred. Error</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green)">MAE 1.2%</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:5px;padding:6px 8px;text-align:center">
+          <div style="font-size:9px;color:var(--text2)">Knee Point</div>
+          <div style="font-size:12px;font-weight:700;color:var(--yellow)">~1,800 cyc</div>
+        </div>
+      </div>
+    </div>
+    <div id="degrad-cap" class="degrad-panel" style="display:none">
+      <canvas id="chart-degrad-cap" width="500" height="90" style="width:100%;border-radius:5px;background:var(--bg3)"></canvas>
+      <div style="display:flex;gap:14px;font-size:9.5px;color:var(--text2);margin-top:5px">
+        <span style="color:var(--orange)">— Capacity fade (Ah)</span>
+        <span style="color:var(--purple)">— LSTM prediction</span>
+      </div>
+      <div style="font-size:9.5px;color:var(--text2);margin-top:6px;background:var(--bg3);border-radius:5px;padding:6px 10px">
+        Initial: 100 Ah → Current: <b style="color:var(--green)">62 Ah</b> (38% fade over 1,245 cycles) — Projected EOL at <b style="color:var(--orange)">80 Ah</b> threshold: <b style="color:var(--red)">~1,400 cycles</b>
+      </div>
+    </div>
+    <div id="degrad-rul" class="degrad-panel" style="display:none">
+      <canvas id="chart-degrad-rul" width="500" height="90" style="width:100%;border-radius:5px;background:var(--bg3)"></canvas>
+      <div style="display:flex;gap:14px;font-size:9.5px;color:var(--text2);margin-top:5px">
+        <span style="color:var(--blue)">— RUL prediction (months)</span>
+        <span style="color:var(--green)">— 95% confidence interval</span>
+      </div>
+      <div style="font-size:9.5px;color:var(--text2);margin-top:6px;background:var(--bg3);border-radius:5px;padding:6px 10px">
+        Current RUL: <b style="color:var(--blue)">12 months</b> ± 1.5 mo — Confidence: 94.8% — Next maintenance: <b style="color:var(--orange)">April 2027</b>
+      </div>
+    </div>
+    <div id="degrad-thermal" class="degrad-panel" style="display:none">
+      <canvas id="chart-degrad-thermal" width="500" height="90" style="width:100%;border-radius:5px;background:var(--bg3)"></canvas>
+      <div style="display:flex;gap:14px;font-size:9.5px;color:var(--text2);margin-top:5px">
+        <span style="color:var(--red)">— Max cell temp.</span>
+        <span style="color:var(--orange)">— Avg temp.</span>
+        <span style="color:var(--yellow)">— 40°C warning</span>
+      </div>
+      <div style="font-size:9.5px;color:var(--text2);margin-top:6px;background:var(--bg3);border-radius:5px;padding:6px 10px">
+        Thermal stress index: <b style="color:var(--orange)">Moderate</b> — 23% of cycles above 35°C — Accelerated aging contribution: <b style="color:var(--red)">+0.004%/cycle</b>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODELS USED -->
   <div class="card models-card">
     <div class="ch">
-      <div class="ct">🏆 Top Models Comparison</div>
-      <button class="btn btn-ghost btn-sm" onclick="showModal('modal-export')">📤 Export</button>
+      <div class="ct">🧩 Models Used <small id="models-count">(3 active)</small></div>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-ghost btn-sm" onclick="showModal('modal-export')">📤 Export</button>
+        <button class="btn btn-green btn-sm" onclick="showModal('modal-add-model')">➕ Add Model</button>
+      </div>
     </div>
-    <table class="tbl">
+    <table class="tbl" id="models-table">
       <thead>
         <tr>
-          <th>#</th><th>Model Configuration</th><th>Type</th>
-          <th>SOH MAE↓</th><th>RUL MAE↓</th><th>Accuracy↑</th><th>Time</th><th>Action</th>
+          <th>Model</th><th>Type</th><th>Target</th>
+          <th>SOH MAE↓</th><th>RUL MAE↓</th><th>Accuracy↑</th><th>Status</th><th></th>
         </tr>
       </thead>
-      <tbody>
+      <tbody id="models-tbody">
         <tr class="selected" onclick="selectModel(this,1)">
-          <td><b>1</b></td>
           <td style="color:var(--orange);font-weight:600">P2D + Transformer + XGBoost</td>
           <td><span class="tag tag-h">Hybrid</span></td>
+          <td style="font-size:9px">SOH / RUL</td>
           <td style="color:var(--green)">1.2 %</td>
           <td style="color:var(--green)">1.8 mo</td>
           <td style="color:var(--green);font-weight:700">98.4 %</td>
-          <td>12 min</td>
-          <td><button class="btn btn-orange btn-sm">⭐ Best</button></td>
+          <td><span class="tag" style="background:#39d35322;color:var(--green);border-color:var(--green)">⭐ Active</span></td>
+          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();removeModel(this,'P2D + Transformer + XGBoost')">✕</button></td>
         </tr>
         <tr onclick="selectModel(this,2)">
-          <td>2</td><td>ECM + LSTM + XGBoost</td>
+          <td>ECM + LSTM + XGBoost</td>
           <td><span class="tag tag-h">Hybrid</span></td>
-          <td>1.5 %</td><td>2.3 mo</td><td>97.6 %</td><td>8 min</td>
-          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectModel(this.closest('tr'),2)">Select</button></td>
+          <td style="font-size:9px">SOH</td>
+          <td>1.5 %</td><td>2.3 mo</td><td>97.6 %</td>
+          <td><span class="tag" style="font-size:9px">Standby</span></td>
+          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();removeModel(this,'ECM + LSTM + XGBoost')">✕</button></td>
         </tr>
         <tr onclick="selectModel(this,3)">
-          <td>3</td><td>Transformer + XGBoost</td>
+          <td>Transformer + XGBoost</td>
           <td><span class="tag tag-e">Ensemble</span></td>
-          <td>1.8 %</td><td>2.9 mo</td><td>96.8 %</td><td>6 min</td>
-          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectModel(this.closest('tr'),3)">Select</button></td>
-        </tr>
-        <tr onclick="selectModel(this,4)">
-          <td>4</td><td>P2D + LSTM</td>
-          <td><span class="tag tag-h">Hybrid</span></td>
-          <td>2.1 %</td><td>3.2 mo</td><td>95.3 %</td><td>14 min</td>
-          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();selectModel(this.closest('tr'),4)">Select</button></td>
+          <td style="font-size:9px">RUL</td>
+          <td>1.8 %</td><td>2.9 mo</td><td>96.8 %</td>
+          <td><span class="tag" style="font-size:9px">Standby</span></td>
+          <td><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();removeModel(this,'Transformer + XGBoost')">✕</button></td>
         </tr>
       </tbody>
     </table>
@@ -1214,6 +1289,62 @@ soh, rul = twin.predict(X_test)
   </div>
 </div>
 
+<!-- ADD MODEL MODAL -->
+<div class="modal-bg" id="modal-add-model" onclick="closeModalBg(event,this)">
+  <div class="modal" style="max-width:480px">
+    <button class="modal-close" onclick="closeModal('modal-add-model')">✕</button>
+    <h2>➕ Add a New Model</h2>
+    <div style="display:flex;flex-direction:column;gap:10px;font-size:11px">
+      <div>
+        <label style="color:var(--text2);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Model Name</label>
+        <input type="text" id="new-model-name" placeholder="e.g. GRU + P2D Hybrid" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 10px;color:var(--text);font-size:11px;margin-top:4px;font-family:inherit;outline:none" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div>
+          <label style="color:var(--text2);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Model Type</label>
+          <select id="new-model-type" class="sel-sm" style="width:100%;margin-top:4px;padding:6px 8px;font-size:10.5px">
+            <option value="Hybrid">Hybrid (Physics + AI)</option>
+            <option value="AI">AI / Data-driven</option>
+            <option value="Physics">Physics-based</option>
+            <option value="Ensemble">Ensemble</option>
+          </select>
+        </div>
+        <div>
+          <label style="color:var(--text2);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Target</label>
+          <select id="new-model-target" class="sel-sm" style="width:100%;margin-top:4px;padding:6px 8px;font-size:10.5px">
+            <option value="SOH / RUL">SOH / RUL</option>
+            <option value="SOH">SOH only</option>
+            <option value="RUL">RUL only</option>
+            <option value="Capacity">Capacity</option>
+            <option value="Temperature">Temperature</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+        <div>
+          <label style="color:var(--text2);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">SOH MAE (%)</label>
+          <input type="number" id="new-model-soh" placeholder="e.g. 1.5" step="0.1" min="0" max="10" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 8px;color:var(--text);font-size:11px;margin-top:4px;font-family:inherit;outline:none" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <label style="color:var(--text2);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">RUL MAE (mo)</label>
+          <input type="number" id="new-model-rul" placeholder="e.g. 2.1" step="0.1" min="0" max="12" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 8px;color:var(--text);font-size:11px;margin-top:4px;font-family:inherit;outline:none" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+        <div>
+          <label style="color:var(--text2);font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Accuracy (%)</label>
+          <input type="number" id="new-model-acc" placeholder="e.g. 97.2" step="0.1" min="0" max="100" style="width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:5px;padding:6px 8px;color:var(--text);font-size:11px;margin-top:4px;font-family:inherit;outline:none" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+      </div>
+      <div style="background:var(--bg3);border-radius:6px;padding:8px 10px;border-left:3px solid var(--blue);font-size:9.5px;color:var(--text2)">
+        The model will be added to the registry and appear in the Models Used table and the Flow Builder library.
+      </div>
+      <div style="display:flex;gap:8px;margin-top:2px">
+        <button class="btn btn-green" style="flex:1" onclick="addModelToRegistry()">✅ Add to Registry</button>
+        <button class="btn btn-ghost" onclick="closeModal('modal-add-model')">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- CASE STUDIES MODAL -->
 <div class="modal-bg" id="modal-casestudies" onclick="closeModalBg(event,this)">
   <div class="modal" style="max-width:480px">
@@ -1381,7 +1512,7 @@ function setMonitorTab(el,id){
 function selectChip(el){el.classList.toggle('sel')}
 
 // ── FLOW ACTIONS ──
-function addModel(){showModal('modal-asset')}
+function addModel(){showModal('modal-add-model')}
 function connectNodes(){toast('Mode connexion activé — cliquez sur deux nœuds','blue')}
 function configModel(){showModal('modal-node-tr')}
 function saveFlow(){toast('Flow sauvegardé ✅','green')}
@@ -1420,6 +1551,9 @@ function selectModel(row,n){
   row.classList.add('selected');
   toast('Modèle #'+n+' sélectionné','blue');
 }
+
+// init model table on load
+window.addEventListener('load',()=>{setTimeout(updateModelTable,50)});
 
 // ── SHAP ──
 const shapData={
@@ -1476,6 +1610,165 @@ function addMsg(text,isUser){
   d.innerHTML=`<div class="msg-av ${isUser?'user':'bot'}">${isUser?'HN':'🤖'}</div><div class="msg-bub ${isUser?'':'bot'}">${text}</div>`;
   el.appendChild(d);
   el.scrollTop=el.scrollHeight;
+}
+
+// ── DEGRADATION TAB ──
+function setDegradTab(el,id){
+  document.querySelectorAll('.degrad-card .tab').forEach(t=>{t.classList.remove('on');t.classList.add('off')});
+  el.classList.remove('off');el.classList.add('on');
+  document.querySelectorAll('.degrad-panel').forEach(p=>p.style.display='none');
+  const panel=document.getElementById('degrad-'+id);
+  if(panel)panel.style.display='';
+  // draw chart for the selected panel
+  setTimeout(()=>drawDegradChart(id),30);
+}
+
+function drawDegradChart(id){
+  if(id==='soh'){
+    // SOH actual + predicted + EOL threshold
+    const actual=[];const pred=[];
+    for(let i=0;i<50;i++){actual.push(100-i*0.43-Math.random()*0.5);}
+    for(let i=0;i<50;i++){pred.push(100-i*0.44+Math.random()*0.3);}
+    drawDualChart('chart-degrad-soh',actual,pred,'#3fb950','#58a6ff',50,100,80);
+  } else if(id==='cap'){
+    const actual=[];const pred=[];
+    for(let i=0;i<50;i++){actual.push(100-i*0.76-Math.random()*0.8);}
+    for(let i=0;i<50;i++){pred.push(100-i*0.77+Math.random()*0.4);}
+    drawDualChart('chart-degrad-cap',actual,pred,'#f0883e','#bc8cff',50,105,80);
+  } else if(id==='rul'){
+    const rul=[];
+    for(let i=0;i<50;i++){rul.push(Math.max(0,24-i*0.45+Math.random()*0.8));}
+    const c=document.getElementById('chart-degrad-rul');if(!c)return;
+    c.width=c.offsetWidth||500;c.height=90;
+    const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
+    const W=c.width,H=c.height,yMin=0,yMax=26,n=rul.length;
+    ctx.strokeStyle='#30363d';ctx.lineWidth=.5;
+    for(let i=0;i<=3;i++){const y=H/3*i;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+    const px=i=>i/(n-1)*W, py=v=>H-((v-yMin)/(yMax-yMin))*H;
+    // confidence band
+    ctx.beginPath();
+    rul.forEach((v,i)=>i?ctx.lineTo(px(i),py(v+1.5)):ctx.moveTo(px(i),py(v+1.5)));
+    [...rul].reverse().forEach((v,i)=>ctx.lineTo(px(n-1-i),py(v-1.5)));
+    ctx.closePath();ctx.fillStyle='#3fb95033';ctx.fill();
+    // line
+    ctx.beginPath();ctx.strokeStyle='#58a6ff';ctx.lineWidth=1.5;
+    rul.forEach((v,i)=>i?ctx.lineTo(px(i),py(v)):ctx.moveTo(px(i),py(v)));
+    ctx.stroke();
+  } else if(id==='thermal'){
+    const tmax=[];const tavg=[];
+    for(let i=0;i<50;i++){tmax.push(28+Math.sin(i*.4)*6+Math.random()*4+i*0.06);}
+    for(let i=0;i<50;i++){tavg.push(24+Math.sin(i*.4)*3+Math.random()*2+i*0.04);}
+    drawDualChart('chart-degrad-thermal',tmax,tavg,'#f85149','#f0883e',10,55,40);
+  }
+}
+
+function drawDualChart(id,d1,d2,c1,c2,yMin,yMax,threshold){
+  const c=document.getElementById(id);if(!c)return;
+  c.width=c.offsetWidth||500;c.height=90;
+  const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height);
+  const W=c.width,H=c.height,n=d1.length;
+  ctx.strokeStyle='#30363d';ctx.lineWidth=.5;
+  for(let i=0;i<=3;i++){const y=H/3*i;ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+  const px=i=>i/(n-1)*W,py=v=>H-((v-yMin)/(yMax-yMin))*H;
+  if(threshold!==undefined){
+    const ty=py(threshold);
+    ctx.beginPath();ctx.setLineDash([4,3]);ctx.strokeStyle='#f0883e88';ctx.lineWidth=1;
+    ctx.moveTo(0,ty);ctx.lineTo(W,ty);ctx.stroke();ctx.setLineDash([]);
+  }
+  [[d1,c1],[d2,c2]].forEach(([data,color])=>{
+    ctx.beginPath();ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.shadowColor=color;ctx.shadowBlur=3;
+    data.forEach((v,i)=>i?ctx.lineTo(px(i),py(v)):ctx.moveTo(px(i),py(v)));
+    ctx.stroke();ctx.shadowBlur=0;
+  });
+}
+
+// Draw initial degradation chart
+window.addEventListener('load',()=>{setTimeout(()=>drawDegradChart('soh'),120)});
+
+// ── DYNAMIC MODEL REGISTRY ──
+let modelRegistry=[
+  {name:'P2D + Transformer + XGBoost',type:'Hybrid',target:'SOH / RUL',soh:'1.2 %',rul:'1.8 mo',acc:'98.4 %',active:true},
+  {name:'ECM + LSTM + XGBoost',type:'Hybrid',target:'SOH',soh:'1.5 %',rul:'2.3 mo',acc:'97.6 %',active:false},
+  {name:'Transformer + XGBoost',type:'Ensemble',target:'RUL',soh:'1.8 %',rul:'2.9 mo',acc:'96.8 %',active:false}
+];
+
+function updateModelTable(){
+  const tbody=document.getElementById('models-tbody');
+  const count=document.getElementById('models-count');
+  if(!tbody)return;
+  tbody.innerHTML='';
+  modelRegistry.forEach((m,i)=>{
+    const typeTag=m.type==='Hybrid'?'tag-h':m.type==='Ensemble'?'tag-e':'';
+    const statusBadge=m.active
+      ?`<span class="tag" style="background:#39d35322;color:var(--green);border:1px solid var(--green)">⭐ Active</span>`
+      :`<span class="tag" style="font-size:9px">Standby</span>`;
+    const tr=document.createElement('tr');
+    if(m.active)tr.classList.add('selected');
+    tr.innerHTML=`
+      <td style="${m.active?'color:var(--orange);font-weight:600':''}">${m.name}</td>
+      <td><span class="tag ${typeTag}">${m.type}</span></td>
+      <td style="font-size:9px">${m.target}</td>
+      <td style="${m.active?'color:var(--green)':''}">${m.soh}</td>
+      <td style="${m.active?'color:var(--green)':''}">${m.rul}</td>
+      <td style="${m.active?'color:var(--green);font-weight:700':''}">${m.acc}</td>
+      <td>${statusBadge}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="removeModel(this,'${m.name.replace(/'/g,"\\'")}')">✕</button></td>`;
+    tr.onclick=()=>{document.querySelectorAll('.tbl tbody tr').forEach(r=>r.classList.remove('selected'));tr.classList.add('selected');toast('Model selected: '+m.name,'blue')};
+    tbody.appendChild(tr);
+  });
+  if(count)count.textContent=`(${modelRegistry.length} model${modelRegistry.length!==1?'s':''})`;
+  // Also update flow builder chips
+  syncFlowChips();
+}
+
+function addModelToRegistry(){
+  const name=document.getElementById('new-model-name').value.trim();
+  const type=document.getElementById('new-model-type').value;
+  const target=document.getElementById('new-model-target').value;
+  const soh=document.getElementById('new-model-soh').value;
+  const rul=document.getElementById('new-model-rul').value;
+  const acc=document.getElementById('new-model-acc').value;
+  if(!name){toast('Please enter a model name','orange');return;}
+  if(modelRegistry.some(m=>m.name.toLowerCase()===name.toLowerCase())){
+    toast('A model with this name already exists','orange');return;
+  }
+  modelRegistry.push({
+    name,type,target,
+    soh:(soh||'—')+' %',
+    rul:(rul||'—')+' mo',
+    acc:(acc||'—')+' %',
+    active:false
+  });
+  updateModelTable();
+  closeModal('modal-add-model');
+  toast('✅ '+name+' added to registry','green');
+  // clear form
+  ['new-model-name','new-model-soh','new-model-rul','new-model-acc'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.value='';
+  });
+}
+
+function removeModel(btn,name){
+  const idx=modelRegistry.findIndex(m=>m.name===name);
+  if(idx===-1)return;
+  if(modelRegistry[idx].active){toast('Cannot remove the active model — select another first','orange');return;}
+  modelRegistry.splice(idx,1);
+  updateModelTable();
+  toast('Model removed: '+name,'orange');
+}
+
+function syncFlowChips(){
+  const aiSec=document.querySelector('.lib-sec:nth-child(2)');
+  if(!aiSec)return;
+  const existingNames=Array.from(aiSec.querySelectorAll('.chip')).map(c=>c.textContent.replace(/^[^\s]+\s/,''));
+  modelRegistry.filter(m=>m.type==='AI'||m.type==='Ensemble').forEach(m=>{
+    if(!existingNames.some(n=>m.name.includes(n))){
+      const chip=document.createElement('span');
+      chip.className='chip';chip.onclick=function(){this.classList.toggle('sel')};
+      chip.textContent='🆕 '+m.name.split(' ')[0];
+      aiSec.appendChild(chip);
+    }
+  });
 }
 
 // ── SIDEBAR EXTRA BUTTONS ──
