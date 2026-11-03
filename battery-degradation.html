@@ -239,6 +239,10 @@ select.sel:hover{border-color:var(--border2)}
     <button class="sb-btn active" onclick="filterModel(this,'hybrid')">Hybrid P2D+TR</button>
     <button class="sb-btn" onclick="filterModel(this,'lstm')">LSTM</button>
     <button class="sb-btn" onclick="filterModel(this,'xgb')">XGBoost</button>
+    <button class="sb-btn" onclick="filterModel(this,'pinn')">PINN</button>
+    <button class="sb-btn" onclick="filterModel(this,'agpinn')">AG-PINN</button>
+    <button class="sb-btn" onclick="filterModel(this,'stochastic')">Proc. Stochastique</button>
+    <button class="sb-btn" onclick="filterModel(this,'gaussian')">Proc. Gaussien</button>
   </div>
   <div class="sb-section">
     <div class="sb-label">Export</div>
@@ -386,6 +390,10 @@ select.sel:hover{border-color:var(--border2)}
           <option value="hybrid">Hybrid P2D+TR</option>
           <option value="lstm">LSTM</option>
           <option value="xgb">XGBoost</option>
+          <option value="pinn">PINN</option>
+          <option value="agpinn">AG-PINN</option>
+          <option value="stochastic">Proc. Stochastique</option>
+          <option value="gaussian">Proc. Gaussien</option>
         </select>
       </div>
     </div>
@@ -561,6 +569,10 @@ select.sel:hover{border-color:var(--border2)}
           <option value="hybrid">Hybrid (best)</option>
           <option value="lstm">LSTM</option>
           <option value="xgb">XGBoost</option>
+          <option value="pinn">PINN</option>
+          <option value="agpinn">AG-PINN</option>
+          <option value="stochastic">Proc. Stochastique</option>
+          <option value="gaussian">Proc. Gaussien</option>
         </select>
       </div>
     </div>
@@ -586,8 +598,12 @@ select.sel:hover{border-color:var(--border2)}
         <table class="tbl">
           <thead><tr><th>Model</th><th>MAE (cycles)</th><th>RMSE</th><th>Score</th></tr></thead>
           <tbody>
-            <tr class="selected" style="background:var(--bg3)"><td><b style="color:var(--orange)">Hybrid P2D+TR</b></td><td style="color:var(--green)">3.2</td><td style="color:var(--green)">4.1</td><td><span class="tag tag-ok">★ Best</span></td></tr>
+            <tr style="background:var(--bg3)"><td><b style="color:var(--orange)">Hybrid P2D+TR</b></td><td style="color:var(--green)">3.2</td><td style="color:var(--green)">4.1</td><td><span class="tag tag-ok">★ Best</span></td></tr>
+            <tr><td>AG-PINN</td><td>3.8</td><td>4.9</td><td><span class="tag tag-ok">★ Top</span></td></tr>
+            <tr><td>PINN</td><td>4.5</td><td>5.7</td><td><span class="tag tag-ok">Excellent</span></td></tr>
+            <tr><td>Proc. Gaussien</td><td>4.9</td><td>6.1</td><td><span class="tag tag-warn">Good</span></td></tr>
             <tr><td>LSTM</td><td>5.4</td><td>6.8</td><td><span class="tag tag-warn">Good</span></td></tr>
+            <tr><td>Proc. Stochastique</td><td>6.2</td><td>7.8</td><td><span class="tag tag-warn">Good</span></td></tr>
             <tr><td>XGBoost</td><td>7.1</td><td>9.2</td><td><span class="tag" style="background:var(--bg4)">OK</span></td></tr>
             <tr><td>Linear</td><td>12.4</td><td>15.8</td><td><span class="tag tag-bad">Poor</span></td></tr>
           </tbody>
@@ -652,7 +668,11 @@ select.sel:hover{border-color:var(--border2)}
       <div class="ch">
         <div class="ct">🔍 SHAP Feature Importance — SOH Prediction</div>
         <select class="sel" onchange="drawShap('soh',this.value)">
-          <option value="hybrid">Hybrid model</option>
+          <option value="hybrid">Hybrid P2D+TR</option>
+          <option value="agpinn">AG-PINN</option>
+          <option value="pinn">PINN</option>
+          <option value="gaussian">Proc. Gaussien</option>
+          <option value="stochastic">Proc. Stochastique</option>
           <option value="xgb">XGBoost</option>
         </select>
       </div>
@@ -664,7 +684,11 @@ select.sel:hover{border-color:var(--border2)}
       <div class="ch">
         <div class="ct">🔍 SHAP Feature Importance — RUL Prediction</div>
         <select class="sel" onchange="drawShap('rul',this.value)">
-          <option value="hybrid">Hybrid model</option>
+          <option value="hybrid">Hybrid P2D+TR</option>
+          <option value="agpinn">AG-PINN</option>
+          <option value="pinn">PINN</option>
+          <option value="gaussian">Proc. Gaussien</option>
+          <option value="stochastic">Proc. Stochastique</option>
           <option value="xgb">XGBoost</option>
         </select>
       </div>
@@ -887,19 +911,20 @@ function toggleEOL(){showEOL=!showEOL;drawOverview(document.querySelector('#page
 // ═════════════════ SOH CHART ═════════════════
 function drawSOH(){
   const bat=document.getElementById('soh-bat').value||'B0005';
+  const mdl=document.getElementById('soh-model').value||'hybrid';
   const ctx=getCtx('chart-soh',180);if(!ctx)return;
-  const soh=getSOH(bat);
-  const n=soh.length;
-  // Add prediction with small error
-  const pred=soh.map((v,i)=>v+(Math.random()-.5)*1.2-(i/n)*0.5);
-  const ci_up=pred.map(v=>v+2.5);
-  const ci_dn=pred.map(v=>v-2.5);
+  const soh=getSOH(bat);const n=soh.length;
+  const m=modelNoise[mdl]||modelNoise['hybrid'];
+  const pred=soh.map((v,i)=>v+m.bias+(Math.random()-.5)*m.noise-(i/n)*Math.abs(m.bias)*0.5);
+  const ci_up=pred.map(v=>v+m.ci);const ci_dn=pred.map(v=>v-m.ci);
   const eol=Array(n).fill(80);
+  const modelColors={hybrid:'#3fb950',agpinn:'#bc8cff',pinn:'#39d353',gaussian:'#e3b341',stochastic:'#f0883e',lstm:'#58a6ff',xgb:'#f85149'};
+  const mc=modelColors[mdl]||'#3fb950';
   lineChart(ctx,[
-    {data:ci_up,color:'#3fb950',fill:true,alpha:'15',dash:[2,2]},
-    {data:ci_dn,color:'#3fb950',fill:false,dash:[2,2]},
+    {data:ci_up,color:mc,fill:true,alpha:'15',dash:[2,2]},
+    {data:ci_dn,color:mc,fill:false,dash:[2,2]},
     {data:soh,color:'#58a6ff',fill:false},
-    {data:pred,color:'#3fb950',fill:false},
+    {data:pred,color:mc,fill:false},
     {data:eol,color:'#f85149',dash:[5,3],fill:false}
   ],n,60,105);
 }
@@ -1030,19 +1055,24 @@ function drawRct(){
 // ═════════════════ RUL ═════════════════
 function drawRUL(){
   const bat=document.getElementById('rul-bat').value||'B0005';
+  const mdl=document.getElementById('rul-model').value||'hybrid';
   const ctx=getCtx('chart-rul',180);if(!ctx)return;
   const cap=capData[bat];const eolCap=1.20;
   const trueRUL=cap.map((_,i)=>{
     const eolIdx=cap.findIndex((q,j)=>j>i&&q<eolCap);
     return eolIdx>=0?eolIdx-i:0;
   });
-  const pred=trueRUL.map(v=>Math.max(0,v+(Math.random()-.5)*6-v*0.03));
-  const ci_up=pred.map(v=>v+8);const ci_dn=pred.map(v=>Math.max(0,v-8));
+  const m=modelNoise[mdl]||modelNoise['hybrid'];
+  const pred=trueRUL.map(v=>Math.max(0,v+(Math.random()-.5)*(m.noise*4)+m.bias*2));
+  const ci=m.ci*3;
+  const ci_up=pred.map(v=>v+ci);const ci_dn=pred.map(v=>Math.max(0,v-ci));
+  const modelColors={hybrid:'#f0883e',agpinn:'#bc8cff',pinn:'#39d353',gaussian:'#e3b341',stochastic:'#f0883e',lstm:'#58a6ff',xgb:'#f85149'};
+  const mc=modelColors[mdl]||'#f0883e';
   lineChart(ctx,[
-    {data:ci_up,color:'#f0883e',fill:true,alpha:'18',dash:[2,2]},
-    {data:ci_dn,color:'#f0883e',fill:false,dash:[2,2]},
+    {data:ci_up,color:mc,fill:true,alpha:'18',dash:[2,2]},
+    {data:ci_dn,color:mc,fill:false,dash:[2,2]},
     {data:trueRUL,color:'#58a6ff',fill:false},
-    {data:pred,color:'#f0883e',fill:false}
+    {data:pred,color:mc,fill:false}
   ],trueRUL.length,0,Math.max(...trueRUL)+15);
   drawRULError(trueRUL,pred);
 }
@@ -1102,11 +1132,34 @@ function updateCycleExplorer(){
 }
 
 // ═════════════════ SHAP ═════════════════
+// Model prediction error offsets (relative to true SOH/RUL)
+const modelNoise={
+  hybrid:  {bias:-0.30, noise:0.6,  ci:2.5},
+  agpinn:  {bias:-0.20, noise:0.7,  ci:2.8},
+  pinn:    {bias:-0.40, noise:0.9,  ci:3.2},
+  gaussian:{bias:-0.50, noise:1.1,  ci:4.0},
+  lstm:    {bias:-0.50, noise:1.2,  ci:4.5},
+  stochastic:{bias:-0.60,noise:1.4, ci:5.5},
+  xgb:     {bias:-0.70, noise:1.5,  ci:5.0}
+};
+
 const shapData={
   soh:{
     hybrid:{features:['Temperature','Cycle Number','Re (resistance)','Rct charge','Capacity fade rate','dQ/dV peak shift','C-rate','Discharge time'],
             values:[0.38,0.25,0.19,0.12,0.08,0.06,0.04,0.02],
             colors:['#f0883e','#58a6ff','#3fb950','#f85149','#bc8cff','#e3b341','#39d353','#8b949e']},
+    agpinn:{features:['PDE residual (Butler-Volmer)','Temperature','Cycle Number','Re (resistance)','dQ/dV peak shift','Rct charge','C-rate','Capacity fade rate'],
+            values:[0.41,0.30,0.18,0.14,0.09,0.07,0.04,0.02],
+            colors:['#bc8cff','#f0883e','#58a6ff','#3fb950','#e3b341','#f85149','#39d353','#8b949e']},
+    pinn:{features:['PDE residual (diffusion)','Cycle Number','Temperature','Rct charge','Re (resistance)','Capacity fade rate','dQ/dV peak shift','C-rate'],
+          values:[0.35,0.27,0.22,0.15,0.10,0.07,0.05,0.02],
+          colors:['#bc8cff','#58a6ff','#f0883e','#f85149','#3fb950','#e3b341','#39d353','#8b949e']},
+    gaussian:{features:['Cycle Number','Kernel length-scale','Temperature','Rct charge','Re (resistance)','dQ/dV peak shift','Capacity fade','C-rate'],
+              values:[0.36,0.26,0.20,0.13,0.10,0.06,0.05,0.02],
+              colors:['#58a6ff','#39d353','#f0883e','#f85149','#3fb950','#e3b341','#bc8cff','#8b949e']},
+    stochastic:{features:['Cycle Number','Drift coeff. μ','Diffusion coeff. σ','Temperature','Re (resistance)','Rct charge','C-rate','dQ/dV peak shift'],
+                values:[0.40,0.28,0.18,0.12,0.09,0.06,0.04,0.02],
+                colors:['#58a6ff','#e3b341','#f0883e','#f85149','#3fb950','#bc8cff','#39d353','#8b949e']},
     xgb:{features:['Cycle Number','Temperature','Rct charge','Re (resistance)','dQ/dV peak shift','Capacity fade rate','C-rate','Discharge time'],
          values:[0.32,0.28,0.17,0.13,0.09,0.05,0.03,0.02],
          colors:['#58a6ff','#f0883e','#f85149','#3fb950','#e3b341','#bc8cff','#39d353','#8b949e']}
@@ -1115,6 +1168,18 @@ const shapData={
     hybrid:{features:['Cycle Number','Rct growth rate','Capacity fade rate','Temperature avg','Re trend','dQ/dV peak area','Charge time','C-rate'],
             values:[0.42,0.24,0.16,0.10,0.07,0.05,0.04,0.02],
             colors:['#58a6ff','#f85149','#f0883e','#e3b341','#3fb950','#bc8cff','#39d353','#8b949e']},
+    agpinn:{features:['PDE residual (aging ODE)','Cycle Number','Rct growth rate','Capacity fade rate','Temperature avg','Re trend','dQ/dV peak area','C-rate'],
+            values:[0.38,0.28,0.18,0.12,0.08,0.06,0.05,0.02],
+            colors:['#bc8cff','#58a6ff','#f85149','#f0883e','#e3b341','#3fb950','#39d353','#8b949e']},
+    pinn:{features:['PDE residual (SEI)','Cycle Number','Rct growth rate','Capacity fade rate','Temperature avg','Re trend','C-rate','dQ/dV peak area'],
+          values:[0.33,0.29,0.19,0.13,0.09,0.06,0.04,0.02],
+          colors:['#bc8cff','#58a6ff','#f85149','#f0883e','#e3b341','#3fb950','#39d353','#8b949e']},
+    gaussian:{features:['Cycle Number','Kernel uncertainty','Rct growth rate','Capacity fade rate','Temperature avg','Re trend','dQ/dV peak area','C-rate'],
+              values:[0.37,0.25,0.18,0.13,0.09,0.06,0.04,0.02],
+              colors:['#58a6ff','#39d353','#f85149','#f0883e','#e3b341','#3fb950','#bc8cff','#8b949e']},
+    stochastic:{features:['Cycle Number','Drift coeff. μ','Diffusion σ','Rct growth rate','Temperature avg','Capacity fade rate','Re trend','C-rate'],
+                values:[0.40,0.26,0.17,0.12,0.08,0.06,0.04,0.02],
+                colors:['#58a6ff','#e3b341','#f0883e','#f85149','#3fb950','#bc8cff','#39d353','#8b949e']},
     xgb:{features:['Rct growth rate','Cycle Number','Capacity fade rate','Temperature avg','Re trend','dQ/dV peak area','Charge time','C-rate'],
          values:[0.36,0.26,0.18,0.11,0.06,0.05,0.03,0.02],
          colors:['#f85149','#58a6ff','#f0883e','#e3b341','#3fb950','#bc8cff','#39d353','#8b949e']}
